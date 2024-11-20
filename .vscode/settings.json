@@ -2,6 +2,7 @@
     "files.associations": {
         "cmath": "c",
         "ratio": "c",
-        "vector": "c"
+        "vector": "c",
+        "stdio.h": "c"
     }
 }

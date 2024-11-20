@@ -6,14 +6,14 @@
 # define SCREEN_HEIGHT 1024
 # define SCREEN_WIDTH 768
 
-# define SCALE 500
-# define SCALE_SCREEN 150
+# define SCALE 500.0
+# define SCALE_SCREEN 150.0
 # define STEP 0.1
-# define STEP_ANGLE 2
-# define SAMPLE 60
+# define STEP_ANGLE 2.0
+# define SAMPLE 600.0
 # define FOV 60.0
-# define BOX_SIZE 50
-# define GRID_SIZE 0.5
+# define BOX_SIZE 50.0
+# define GRID_SIZE 1
 
 # define GREEN -16711936
 # define RED -65536
@@ -37,7 +37,7 @@
 # define WEST 4
 # define NOT_ONBOX 0
 
-double angle_radians(int angle)
+double angle_radians(double angle)
 {
     double radians;
     radians = angle * (M_PI / 180.0);
@@ -200,12 +200,12 @@ int	move_character(int keycode, t_vars *vars)
 
 void draw_ray(t_vars *vars, double fov)
 {
-    t_vector ray[SAMPLE + 1];
+    t_vector ray[(int)SAMPLE + 1];
     double sample_angle = fov / SAMPLE;
     double sample_radians = angle_radians(sample_angle);
     double radians = angle_radians(-fov / 2); // 从视野左侧开始的角度
 
-    for (int i = 0; i < SAMPLE + 1; i++)////////////////////////////////
+    for (int i = 0; i < (int)SAMPLE + 1; i++)////////////////////////////////
     {
         ray[i].x = vars->dirx * cos(radians) - vars->diry * sin(radians);
         ray[i].y = vars->dirx * sin(radians) + vars->diry * cos(radians);
@@ -218,7 +218,7 @@ void draw_ray(t_vars *vars, double fov)
 
 ////////////////////////////////////////
 
-# define MIN_ERR 0.01
+# define MIN_ERR 0.000000000001
 
 int double_equal(double a, double b)
 {
@@ -234,13 +234,13 @@ int on_box(double x_center, double y_center, double x, double y)
     double left_x = x_center - GRID_SIZE / 2.0;
     double right_x = x_center + GRID_SIZE / 2.0;
 
-    if (double_equal(x, left_x) && y >= bottom_y && y <= top_y)
+    if (double_equal(x, left_x) && y >= bottom_y + MIN_ERR && y <= top_y - MIN_ERR)
             return (WEST);
-    else if (double_equal(x, right_x) && y >= bottom_y && y <= top_y)
+    else if (double_equal(x, right_x) && y >= bottom_y + MIN_ERR && y <= top_y - MIN_ERR)
             return (EAST);
-    else if (double_equal(y, top_y) && x >= left_x && x <= right_x)
+    else if (double_equal(y, top_y) && x >= left_x + MIN_ERR && x <= right_x - MIN_ERR)
             return (NORTH);
-    else if (double_equal(y, bottom_y) && x >= left_x && x <= right_x)
+    else if (double_equal(y, bottom_y) && x >= left_x + MIN_ERR && x <= right_x - MIN_ERR)
             return (SOUTH);
     return (NOT_ONBOX);
 }
@@ -253,7 +253,7 @@ double len_2pt(double x1, double y1, double x2, double y2)
     return (sqr);
 }
 
-double dist_towall(t_vars *vars, double x, double y)
+double dist_towall(t_vars *vars, double x, double y, int *color)
 {
     int i;
     int j;
@@ -265,9 +265,12 @@ double dist_towall(t_vars *vars, double x, double y)
         j = 0;
         while (j < 9)
         {
-            if (vars->map[j][i] == '1')
-                if (on_box(i + GRID_SIZE / 2, j + GRID_SIZE / 2, x, y) != NOT_ONBOX)
+            if (vars->map[i][j] == '1')
+                if (on_box((double)j + GRID_SIZE / 2.0, (double)i + GRID_SIZE / 2.0, x, y) != NOT_ONBOX)
+                {
+                    *color = on_box((double)j + GRID_SIZE / 2.0, (double)i + GRID_SIZE / 2.0, x, y);
                     return (len_2pt(vars->posx, vars->posy, x, y));
+                }
             j++;
         }
         i++;
@@ -277,87 +280,105 @@ double dist_towall(t_vars *vars, double x, double y)
 
 #define S_SIZE 50
 
-double check_close_wall(t_vars *vars, t_vector *vector)
+double check_close_wall(t_vars *vars, t_vector *vector, int *color, int i)
 {
-    double x = vars->posx;
-    double y = vars->posy;
-    double dx = vector->x; // 已归一化的方向向量
-    double dy = vector->y;
+    double x = vars->posx;  // 出发点 x 坐标
+    double y = vars->posy;  // 出发点 y 坐标
+    double dx = vector->x;  // 已归一化的方向向量 x 分量
+    double dy = vector->y;  // 已归一化的方向向量 y 分量
 
-    // 初始格子坐标
-    int grid_x = (int)x;
-    int grid_y = (int)y;
+    int step_x = (dx > 0) ? 1 : -1;  // x 方向步长（+1 或 -1）
+    int step_y = (dy > 0) ? 1 : -1;  // y 方向步长（+1 或 -1）
 
-    // 增量方向
-    int step_x = (dx > 0) ? 1 : -1;
-    int step_y = (dy > 0) ? 1 : -1;
+    double t_max_x = (step_x > 0) ? ceil(x) - x : x - floor(x);  // 到达下一个 x 网格线的时间
+    double t_max_y = (step_y > 0) ? ceil(y) - y : y - floor(y);  // 到达下一个 y 网格线的时间
+    t_max_x /= fabs(dx);  // 归一化时间
+    t_max_y /= fabs(dy);  // 归一化时间
 
-    // 初始 t 值
-    double t_max_x = (step_x > 0 ? (grid_x + 1.0 - x) : (x - grid_x));
-    double t_max_y = (step_y > 0 ? (grid_y + 1.0 - y) : (y - grid_y));
+    double t_delta_x = 1.0 / fabs(dx);  // 每次跨越一个 x 网格的时间增量
+    double t_delta_y = 1.0 / fabs(dy);  // 每次跨越一个 y 网格的时间增量
 
-    // t 的增量
-    double t_delta_x = 1.0 / ft_abs(dx);
-    double t_delta_y = 1.0 / ft_abs(dy);
+    // 初始网格坐标
+    int map_x = (int)floor(x);
+    int map_y = (int)floor(y);
 
-    // 遍历格子
-    while (1)
-    {
-        // 输出当前相交点的坐标
-        double intersection_x, intersection_y;
+    double intersect_x = x;
+    double intersect_y = y;
 
-        if (t_max_x < t_max_y)
-        {
-            intersection_x = (step_x > 0) ? (grid_x + 1.0) : grid_x;
-            intersection_y = y + t_max_x * dy;
-            printf("Intersection: (%f, %f)\n", intersection_x, intersection_y);
-            mlx_pixel_put((vars)->mlx, (vars)->win, intersection_x * S_SIZE, intersection_y * S_SIZE, RED);
-
-            // 更新 t_max_x 和 grid_x
-            t_max_x += t_delta_x;
-            grid_x += step_x;
-        }
-        else
-        {
-            intersection_x = x + t_max_y * dx;
-            intersection_y = (step_y > 0) ? (grid_y + 1.0) : grid_y;
-            printf("Intersection: (%f, %f)\n", intersection_x, intersection_y);
-            mlx_pixel_put((vars)->mlx, (vars)->win, intersection_x * S_SIZE, intersection_y * S_SIZE, RED);
-
-            // 更新 t_max_y 和 grid_y
-            t_max_y += t_delta_y;
-            grid_y += step_y;
+    // 运行 DDA 算法
+    while (1) {
+        if (t_max_x < t_max_y) {
+            map_x += step_x;  // 前进到下一个 x 网格线
+            intersect_x = x + t_max_x * dx;
+            intersect_y = y + t_max_x * dy;
+            t_max_x += t_delta_x;  // 更新 t_max_x
+        } else {
+            map_y += step_y;  // 前进到下一个 y 网格线
+            intersect_x = x + t_max_y * dx;
+            intersect_y = y + t_max_y * dy;
+            t_max_y += t_delta_y;  // 更新 t_max_y
         }
 
-        // 停止条件：根据需要修改
-        if (dist_towall(vars, intersection_x, intersection_y) >= 0)
-            return (write(1,"case\n", 5), dist_towall(vars, intersection_x, intersection_y));
-        if (len_2pt(x, y, intersection_x, intersection_y) > 1000)
-            return (1000);
+        //printf("Intersection: (%f, %f)\n", intersect_x, intersect_y);
+        // 可根据需要在此处添加条件判断（例如检测碰撞或其他逻辑）
+        if (dist_towall(vars, intersect_x, intersect_y, &color[i]) >= 0)
+        {
+            return (dist_towall(vars, intersect_x, intersect_y, &color[i]));
+        }
+        if (len_2pt(x, y, intersect_x, intersect_y) > 500.0) 
+        {
+            return(500.0);
+        }
     }
     return 0;
 }
 
+
+# define POSITION_X 500
+# define DISPLAY_W 500.0
+# define POSITION_Y 300
+# define NUMM 100
+
+void draw_line_up_down(t_vars *vars, int i, double distance, int *color)
+{
+    int color_final = WHITE;
+
+    if (color[i] == WEST)
+        color_final = RED;
+    else if (color[i] == EAST)
+        color_final = BLUE;
+    else if (color[i] == NORTH)
+        color_final = GREEN;
+    else if (color[i] == SOUTH)
+        color_final = YELLOW;
+    draw_line(vars, POSITION_X + i * (DISPLAY_W / SAMPLE), POSITION_Y, POSITION_X + i * (DISPLAY_W / SAMPLE), POSITION_Y + (NUMM - distance * 15), color_final);
+    draw_line(vars, POSITION_X + i * (DISPLAY_W / SAMPLE), POSITION_Y, POSITION_X + i * (DISPLAY_W / SAMPLE), POSITION_Y - (NUMM - distance * 15), color_final);
+}
+
 void check_visibility(t_vars *vars, double fov)
 {
-    t_vector ray[SAMPLE + 1];
+    t_vector ray[(int)SAMPLE + 1];
+    //int ray_color[(int)SAMPLE + 1];
+    int *ray_color = malloc(sizeof(int) * ((int)SAMPLE + 1));
+    if (!ray_color)
+        return;
     double sample_angle = fov / SAMPLE;
     double sample_radians = angle_radians(sample_angle);
-    double radians = angle_radians(-fov / 2); // 从视野左侧开始的角度
+    double radians = angle_radians(-fov / 2.0); // 从视野左侧开始的角度
 
     int i = 0;
     double distance = 0;
-    while (i < SAMPLE + 1)///////////////////////////////
+    while (i < (int)SAMPLE + 1)///////////////////////////////
     {
         ray[i].x = vars->dirx * cos(radians) - vars->diry * sin(radians);
         ray[i].y = vars->dirx * sin(radians) + vars->diry * cos(radians);
         normalize_vector(&ray[i], 1);
-        distance = check_close_wall(vars, &ray[i]);
+        distance = check_close_wall(vars, &ray[i], ray_color, i);
+        //printf("distance is %f\n", distance);
         ray[i].x *= distance;
         ray[i].y *= distance;
-        //normalize_vector(&ray[i], 1000);
         draw_line(vars, vars->posx * BOX_SIZE, vars->posy * BOX_SIZE, vars->posx * BOX_SIZE + ray[i].x * BOX_SIZE, vars->posy * BOX_SIZE + ray[i].y * BOX_SIZE, WHITE);
-        
+        draw_line_up_down(vars, i, distance, ray_color);
         radians += sample_radians;
         i++;
     }
