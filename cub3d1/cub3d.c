@@ -285,22 +285,22 @@ int	move_character(int keycode, t_vars *vars)
 	return (0);
 }
 
-void draw_ray(t_vars *vars, double fov)
-{
-    t_vector ray[(int)SAMPLE + 1];
-    double sample_angle = fov / SAMPLE;
-    double sample_radians = angle_radians(sample_angle);
-    double radians = angle_radians(-fov / 2); // 从视野左侧开始的角度
+// void draw_ray(t_vars *vars, double fov)
+// {
+//     t_vector ray[(int)SAMPLE + 1];
+//     double sample_angle = fov / SAMPLE;
+//     double sample_radians = angle_radians(sample_angle);
+//     double radians = angle_radians(-fov / 2); // 从视野左侧开始的角度
 
-    for (int i = 0; i < (int)SAMPLE + 1; i++)////////////////////////////////
-    {
-        ray[i].x = vars->dirx * cos(radians) - vars->diry * sin(radians);
-        ray[i].y = vars->dirx * sin(radians) + vars->diry * cos(radians);
-        normalize_direction_vector(&ray[i]);
-        draw_line(vars, vars->posx * BOX_SIZE, vars->posy * BOX_SIZE, vars->posx * BOX_SIZE + ray[i].x, vars->posy * BOX_SIZE + ray[i].y, WHITE);
-        radians += sample_radians; // 每次累加固定的增量角度
-    }
-}
+//     for (int i = 0; i < (int)SAMPLE + 1; i++)////////////////////////////////
+//     {
+//         ray[i].x = vars->dirx * cos(radians) - vars->diry * sin(radians);
+//         ray[i].y = vars->dirx * sin(radians) + vars->diry * cos(radians);
+//         normalize_direction_vector(&ray[i]);
+//         draw_line(vars, vars->posx * BOX_SIZE, vars->posy * BOX_SIZE, vars->posx * BOX_SIZE + ray[i].x, vars->posy * BOX_SIZE + ray[i].y, WHITE);
+//         radians += sample_radians; // 每次累加固定的增量角度
+//     }
+// }
 
 
 ////////////////////////////////////////
@@ -340,7 +340,7 @@ double len_2pt(double x1, double y1, double x2, double y2)
     return (sqr);
 }
 
-double dist_towall(t_vars *vars, double x, double y, int *color)
+double hit_wall(t_vars *vars, double x, double y, int *color)
 {
     int i;
     int j;
@@ -407,7 +407,7 @@ double check_close_wall(t_vars *vars, t_vector *vector, int *color, int i)
             t_max_y += t_delta_y;  // 更新 t_max_y
         }
         // 可根据需要在此处添加条件判断（例如检测碰撞或其他逻辑）
-        distance_towall = dist_towall(vars, intersect_x, intersect_y, &color[i]);
+        distance_towall = hit_wall(vars, intersect_x, intersect_y, &color[i]);
         if (distance_towall >= 0)
         {
             return (distance_towall);
