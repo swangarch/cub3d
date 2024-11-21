@@ -18,5 +18,8 @@ int	check_tex_type(char *line);
 int	parse_texture(t_game *game, int type, char *line);
 void	free_char_array(char **array);
 int	parse_color(t_game *game, int type, char *line);
+int	len_char_array(char **str);
+int	ft_in_set(char c, const char *set);
+int	check_color_range(int *color, char **part_color);
 
 #endif

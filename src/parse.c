@@ -37,7 +37,6 @@ int	parse_map(t_game *game, char *path_map)
 
 int	parse_oneline(t_game *game, char *line, t_list **map)
 {
-	static int	empty_in_map;
 	int			len;
 	int			type;
 
@@ -59,13 +58,29 @@ int	parse_oneline(t_game *game, char *line, t_list **map)
 
 int	parse_color(t_game *game, int type, char *line)
 {
-	char	**parts;
+	char	**part_line;
+	char	**part_color;
+	int		i;
+	int		c[3];
 
-	line += 1;
-	while (*line && *line == ' ')
-		++line;
-	parts = ft_split(line, ',');
-	//....
+	part_line = ft_split(line, ' ');
+	if (!part_line || len_char_array(part_line) != 2)
+		return (free_char_array(part_line), 0);
+	i = 0;
+	while (part_line[1][i])
+		if (!ft_in_set(part_line[1][i], ",0123456789"))
+			return (free_char_array(part_line), 0);
+	part_color = ft_split(part_line[1], ",");
+	free_char_array(part_line);
+	if (!part_color || len_char_array(part_color) != 3)
+		return (free_char_array(part_color), 0);
+	if (!check_color_range(c, part_color))
+		return (free_char_array(part_color), 0);
+	if (type == T_CEILING)
+		game->color_c = (c[0] << 16) | (c[1] << 8) | c[2];
+	else
+		game->color_f = (c[0] << 16) | (c[1] << 8) | c[2];
+	return (1);
 }
 
 int	parse_texture(t_game *game, int type, char *line)
