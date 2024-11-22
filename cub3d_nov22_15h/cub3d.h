@@ -1,0 +1,110 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shuwang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/22 14:49:35 by shuwang           #+#    #+#             */
+/*   Updated: 2024/11/22 14:49:36 by shuwang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CUB3D_H
+# define CUB3D_H
+
+# include "libft.h"
+# include "mlx.h"
+# include <math.h>
+# include <stdio.h>
+
+# define SCREEN_HEIGHT 1024
+# define SCREEN_WIDTH 768
+
+# define SCALE 500.0
+# define SCALE_SCREEN 150.0
+# define STEP 0.02
+# define STEP_ANGLE 1.0
+# define SAMPLE 600.0
+# define FOV 60.0
+# define BOX_SIZE 50.0
+# define GRID_SIZE 1
+
+# define GREEN -16711936
+# define RED -65536
+# define BLUE -16776961
+# define YELLOW -256
+# define WHITE -1
+# define CYAN -16711681
+# define MAGENTA -65281
+
+# define ESC 65307
+# define D 100
+# define A 97
+# define W 115
+# define S 119
+# define LEFT 65361
+# define RIGHT 65363
+
+# define NORTH 1
+# define EAST 2
+# define SOUTH 3
+# define WEST 4
+# define NOT_ONBOX 0
+
+# define MIN_ERR 0.0000000001
+
+# define POSITION_X 500
+# define DISPLAY_W 500.0
+# define DISPLAY_H 300.0
+# define POSITION_Y 300
+# define NUMM 100
+
+typedef struct s_vars
+{
+    double         posx;
+    double         posy;
+    double         dirx;
+    double         diry;
+	void		*mlx;
+	void		*win;
+	char		(*map)[9];
+    void *buf_img;
+}	t_vars;
+
+typedef struct s_vector
+{
+    double         x;
+    double         y;
+}	t_vector;
+
+
+/*MATH*/
+double angle_radians(double angle);
+double ft_abs(double num);
+int double_eql(double a, double b);
+double len_2pt(double x1, double y1, double x2, double y2);
+
+/*DRAW GEOMETRY*/
+void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color);
+void draw_box(t_vars *vars, double x, double y, double size);
+
+/*GAME CONTROL*/
+int	move_character(int keycode, t_vars *vars);
+int	key_control(int keycode, t_vars *vars);
+
+/*VECTOR*/
+void normalize_direction(t_vars *vars);
+void normalize_direction_vector(t_vector *vector);
+void normalize_vector(t_vector *vector, double scale);
+void normalize_screen_vector(t_vector *vector);
+void rotate_vector(t_vars *vars, double radians);
+double wall_distance(t_vars *vars, t_vector *vector, int *color, int i);
+
+/*RENDER*/
+void    render_game(t_vars *vars);
+
+/*COLOR*/
+int create_trgb(int t, int r, int g, int b);
+
+#endif
