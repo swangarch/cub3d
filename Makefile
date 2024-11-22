@@ -21,7 +21,8 @@ SRCS		=	$(SRC_DIR)cub3d.c \
 				$(SRC_DIR)error_free.c \
 				$(SRC_DIR)update.c \
 				$(SRC_DIR)parse.c \
-				$(SRC_DIR)init.c
+				$(SRC_DIR)init.c \
+				$(SRC_DIR)utils.c
 
 OBJS		=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 

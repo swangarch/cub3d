@@ -36,3 +36,16 @@ int	check_color_range(int *color, char **part_color)
 		return (0);
 	return (1);
 }
+
+int	lst_add_back_buffer(t_list **map, char *line)
+{
+	t_list	*new_node;
+
+	if (!map || !line)
+		return (0);
+	new_node = ft_lstnew((void *)line);
+	if (!new_node)
+		return (ft_lstclear(map, free), free(line), 0);
+	ft_lstadd_back(map, new_node);
+	return (1);
+}

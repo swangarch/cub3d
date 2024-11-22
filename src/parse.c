@@ -22,7 +22,7 @@ int	parse_map(t_game *game, char *path_map)
 
 	fd = open(path_map, O_RDONLY);
 	if (fd < 0)
-		return (1);
+		map_error(MES_OPEN_ERR);
 	map_buffer = NULL;
 	flag = 1;
 	line = get_next_line(fd);
@@ -32,7 +32,196 @@ int	parse_map(t_game *game, char *path_map)
 		free(line);
 		line = get_next_line(fd);
 	}
-	//...
+	close(fd);
+	if (!flag || set_map_check(game, map_buffer))
+		return (ft_lstclear(&map_buffer, free), 1);
+	ft_lstclear(&map_buffer, free);
+	return (0);
+}
+
+int	set_map_check(t_game *game, t_list *map_buffer)
+{
+	char	**map;
+
+	if (check_element(game, map_buffer))
+		return (1);
+	if (set_map_full(game, map, map_buffer))
+		return (ft_putstr_fd("Malloc failed!", 2), 1);
+	if (check_inclosed_wall(map, 0, 0, game))
+		return (free_char_array(map), 1);
+	return (0);
+}
+
+int	check_inclosed_wall(char **map, int i, int j, t_game *game)
+{
+	if (i < 0 || i >= game->map_row + 2 || j < 0 \
+		|| j >= game->map_col + 1 || map[i][j] == '1')
+		return (0);
+	if (ft_in_set(map[i][j], "0NSWE"))
+		return (1);
+	map[i][j] = '1';
+	if (check_inclosed_wall(map, i - 1, j, game))
+		return (1);
+	if (check_inclosed_wall(map, i + 1, j, game))
+		return (1);
+	if (check_inclosed_wall(map, i, j - 1, game))
+		return (1);
+	if (check_inclosed_wall(map, i, j + 1, game))
+		return (1);
+	return (0);
+}
+
+int	set_map_full(t_game *game, char **map, t_list *map_buffer)
+{
+	int	i;
+
+	map = (char **)malloc((game->map_row + 3) * sizeof(char *));
+	if (!map)
+		return (1);
+	i = 0;
+	while (i < game->map_row + 3)
+		map[i++] = NULL;
+	i = 0;
+	while (i < game->map_row + 2)
+	{
+		map[i] = (char *)malloc((game->map_col + 2) * sizeof(char));
+		if (!map[i])
+			return (free_char_array(map), 1);
+		++i;
+	}
+	if (copy_list_to_char(game, map_buffer))
+		return (ft_putstr_fd("Malloc failed!", 2), free_char_array(map), 1);
+	set_map_content(game, map, map_buffer);
+	return (0);
+}
+
+int	copy_list_to_char(t_game *game, t_list *map_buffer)
+{
+	int		i;
+	char	*content;
+
+	game->map = (char **)malloc((game->map_row + 1) * sizeof(char *));
+	if (!game->map)
+		return (1);
+	i = 0;
+	while (i < game->map_row + 1)
+		game->map[i++] = NULL;
+	i = 0;
+	while (i < game->map_row && map_buffer)
+	{
+		content = ft_strtrim((char *)map_buffer->content, "\n");
+		if (!content)
+			return (free_char_array(game->map), 1);
+		game->map[i] = ft_strdup(content);
+		if (!game->map[i])
+			return (free_char_array(game->map), free(content), 1);
+		free(content);
+		map_buffer = map_buffer->next;
+		++i;
+	}
+}
+
+void	set_map_content(t_game *game, char **map, t_list *map_buffer)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	while (i < game->map_row + 2)
+	{
+		j = 0;
+		if (i == 0 || i == game->map_row + 1)
+		{
+			while (j < game->map_col + 1)
+				map[i][j++] = ' ';
+			map[i++][j] = '\0';
+		}
+		else
+		{
+			k = 0;
+			map[i][j++] = ' ';
+			while (game->map[i][k])
+				map[i][j++] = game->map[i][k++];
+			while (j < game->map_col + 1)
+				map[i][j++] = ' ';
+			map[i++][j] = '\0';
+		}
+	}
+}
+
+int	check_element(t_game *game, t_list *map_buffer)
+{
+	if (!game || !map_buffer)
+		return (1);
+	if (check_top_bottom(map_buffer))
+		return (1);
+	game->map_row = ft_lstsize(map_buffer);
+	if (game->map_row < 3 || valid_element(game, map_buffer))
+		return (1);
+	if (game->map_col < 3 || game->num_player != 1)
+		return (1);
+	return (0);
+}
+
+int	valid_element(t_game *game, t_list *map_buffer)
+{
+	char	*line;
+	int		i;
+	int		max_len;
+
+	max_len = 0;
+	while (map_buffer)
+	{
+		line = (char *)map_buffer->content;
+		if (check_line_element(line, " 01NSWE"))
+			return (1);
+		i = 0;
+		while (line[i])
+		{
+			if (ft_in_set(line[i], "NWSE"))
+				++game->num_player;
+			if (ft_strlen(line) > max_len)
+				max_len = ft_strlen(line);
+			++i;
+		}
+		map_buffer = map_buffer->next;
+	}
+	game->map_col = max_len;
+	return (0);
+}
+
+int	check_top_bottom(t_list *map_buffer)
+{
+	char	*line;
+	t_list	*tmp_node;
+
+	line = (char *)map_buffer->content;
+	if (check_line_element(line, " 1"))
+		return (1);
+	tmp_node = ft_lstlast(map_buffer);
+	line = (char *)tmp_node->content;
+	if (check_line_element(line, " 1"))
+		return (1);
+	return (0);
+}
+
+int	check_line_element(char *line, const char *set)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && line[i] != '\n')
+	{
+		if (!ft_in_set(line[i], set))
+			return (1);
+		++i;
+	}
+	if (line[i] != '\n')
+		return (1);
+	if (line[i] == '\n' && line[i + 1])
+		return (1);
+	return (0);
 }
 
 int	parse_oneline(t_game *game, char *line, t_list **map)
@@ -53,7 +242,7 @@ int	parse_oneline(t_game *game, char *line, t_list **map)
 	if (type == T_CEILING || type == T_FLOOR)
 		return (parse_color(game, type, line));
 	game->set[type] = 1;
-	return (lst_add_back_buffer(map, ft_strdup(line)));//add!!
+	return (lst_add_back_buffer(map, ft_strdup(line)));
 }
 
 int	parse_color(t_game *game, int type, char *line)

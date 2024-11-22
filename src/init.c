@@ -7,6 +7,9 @@ void	init_game(t_game *game)
 	i = 0;
 	game->win_h = 1920;
 	game->win_w = 1080;
+	game->mlx = NULL;
+	game->win = NULL;
+	game->num_player = 0;
 	game->map = NULL;
 	while (i < LEN_TEX)
 		game->tex_path[i++] = NULL;

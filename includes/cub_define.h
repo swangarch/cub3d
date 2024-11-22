@@ -8,6 +8,7 @@
 # define MES_MLX_INIT_ERR "Mlx init failed!\n"
 # define MES_NEW_WIN_ERR "Open new window failed!\n"
 # define MES_INVALD_MAP_ERR "Invalid map!\n"
+# define MES_OPEN_ERR "Cannot open the map!\n"
 
 # define LEN_TYPE 7
 # define LEN_TEX 5
