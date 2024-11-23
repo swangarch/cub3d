@@ -18,12 +18,17 @@ void init_vars(t_vars *vars)
     vars->posv.y = 1.5;
     vars->dirv.x = SCALE;
     vars->dirv.y = 0;
-
     normalize_vector(&(vars->dirv), 1.0);
+    vars->height_ratio = 0.5;
+
+    vars->last_mouse_pos.x = -1;
+    vars->last_mouse_pos.y = -1;
+    vars->last_mouse_move_t = 0;
 
     vars->mlx = mlx_init();//protect
-    vars->buf_img = mlx_new_image(vars->mlx, SCREEN_HEIGHT, SCREEN_WIDTH);//protect
-    vars->win = mlx_new_window(vars->mlx, SCREEN_HEIGHT, SCREEN_WIDTH, "cub3d");//protect
+    vars->buf_img = mlx_new_image(vars->mlx, SCREEN_WIDTH, SCREEN_HEIGHT);//protect
+    vars->buf_img_ptr = mlx_get_data_addr(vars->buf_img, &vars->bits_per_pixel, &vars->size_line, &vars->endian);
+    vars->win = mlx_new_window(vars->mlx, SCREEN_WIDTH, SCREEN_HEIGHT, "cub3d");//protect
 }
 
 void cub3d(void)
@@ -46,6 +51,7 @@ void cub3d(void)
     vars.map = map;
 
     //draw_line(&vars, vars.posv.x * BOX_SIZE, vars.posv.y * BOX_SIZE, vars.posv.x * BOX_SIZE+ vars.dirv.x, vars.posv.y * BOX_SIZE+vars.dirv.y, RED);
+    mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
     mlx_hook(vars.win, 2, (1L << 0), key_control, &vars);
     mlx_loop(vars.mlx);
     //free()

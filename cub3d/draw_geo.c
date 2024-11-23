@@ -12,6 +12,34 @@
 
 #include "cub3d.h"
 
+void put_pixel_to_buf(t_vars *vars, int x, int y, int color)
+{
+    int pixel_index;
+
+    if (!(x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT))
+        return ;
+
+    pixel_index = y * vars->size_line + x * vars->bits_per_pixel / 8;
+    if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * vars->size_line) // 防止越界
+    {
+        *(int *)(vars->buf_img_ptr + pixel_index) = color; // 写入颜色
+    }
+}
+
+void clear_image_buf(t_vars *vars)
+{
+    int total_pixels = SCREEN_WIDTH * SCREEN_HEIGHT;
+    int *buffer = (int *)vars->buf_img_ptr;
+
+    int i = 0;
+    while (i < total_pixels)
+    {
+        buffer[i] = 0x000000; // 设置为黑色
+        i++;
+    }
+}
+
+
 void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color)
 {
     int dx = ft_abs(x1 - x0);
@@ -22,7 +50,11 @@ void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color)
 
     while (1) 
     {
-        mlx_pixel_put((vars)->mlx, (vars)->win, x0, y0, color); // 绘制当前点
+        if (x0 >= 0 && x0 < SCREEN_WIDTH && y0 >= 0 && y0 < SCREEN_HEIGHT)
+            put_pixel_to_buf(vars, x0, y0, color);
+        else
+            break;
+        // mlx_pixel_put((vars)->mlx, (vars)->win, x0, y0, color); // 绘制当前点
         if (x0 == x1 && y0 == y1) {
             break; // 到达终点
         }

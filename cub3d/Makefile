@@ -4,8 +4,9 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = cub3d.c ft_math.c ft_vector.c draw_geo.c game_control.c render_game.c wall_check.c color.c
-	
+SRCS = cub3d.c ft_math.c ft_vector.c draw_geo.c game_control.c \
+	render_game.c wall_check.c color.c util.c
+
 LIBFT = ./libft
 
 MINILIBX = ./mlx_linux

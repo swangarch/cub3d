@@ -104,9 +104,9 @@ double wall_distance(t_vars *vars, t_vector *vector, int *color, int i)
         {
             return (distance_towall);
         }
-        if (len_2pt(x, y, intersect_x, intersect_y) > 10.0) 
+        if (len_2pt(x, y, intersect_x, intersect_y) > 1000.0) 
         {
-            return(10.0);
+            return(1000.0);
         }
     }
     return 0;

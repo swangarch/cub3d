@@ -79,9 +79,21 @@ int	move_character(int keycode, t_vars *vars)
         rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
 		return (1);
 	}
-    else if (keycode == RIGHT) //move top
+    else if (keycode == RIGHT) //
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), radians);
+		return (1);
+	}
+    else if (keycode == UP) //move top
+	{
+        if (vars->height_ratio + STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio + STEP_HEIGHT_RATIO < 1.0)
+            vars->height_ratio += STEP_HEIGHT_RATIO;
+		return (1);
+	}
+    else if (keycode == DOWN) //move top
+	{
+        if (vars->height_ratio - STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio - STEP_HEIGHT_RATIO < 1.0)
+            vars->height_ratio -= STEP_HEIGHT_RATIO;
 		return (1);
 	}
 	return (0);
@@ -95,8 +107,48 @@ int	key_control(int keycode, t_vars *vars)
 		exit(0);
 	}
 	move_character(keycode, vars);
-    mlx_clear_window(vars->mlx, vars->win);
+    // mlx_clear_window(vars->mlx, vars->win);
     render_game(vars);
     //render_game_buf(vars);
 	return (0);
+}
+
+int mouse_move(int x, int y, t_vars *vars)
+{
+    double radians;
+    int     dx;
+    time_t now_time;
+    (void)y;
+
+    now_time = get_current_time();
+    if (vars->last_mouse_move_t == 0)
+    {
+        vars->last_mouse_move_t = now_time;
+        return (0);
+    }
+    if (now_time - vars->last_mouse_move_t < TIME_ITVAL_MOUSE)
+    {
+        vars->last_mouse_move_t = now_time;
+        return (0);
+    } 
+    if (vars->last_mouse_pos.x == -1)
+    {
+        vars->last_mouse_pos.x = x;
+        vars->last_mouse_move_t = now_time;
+        return (0);
+    }
+    dx = x - vars->last_mouse_pos.x;
+    vars->last_mouse_pos.x = x;
+    radians = to_radians(STEP_ANGLE_MOUSE);
+    if (dx < 0)
+	{
+        rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
+	}
+    else if (dx > 0)
+	{
+        rotate_vector(&(vars->dirv), &(vars->dirv), radians);
+    }
+    render_game(vars);
+    vars->last_mouse_move_t = now_time;
+    return (0);
 }

@@ -13,21 +13,25 @@
 #ifndef CUB3D_H
 # define CUB3D_H
 
-# include "libft.h"
-# include "mlx.h"
 # include <math.h>
 # include <stdio.h>
+# include <sys/time.h>
+# include "libft.h"
+# include "mlx.h"
+
 
 /*SCREEN*/
-# define SCREEN_HEIGHT 1024
-# define SCREEN_WIDTH 768
+# define SCREEN_HEIGHT 768
+# define SCREEN_WIDTH 1024
 
 /*SAMPLE PARAM*/
 # define SCALE 500.0
 # define SCALE_SCREEN 150.0
 # define STEP 0.02
 # define STEP_ANGLE 1.0
-# define SAMPLE 1200 
+# define STEP_ANGLE_MOUSE 3.0
+# define STEP_HEIGHT_RATIO 0.05
+# define SAMPLE 500
 # define FOV 60.0
 # define BOX_SIZE 50.0
 # define GRID_SIZE 1
@@ -49,6 +53,8 @@
 # define S 119
 # define LEFT 65361
 # define RIGHT 65363
+# define UP 65362
+# define DOWN 65364
 
 /*ORIENTATION*/
 # define NORTH 1
@@ -58,7 +64,7 @@
 # define NOT_ONBOX 0
 
 /*DOUBLE ERROR*/
-# define MIN_ERR 0.0000001
+# define MIN_ERR 0.000000000001
 # define MIN_ERR2 0.0
 
 /*RENDER ON THE SCREEN*/
@@ -67,6 +73,9 @@
 # define DISPLAY_H 300.0
 # define POSITION_Y 300
 # define NUMM 100
+
+
+# define TIME_ITVAL_MOUSE 10000
 
 typedef struct s_vector
 {
@@ -81,10 +90,20 @@ typedef struct s_vars
     t_vector    posv;
     t_vector    dirv;
 
+    t_vector    last_mouse_pos;
+    double      height_ratio;
+
+    time_t      last_mouse_move_t;
+
 	void		*mlx;
 	void		*win;
 	char		(*map)[9];
-    void *buf_img;
+
+    char        *buf_img;
+    void        *buf_img_ptr;
+    int         bits_per_pixel;
+    int         size_line;
+    int         endian;
 }	t_vars;
 
 /*MATH*/
@@ -100,6 +119,7 @@ void draw_box(t_vars *vars, double x, double y, double size);
 /*GAME CONTROL*/
 int	move_character(int keycode, t_vars *vars);
 int	key_control(int keycode, t_vars *vars);
+int mouse_move(int x, int y, t_vars *vars);
 
 /*VECTOR*/
 
@@ -110,8 +130,12 @@ double vector_magnitude(t_vector *v);
 
 /*RENDER*/
 void    render_game(t_vars *vars);
+void clear_image_buf(t_vars *vars);
 
 /*COLOR*/
 int create_trgb(int t, int r, int g, int b);
+
+/*UTILS*/
+time_t  get_current_time(void);
 
 #endif

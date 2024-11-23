@@ -15,7 +15,11 @@
 void draw_colored_wall(t_vars *vars, int i, double distance, int *color)
 {
     int color_final = WHITE;
+    if (distance == 0)
+        distance = 0.001;
     double wall_height = DISPLAY_H / distance;
+    double wall_height_top = (vars->height_ratio) * wall_height;
+    double wall_height_bottom = (1.0 - vars->height_ratio) * wall_height;
 
     if (color[i] == WEST)
         color_final = RED;
@@ -25,8 +29,8 @@ void draw_colored_wall(t_vars *vars, int i, double distance, int *color)
         color_final = GREEN;
     else if (color[i] == SOUTH)
         color_final = YELLOW;
-    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y + wall_height / 2, color_final);
-    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y - wall_height / 2, color_final);
+    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y + wall_height_top, color_final);
+    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y - wall_height_bottom, color_final);
 }
 
 void draw_visibility(t_vars *vars)
@@ -44,10 +48,9 @@ void draw_visibility(t_vars *vars)
     {
         rotate_vector(&ray[i], &(vars->dirv), radians);
         distance = wall_distance(vars, &ray[i], vars->ray_color, i);
-        ray[i].x *= distance;
-        ray[i].y *= distance;
-        distance = distance * cos(to_radians(i * sample_angle - FOV / 2.0));
+        normalize_vector(&ray[i], distance);
         draw_line(vars, vars->posv.x * BOX_SIZE, vars->posv.y * BOX_SIZE, vars->posv.x * BOX_SIZE + ray[i].x * BOX_SIZE, vars->posv.y * BOX_SIZE + ray[i].y * BOX_SIZE, WHITE);
+        distance = distance * cos(to_radians(i * sample_angle - FOV / 2.0));
         draw_colored_wall(vars, i, distance, vars->ray_color);
         radians += sample_radians;
         i++;
@@ -93,8 +96,11 @@ void draw_map(t_vars *vars, double x, double y, double size)
 
 void    render_game(t_vars *vars)
 {
+    mlx_clear_window(vars->mlx, vars->win);
+    clear_image_buf(vars);
     draw_visibility(vars);
     draw_line(vars, vars->posv.x * BOX_SIZE, vars->posv.y * BOX_SIZE, vars->posv.x * BOX_SIZE + vars->dirv.x * SCALE, vars->posv.y * BOX_SIZE + vars->dirv.y * SCALE, RED);
     draw_screen(vars);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
+    mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }
