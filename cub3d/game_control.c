@@ -107,9 +107,7 @@ int	key_control(int keycode, t_vars *vars)
 		exit(0);
 	}
 	move_character(keycode, vars);
-    // mlx_clear_window(vars->mlx, vars->win);
     render_game(vars);
-    //render_game_buf(vars);
 	return (0);
 }
 

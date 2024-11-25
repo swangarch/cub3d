@@ -87,12 +87,13 @@ typedef struct s_vars
 {
     t_vector    ray[(int)SAMPLE + 1];
     int         ray_color[(int)SAMPLE + 1];
+    double      ray_dist[(int)SAMPLE + 1];
+    double      ray_poswall[(int)SAMPLE + 1];
+
     t_vector    posv;
     t_vector    dirv;
 
     t_vector    last_mouse_pos;
-    double      height_ratio;
-
     time_t      last_mouse_move_t;
 
 	void		*mlx;
@@ -104,6 +105,8 @@ typedef struct s_vars
     int         bits_per_pixel;
     int         size_line;
     int         endian;
+
+    double      height_ratio;
 }	t_vars;
 
 /*MATH*/
@@ -113,7 +116,7 @@ int double_eql(double a, double b);
 double len_2pt(double x1, double y1, double x2, double y2);
 
 /*DRAW GEOMETRY*/
-void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color);
+void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
 void draw_box(t_vars *vars, double x, double y, double size);
 
 /*GAME CONTROL*/
@@ -127,6 +130,9 @@ void normalize_vector(t_vector *vector, double scale);
 void rotate_vector(t_vector *v, t_vector *vo, double radians);
 double wall_distance(t_vars *vars, t_vector *vector, int *color, int i);
 double vector_magnitude(t_vector *v);
+
+void add_vector(t_vector *v_result, t_vector *v1, t_vector *v2);
+void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale);
 
 /*RENDER*/
 void    render_game(t_vars *vars);

@@ -12,7 +12,7 @@
 
 # include "cub3d.h"
 
-void draw_colored_wall(t_vars *vars, int i, double distance, int *color)
+void draw_colored_wall_line(t_vars *vars, int i, double distance, int *color)
 {
     int color_final = WHITE;
     if (distance == 0)
@@ -29,8 +29,19 @@ void draw_colored_wall(t_vars *vars, int i, double distance, int *color)
         color_final = GREEN;
     else if (color[i] == SOUTH)
         color_final = YELLOW;
-    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y + wall_height_top, color_final);
-    draw_line(vars, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y, (POSITION_X + i * (DISPLAY_W / SAMPLE)), POSITION_Y - wall_height_bottom, color_final);
+
+    t_vector    base_pt;
+    t_vector    top_pt;
+    t_vector    bottom_pt;
+
+    base_pt.x = POSITION_X + i * (DISPLAY_W / SAMPLE);
+    base_pt.y = POSITION_Y;
+    top_pt.x = base_pt.x;
+    top_pt.y = POSITION_Y + wall_height_top;
+    bottom_pt.x = base_pt.x;
+    bottom_pt.y = POSITION_Y - wall_height_bottom;
+    draw_line(vars, &base_pt, &top_pt, color_final);
+    draw_line(vars, &base_pt, &bottom_pt, color_final);
 }
 
 void draw_visibility(t_vars *vars)
@@ -42,36 +53,38 @@ void draw_visibility(t_vars *vars)
     double sample_radians = to_radians(sample_angle);
     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
     int i = 0;
-    double distance;
+
+    t_vector startpt_scaled;
+    t_vector endpt_added;
+    t_vector endpt_scaled;
 
     while (i < (int)SAMPLE + 1)///////////////////////////////
     {
         rotate_vector(&ray[i], &(vars->dirv), radians);
-        distance = wall_distance(vars, &ray[i], vars->ray_color, i);
-        normalize_vector(&ray[i], distance);
-        draw_line(vars, vars->posv.x * BOX_SIZE, vars->posv.y * BOX_SIZE, vars->posv.x * BOX_SIZE + ray[i].x * BOX_SIZE, vars->posv.y * BOX_SIZE + ray[i].y * BOX_SIZE, WHITE);
-        distance = distance * cos(to_radians(i * sample_angle - FOV / 2.0));
-        draw_colored_wall(vars, i, distance, vars->ray_color);
+        vars->ray_dist[i] = wall_distance(vars, &ray[i], vars->ray_color, i);
+        normalize_vector(&ray[i], vars->ray_dist[i]);
+        
+        cpy_scale_vector(&startpt_scaled, &(vars->posv), BOX_SIZE);
+        add_vector(&endpt_added, &(vars->posv), &ray[i]);
+        cpy_scale_vector(&endpt_scaled, &endpt_added, BOX_SIZE);
+
+        draw_line(vars, &startpt_scaled, &endpt_scaled, WHITE);
+        vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
         radians += sample_radians;
         i++;
     }
 }
 
-void draw_screen(t_vars *vars)
+void    draw_colored_wall(t_vars *vars)
 {
-    t_vector ray[2];
-    t_vector vo;
-    vo.x = vars->dirv.x;
-    vo.y = vars->dirv.y;
+    int i;
 
-    double radians = to_radians(-FOV / 2); // 从视野左侧开始的角度
-    for (int i = 0; i < 2; i++)/////////////////////////////////////////
+    i = 0;
+    while (i < (int)SAMPLE + 1)
     {
-        rotate_vector(&ray[i], &vo, radians);
-        draw_line(vars, vars->posv.x * BOX_SIZE, vars->posv.y * BOX_SIZE, vars->posv.x * BOX_SIZE + ray[i].x * SCALE, vars->posv.y * BOX_SIZE + ray[i].y * SCALE, BLUE);
-        radians += to_radians(FOV); // 每次累加固定的增量角度
+        draw_colored_wall_line(vars, i, vars->ray_dist[i], vars->ray_color);
+        i++;
     }
-    draw_line(vars, vars->posv.x * BOX_SIZE + ray[0].x * SCALE, vars->posv.y * BOX_SIZE + ray[0].y * SCALE, vars->posv.x * BOX_SIZE + ray[1].x * SCALE, vars->posv.y * BOX_SIZE + ray[1].y * SCALE, BLUE);
 }
 
 void draw_map(t_vars *vars, double x, double y, double size)
@@ -92,15 +105,14 @@ void draw_map(t_vars *vars, double x, double y, double size)
         }
         i++;
     }
+    draw_visibility(vars);
 }
 
 void    render_game(t_vars *vars)
 {
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
-    draw_visibility(vars);
-    draw_line(vars, vars->posv.x * BOX_SIZE, vars->posv.y * BOX_SIZE, vars->posv.x * BOX_SIZE + vars->dirv.x * SCALE, vars->posv.y * BOX_SIZE + vars->dirv.y * SCALE, RED);
-    draw_screen(vars);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
+    draw_colored_wall(vars);
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }

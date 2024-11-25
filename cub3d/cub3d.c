@@ -50,7 +50,6 @@ void cub3d(void)
     init_vars(&vars);
     vars.map = map;
 
-    //draw_line(&vars, vars.posv.x * BOX_SIZE, vars.posv.y * BOX_SIZE, vars.posv.x * BOX_SIZE+ vars.dirv.x, vars.posv.y * BOX_SIZE+vars.dirv.y, RED);
     mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
     mlx_hook(vars.win, 2, (1L << 0), key_control, &vars);
     mlx_loop(vars.mlx);

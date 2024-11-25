@@ -39,9 +39,12 @@ void clear_image_buf(t_vars *vars)
     }
 }
 
-
-void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color)
+void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
 {
+    int x0 = v0->x;
+    int y0 = v0->y;
+    int x1 = v1->x;
+    int y1 = v1->y;
     int dx = ft_abs(x1 - x0);
     int dy = ft_abs(y1 - y0);
     int sx = (x0 < x1) ? 1 : -1; // x方向的步进
@@ -72,8 +75,21 @@ void draw_line(t_vars *vars, int x0, int y0, int x1, int y1, int color)
 
 void draw_box(t_vars *vars, double x, double y, double size)
 {
-    draw_line(vars, x - size / 2, y - size / 2, x + size / 2, y - size / 2, YELLOW);
-    draw_line(vars, x - size / 2, y - size / 2, x - size / 2, y + size / 2, GREEN);
-    draw_line(vars, x + size / 2, y + size / 2, x + size / 2, y - size / 2, MAGENTA);
-    draw_line(vars, x + size / 2, y + size / 2, x - size / 2, y + size / 2, CYAN);
+    t_vector NW;
+    t_vector NE;
+    t_vector SW;
+    t_vector SE;
+
+    NW.x = x - size / 2;
+    NW.y = y - size / 2;
+    NE.x = x + size / 2;
+    NE.y = y - size / 2;
+    SW.x = x - size / 2;
+    SW.y = y + size / 2;
+    SE.x = x + size / 2;
+    SE.y = y + size / 2;
+    draw_line(vars, &NW, &NE, YELLOW);
+    draw_line(vars, &NE, &SE, GREEN);
+    draw_line(vars, &SE, &SW, MAGENTA);
+    draw_line(vars, &SW, &NW, CYAN);
 }

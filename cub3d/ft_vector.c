@@ -23,7 +23,7 @@ void normalize_vector(t_vector *vector, double scale)
     vector->y *= scale;
 }
 
-void rotate_vector(t_vector *v, t_vector *vo, double radians)
+void rotate_vector(t_vector *v, t_vector *vo, double radians)  //protect
 {
     double x;
     double y;
@@ -34,4 +34,17 @@ void rotate_vector(t_vector *v, t_vector *vo, double radians)
     v->y = x * sin(radians) + y * cos(radians);
     normalize_vector(v, 1.0);
     return ;
+}
+
+void add_vector(t_vector *v_result, t_vector *v1, t_vector *v2)
+{
+    v_result->x = v1->x + v2->x;
+    v_result->y = v1->y + v2->y;
+    return ;
+}
+
+void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale)
+{
+    v_result->x = v->x * scale;
+    v_result->y = v->y * scale;
 }
