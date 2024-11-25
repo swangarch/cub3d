@@ -41,6 +41,12 @@ int load_texture(t_vars *vars, void **img, char *path) //protect
         ft_putstr_fd("Error: load image failed\n", 2);
         return (-1);
     }
+    if (img_height != TEXTURE_SIZE || img_width != TEXTURE_SIZE)
+    {
+        ft_putstr_fd("Error: wrong image size\n", 2);
+        mlx_destroy_image(vars->mlx, *img);
+        return (-1);
+    }
     return (0);
 }
 

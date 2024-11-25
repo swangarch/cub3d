@@ -26,7 +26,7 @@ void put_pixel_to_buf(t_vars *vars, int x, int y, int color)
     }
 }
 
-void clear_image_buf(t_vars *vars)
+void clear_image_buf(t_vars *vars) // fill with all black pixel
 {
     int total_pixels = SCREEN_WIDTH * SCREEN_HEIGHT;
     int *buffer = (int *)vars->buf_img_ptr;

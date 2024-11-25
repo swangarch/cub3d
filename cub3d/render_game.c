@@ -12,9 +12,10 @@
 
 # include "cub3d.h"
 
-void draw_colored_wall_line(t_vars *vars, int i, double distance)
+void draw_colored_wall_line(t_vars *vars, int i)
 {
     int color_final = WHITE;
+    double distance = vars->ray_dist[i];
     if (distance == 0)
         distance = 0.001;
     double wall_height = DISPLAY_H / distance;
@@ -83,7 +84,7 @@ void    draw_colored_wall(t_vars *vars)
     i = 0;
     while (i < (int)SAMPLE + 1)
     {
-        draw_colored_wall_line(vars, i, vars->ray_dist[i]);
+        draw_colored_wall_line(vars, i);
         i++;
     }
 }
@@ -114,7 +115,7 @@ void    render_game(t_vars *vars)
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
-    draw_colored_wall(vars);
-    mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
+    //draw_colored_wall(vars);
     draw_texture(vars);
+    mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }

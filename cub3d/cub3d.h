@@ -36,7 +36,7 @@
 # define STEP_ANGLE 1.0
 # define STEP_ANGLE_MOUSE 3.0
 # define STEP_HEIGHT_RATIO 0.05
-# define SAMPLE 600
+# define SAMPLE 600.0
 # define FOV 60.0
 # define GRID_SIZE 1
 
@@ -67,6 +67,9 @@
 # define WEST 4
 # define NOT_ONBOX 0
 
+/*TEXTURE*/
+# define TEXTURE_SIZE 64
+
 /*DOUBLE ERROR*/
 # define MIN_ERR 0.000000000001
 # define MIN_ERR2 0.0
@@ -78,7 +81,7 @@
 # define POSITION_Y 300
 
 /*TIME INTERVAL CONTROL*/
-# define TIME_ITVAL_MOUSE 10000
+# define TIME_ITVAL_MOUSE 30000
 
 typedef struct s_vector
 {
@@ -129,6 +132,7 @@ int double_eql(double a, double b);
 double len_2pt(t_vector *v1, t_vector *v2);
 
 /*DRAW GEOMETRY*/
+void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
 void draw_box(t_vars *vars, double x, double y, double size);
 

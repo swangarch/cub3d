@@ -34,14 +34,6 @@ double to_radians(double angle)
     return (radians);
 }
 
-// double len_2pt(double x1, double y1, double x2, double y2)
-// {
-//     double  sqr;
-
-//     sqr = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-//     return (sqr);
-// }
-
 double len_2pt(t_vector *v1, t_vector *v2)
 {
     double  sqr;
