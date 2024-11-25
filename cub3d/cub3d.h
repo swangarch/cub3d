@@ -24,6 +24,11 @@
 # define SCREEN_HEIGHT 768
 # define SCREEN_WIDTH 1024
 
+/*MAP*/
+// # define MAP_POSX 100
+// # define MAP_POSY 100
+# define BOX_SIZE 30.0
+
 /*SAMPLE PARAM*/
 # define SCALE 500.0
 # define SCALE_SCREEN 150.0
@@ -33,7 +38,6 @@
 # define STEP_HEIGHT_RATIO 0.05
 # define SAMPLE 600
 # define FOV 60.0
-# define BOX_SIZE 50.0
 # define GRID_SIZE 1
 
 /*COLORS*/
@@ -72,9 +76,8 @@
 # define DISPLAY_W 500.0
 # define DISPLAY_H 300.0
 # define POSITION_Y 300
-# define NUMM 100
 
-
+/*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
 
 typedef struct s_vector
@@ -106,14 +109,24 @@ typedef struct s_vars
     int         size_line;
     int         endian;
 
+    void        *tex_w;
+    void        *tex_e;
+    void        *tex_n;
+    void        *tex_s;
+
     double      height_ratio;
 }	t_vars;
+
+/*INIT*/
+void init_vars(t_vars *vars);
+int load_texture(t_vars *vars, void **img, char *path);
+int load_all_texture(t_vars *vars);
 
 /*MATH*/
 double to_radians(double angle);
 double ft_abs(double num);
 int double_eql(double a, double b);
-double len_2pt(double x1, double y1, double x2, double y2);
+double len_2pt(t_vector *v1, t_vector *v2);
 
 /*DRAW GEOMETRY*/
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
@@ -128,7 +141,7 @@ int mouse_move(int x, int y, t_vars *vars);
 
 void normalize_vector(t_vector *vector, double scale);
 void rotate_vector(t_vector *v, t_vector *vo, double radians);
-double wall_distance(t_vars *vars, t_vector *vector, int *color, int i);
+double wall_distance(t_vars *vars, t_vector *vector, int i);
 double vector_magnitude(t_vector *v);
 
 void add_vector(t_vector *v_result, t_vector *v1, t_vector *v2);
@@ -137,6 +150,9 @@ void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale);
 /*RENDER*/
 void    render_game(t_vars *vars);
 void clear_image_buf(t_vars *vars);
+
+/*TEXTURE*/
+void draw_texture(t_vars *vars);
 
 /*COLOR*/
 int create_trgb(int t, int r, int g, int b);

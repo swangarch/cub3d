@@ -12,7 +12,7 @@
 
 # include "cub3d.h"
 
-void draw_colored_wall_line(t_vars *vars, int i, double distance, int *color)
+void draw_colored_wall_line(t_vars *vars, int i, double distance)
 {
     int color_final = WHITE;
     if (distance == 0)
@@ -21,14 +21,14 @@ void draw_colored_wall_line(t_vars *vars, int i, double distance, int *color)
     double wall_height_top = (vars->height_ratio) * wall_height;
     double wall_height_bottom = (1.0 - vars->height_ratio) * wall_height;
 
-    if (color[i] == WEST)
-        color_final = RED;
-    else if (color[i] == EAST)
-        color_final = BLUE;
-    else if (color[i] == NORTH)
-        color_final = GREEN;
-    else if (color[i] == SOUTH)
-        color_final = YELLOW;
+    if (vars->ray_color[i] == WEST)
+        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, 0);
+    else if (vars->ray_color[i] == EAST)
+        color_final = create_trgb(255, 0, (int)((vars->ray_poswall[i]) * 255), 0);
+    else if (vars->ray_color[i] == NORTH)
+        color_final = create_trgb(255, 0, 0, (int)((vars->ray_poswall[i]) * 255));
+    else if (vars->ray_color[i] == SOUTH)
+        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, (int)((vars->ray_poswall[i]) * 255));
 
     t_vector    base_pt;
     t_vector    top_pt;
@@ -40,6 +40,7 @@ void draw_colored_wall_line(t_vars *vars, int i, double distance, int *color)
     top_pt.y = POSITION_Y + wall_height_top;
     bottom_pt.x = base_pt.x;
     bottom_pt.y = POSITION_Y - wall_height_bottom;
+
     draw_line(vars, &base_pt, &top_pt, color_final);
     draw_line(vars, &base_pt, &bottom_pt, color_final);
 }
@@ -61,7 +62,7 @@ void draw_visibility(t_vars *vars)
     while (i < (int)SAMPLE + 1)///////////////////////////////
     {
         rotate_vector(&ray[i], &(vars->dirv), radians);
-        vars->ray_dist[i] = wall_distance(vars, &ray[i], vars->ray_color, i);
+        vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
         normalize_vector(&ray[i], vars->ray_dist[i]);
         
         cpy_scale_vector(&startpt_scaled, &(vars->posv), BOX_SIZE);
@@ -82,7 +83,7 @@ void    draw_colored_wall(t_vars *vars)
     i = 0;
     while (i < (int)SAMPLE + 1)
     {
-        draw_colored_wall_line(vars, i, vars->ray_dist[i], vars->ray_color);
+        draw_colored_wall_line(vars, i, vars->ray_dist[i]);
         i++;
     }
 }
@@ -115,4 +116,5 @@ void    render_game(t_vars *vars)
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     draw_colored_wall(vars);
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
+    draw_texture(vars);
 }

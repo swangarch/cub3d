@@ -12,44 +12,62 @@
 
 # include "cub3d.h"
 
-
-
-int on_box(double x_center, double y_center, double x, double y)
+int on_box(t_vars *vars, t_vector* center, t_vector *intersect, int index)
 {
-    double top_y = y_center + GRID_SIZE / 2.0;
-    double bottom_y = y_center - GRID_SIZE / 2.0;
-    double left_x = x_center - GRID_SIZE / 2.0;
-    double right_x = x_center + GRID_SIZE / 2.0;
+    double x = intersect->x;
+    double y = intersect->y;
+    double top_y = center->y + GRID_SIZE / 2.0;
+    double bottom_y = center->y - GRID_SIZE / 2.0;
+    double left_x = center->x - GRID_SIZE / 2.0;
+    double right_x = center->x + GRID_SIZE / 2.0;
 
     if (double_eql(x, left_x) && y >= bottom_y + MIN_ERR2 && y <= top_y - MIN_ERR2)
-            return (WEST);
+    {
+        vars->ray_color[index] = WEST;
+        vars->ray_poswall[index] = top_y - y;
+        return (WEST);
+    }
     else if (double_eql(x, right_x) && y >= bottom_y + MIN_ERR2 && y <= top_y - MIN_ERR2)
-            return (EAST);
+    {
+        vars->ray_color[index] = EAST;
+        vars->ray_poswall[index] = y - bottom_y;
+        return (EAST);
+    }
     else if (double_eql(y, top_y) && x >= left_x + MIN_ERR2 && x <= right_x - MIN_ERR2)
-            return (NORTH);
+    {
+        vars->ray_color[index] = NORTH;
+        vars->ray_poswall[index] = right_x - x;
+        return (NORTH);
+    }
     else if (double_eql(y, bottom_y) && x >= left_x + MIN_ERR2 && x <= right_x - MIN_ERR2)
-            return (SOUTH);
+    {
+        vars->ray_color[index] = SOUTH;
+        vars->ray_poswall[index] = x - left_x;
+        return (SOUTH);
+    }
     return (NOT_ONBOX);
 }
 
-double hit_wall(t_vars *vars, double x, double y, int *color)
+double hit_wall(t_vars *vars, t_vector *intersect, int index)
 {
     int i;
     int j;
 
     i = 0;
     j = 0;
+    t_vector box_pos;
     while (i < 9)
     {
         j = 0;
         while (j < 9)
         {
             if (vars->map[i][j] == '1')
-                if (on_box((double)j + GRID_SIZE / 2.0, (double)i + GRID_SIZE / 2.0, x, y) != NOT_ONBOX)
-                {
-                    *color = on_box((double)j + GRID_SIZE / 2.0, (double)i + GRID_SIZE / 2.0, x, y);
-                    return (len_2pt(vars->posv.x, vars->posv.y, x, y));
-                }
+            {
+                box_pos.x = (double)j + GRID_SIZE / 2.0;
+                box_pos.y = (double)i + GRID_SIZE / 2.0;
+                if (on_box(vars, &box_pos, intersect, index) != NOT_ONBOX)
+                    return (len_2pt(&(vars->posv), intersect));
+            }
             j++;
         }
         i++;
@@ -59,7 +77,7 @@ double hit_wall(t_vars *vars, double x, double y, int *color)
 
 #define S_SIZE 50
 
-double wall_distance(t_vars *vars, t_vector *vector, int *color, int i)
+double wall_distance(t_vars *vars, t_vector *vector, int index)
 {
     double x = vars->posv.x;  // 出发点 x 坐标
     double y = vars->posv.y;  // 出发点 y 坐标
@@ -75,39 +93,37 @@ double wall_distance(t_vars *vars, t_vector *vector, int *color, int i)
     t_max_y /= ft_abs(dy);  // 归一化时间
 
     double t_delta_x = 1.0 / ft_abs(dx);  // 每次跨越一个 x 网格的时间增量
-    double t_delta_y = 1.0 / ft_abs(dy);  // 每次跨越一个 y 网格的时间增量
+    double t_delta_y = 1.0 / ft_abs(dy);  // 每次跨越一个 y 网格的时间增    // double intersect_x = x;
+    // double intersect_y = y;量
 
     // 初始网格坐标
     int map_x = (int)floor(x);
     int map_y = (int)floor(y);
 
-    double intersect_x = x;
-    double intersect_y = y;
+    t_vector intersect;
+    intersect.x = x;
+    intersect.y = y;
     double distance_towall;
 
     // 运行 DDA 算法
     while (1) {
         if (t_max_x < t_max_y) {
             map_x += step_x;  // 前进到下一个 x 网格线
-            intersect_x = x + t_max_x * dx;
-            intersect_y = y + t_max_x * dy;
+            intersect.x = x + t_max_x * dx;
+            intersect.y = y + t_max_x * dy;
             t_max_x += t_delta_x;  // 更新 t_max_x
         } else {
             map_y += step_y;  // 前进到下一个 y 网格线
-            intersect_x = x + t_max_y * dx;
-            intersect_y = y + t_max_y * dy;
+            intersect.x = x + t_max_y * dx;
+            intersect.y = y + t_max_y * dy;
             t_max_y += t_delta_y;  // 更新 t_max_y
         }
         // 可根据需要在此处添加条件判断（例如检测碰撞或其他逻辑）
-        distance_towall = hit_wall(vars, intersect_x, intersect_y, &color[i]);
+        distance_towall = hit_wall(vars, &intersect, index);
         if (distance_towall >= 0)
-        {
             return (distance_towall);
-        }
-        if (len_2pt(x, y, intersect_x, intersect_y) > 1000.0) 
-        {
+        if (len_2pt(&(vars->posv), &intersect) > 1000.0) 
             return(1000.0);
-        }
     }
     return 0;
 }
