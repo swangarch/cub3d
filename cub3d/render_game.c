@@ -114,8 +114,11 @@ void    render_game(t_vars *vars)
 {
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
+    draw_sky(vars, COLOR_SKY);
+    draw_ground(vars, COLOR_GROUND);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     //draw_colored_wall(vars);
     draw_texture(vars);
+    draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }

@@ -21,8 +21,8 @@
 
 
 /*SCREEN*/
-# define SCREEN_HEIGHT 768
-# define SCREEN_WIDTH 1024
+# define SCREEN_HEIGHT 720
+# define SCREEN_WIDTH 1280
 
 /*MAP*/
 // # define MAP_POSX 100
@@ -36,7 +36,7 @@
 # define STEP_ANGLE 1.0
 # define STEP_ANGLE_MOUSE 3.0
 # define STEP_HEIGHT_RATIO 0.05
-# define SAMPLE 600.0
+# define SAMPLE 1280
 # define FOV 60.0
 # define GRID_SIZE 1
 
@@ -48,6 +48,8 @@
 # define WHITE -1
 # define CYAN -16711681
 # define MAGENTA -65281
+# define COLOR_SKY 5151677
+# define COLOR_GROUND 13546394
 
 /*KEY CONTROL*/
 # define ESC 65307
@@ -68,20 +70,20 @@
 # define NOT_ONBOX 0
 
 /*TEXTURE*/
-# define TEXTURE_SIZE 64
+# define TEXTURE_SIZE 256
 
 /*DOUBLE ERROR*/
 # define MIN_ERR 0.000000000001
 # define MIN_ERR2 0.0
 
 /*RENDER ON THE SCREEN*/
-# define POSITION_X 500
-# define DISPLAY_W 500.0
-# define DISPLAY_H 300.0
-# define POSITION_Y 300
+# define POSITION_X 0
+# define DISPLAY_W 1280
+# define DISPLAY_H 768
+# define POSITION_Y 384
 
 /*TIME INTERVAL CONTROL*/
-# define TIME_ITVAL_MOUSE 30000
+# define TIME_ITVAL_MOUSE 10000
 
 typedef struct s_vector
 {
@@ -135,6 +137,9 @@ double len_2pt(t_vector *v1, t_vector *v2);
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
 void draw_box(t_vars *vars, double x, double y, double size);
+
+void draw_ground(t_vars *vars, int color);
+void draw_sky(t_vars *vars, int);
 
 /*GAME CONTROL*/
 int	move_character(int keycode, t_vars *vars);

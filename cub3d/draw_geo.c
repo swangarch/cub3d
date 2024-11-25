@@ -26,6 +26,44 @@ void put_pixel_to_buf(t_vars *vars, int x, int y, int color)
     }
 }
 
+void draw_ground(t_vars *vars, int color)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (i < SCREEN_WIDTH)
+    {
+        j = 0;
+        while (j < SCREEN_HEIGHT)
+        {   
+            if (j >= SCREEN_HEIGHT / 2)
+                put_pixel_to_buf(vars, i, j, color);
+            j++;
+        }
+        i++;
+    }
+}
+
+void draw_sky(t_vars *vars, int color)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (i < SCREEN_WIDTH)
+    {
+        j = 0;
+        while (j < SCREEN_HEIGHT)
+        {
+            if (j < SCREEN_HEIGHT / 2)
+                put_pixel_to_buf(vars, i, j, color);
+            j++;
+        }
+        i++;
+    }
+}
+
 void clear_image_buf(t_vars *vars) // fill with all black pixel
 {
     int total_pixels = SCREEN_WIDTH * SCREEN_HEIGHT;
