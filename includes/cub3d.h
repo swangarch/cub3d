@@ -6,10 +6,11 @@
 # include "cub_define.h"
 # include "cub_struct.h"
 # include "../mlx/mlx.h"
+# include <stdio.h>//for test!!!!!!!!!!1
 
 void	map_error(char *str);
-void	start_game(t_game *game);
-int		update(t_game *game);
+// void	start_game(t_game *game);
+// int		update(t_game *game);
 int	check_map_name(char *str);
 int	parse_map(t_game *game, char *path_map);
 int	parse_oneline(t_game *game, char *line, t_list **map);
@@ -27,12 +28,14 @@ int	check_element(t_game *game, t_list *map_buffer);
 int	check_top_bottom(t_list *map_buffer);
 int	check_line_element(char *line, const char *set);
 int	valid_element(t_game *game, t_list *map_buffer);
-int	set_map_full(t_game *game, char **map, t_list *map_buffer);
-void	set_map_content(t_game *game, char **map, t_list *map_buffer);
+int	set_map_full(t_game *game, char ***map_to_set, t_list *map_buffer);
+void	set_map_content(t_game *game, char **map);
 int	copy_list_to_char(t_game *game, t_list *map_buffer);
 int	check_inclosed_wall(char **map, int i, int j, t_game *game);
+int	check_space_inside(char **map);
 
 /* only to show content of game for debug */
 void	print_game_info(t_game game);
+void	print_map_list(t_list *map_buffer);
 
 #endif

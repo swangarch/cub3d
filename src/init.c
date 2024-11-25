@@ -4,11 +4,14 @@ void	init_game(t_game *game)
 {
 	int	i;
 
+	if (!game)
+		return ;
 	i = 0;
-	game->win_h = 1920;
-	game->win_w = 1080;
 	game->mlx = NULL;
 	game->win = NULL;
+	// game->index = NULL;
+	game->color_c = 0;
+	game->color_f = 0;
 	game->num_player = 0;
 	game->map = NULL;
 	while (i < LEN_TEX)

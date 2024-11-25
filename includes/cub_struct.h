@@ -5,10 +5,10 @@
 
 typedef struct s_game
 {
+	int			color_f;
+	int			color_c;
 	void		*mlx;
 	void		*win;
-	int			win_w;
-	int			win_h;
 	int			map_col;
 	int			map_row;
 	int			num_player;
@@ -17,8 +17,6 @@ typedef struct s_game
 	double		player_y;
 	char		*tex_path[LEN_TEX];
 	int			set[LEN_TYPE];
-	int			color_f;
-	int			color_c;
 }	t_game;
 
 #endif
