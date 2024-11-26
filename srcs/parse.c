@@ -235,6 +235,14 @@ int	valid_element(t_game *game, t_list *map_buffer)
 		{
 			if (ft_in_set(line[i], "NWSE"))
 			{
+				if (line[i] == 'N')//+++++++++++++++++
+					game->dir_player = NORTH;
+				else if (line[i] == 'S')
+					game->dir_player = SOUTH;
+				else if (line[i] == 'W')
+					game->dir_player = WEST;
+				else
+					game->dir_player = EAST;//+++++++++++++++
 				++game->num_player;
 				game->player_x = (double)i + 0.5;
 				game->player_y = (double)size + 0.5;

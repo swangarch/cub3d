@@ -12,12 +12,37 @@
 
 # include "../includes/cub3d.h"
 
+/*++++++++++++++++++++++++++++++++++++*/
+static void set_init_dir(t_vars *vars, int dir_player)
+{
+    if (dir_player == NORTH)
+    {
+        vars->dirv.x = 0;
+        vars->dirv.y = -SCALE;
+    }
+    else if (dir_player == SOUTH)
+    {
+        vars->dirv.x = 0;
+        vars->dirv.y = SCALE;
+    }
+    else if (dir_player == WEST)
+    {
+        vars->dirv.x = -SCALE;
+        vars->dirv.y = 0;
+    }
+    else if (dir_player == EAST)
+    {
+        vars->dirv.x = SCALE;
+        vars->dirv.y = 0;
+    }
+}
+/*++++++++++++++++++++++++++++++++++++*/
+
 void init_vars(t_vars *vars, t_game *game)
 {
     vars->posv.x = game->player_x;
     vars->posv.y = game->player_y;
-    vars->dirv.x = SCALE;
-    vars->dirv.y = 0;
+    set_init_dir(vars, game->dir_player);//++++++++++
     normalize_vector(&(vars->dirv), 1.0);
     vars->height_ratio = 0.5;
 

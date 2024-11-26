@@ -54,17 +54,73 @@ void cal_render(t_vars *vars)
     double sample_angle = FOV / SAMPLE;
     double sample_radians = to_radians(sample_angle);
     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
+    double angle_to_center;
     int i = 0;
     while (i < (int)SAMPLE + 1)///////////////////////////////
     {
         rotate_vector(&ray[i], &(vars->dirv), radians);
         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
         normalize_vector(&ray[i], vars->ray_dist[i]);
-        vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
+        vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
         radians += sample_radians;
         i++;
     }
 }
+
+// void cal_render(t_vars *vars)
+// {
+//     t_vector *ray;
+
+//     ray = vars->ray;
+//     double sample_angle = FOV / SAMPLE;
+//     double sample_radians = to_radians(sample_angle);
+//     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
+//     int i = 0;
+//     while (i < (int)SAMPLE + 1)///////////////////////////////
+//     {
+//         rotate_vector(&ray[i], &(vars->dirv), radians);
+//         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+//         normalize_vector(&ray[i], vars->ray_dist[i]);
+//         vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
+//         radians += sample_radians;
+//         i++;
+//     }
+// }
+
+// void cal_render(t_vars *vars)
+// {
+//     t_vector *ray;
+
+//     ray = vars->ray;
+//     double sample_angle = FOV / SAMPLE;
+//     double sample_radians = to_radians(sample_angle);
+//     t_vector perp_v;
+
+//     double magnitude;
+
+//     normalize_vector(&(vars->dirv), 1.0);
+//     rotate_vector(&ray[0], &(vars->dirv), to_radians(-FOV / 2.0));
+//     rotate_vector(&ray[(int)SAMPLE], &(vars->dirv), to_radians(FOV / 2.0));
+//     perp_v.x = ray[(int)SAMPLE].x - ray[0].x;
+//     perp_v.y = ray[(int)SAMPLE].y - ray[0].y;
+//     magnitude = vector_magnitude(&perp_v);
+//     double step_vector = magnitude / (int)SAMPLE;
+//     normalize_vector(&perp_v, step_vector);
+
+//     int i = 0;
+//     while (i < (int)SAMPLE + 1)///////////////////////////////
+//     {
+//         if (i > 0)
+//         {
+//             ray[i].x = ray[i - 1].x + perp_v.x;
+//             ray[i].y = ray[i - 1].y + perp_v.y;
+//             normalize_vector(&ray[i], 1.0);
+//         }
+//         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+//         normalize_vector(&ray[i], vars->ray_dist[i]);
+//         i++;
+//     }
+// }
 
 void draw_visibility(t_vars *vars)
 {
@@ -144,11 +200,10 @@ int    update_frame(t_vars *vars)
     }
     if (now_time - vars->last_frame_t < 1000000 / FPS)
     {
-        //vars->last_frame_t = now_time;
         return (0);
     }
     render_game(vars);
-    now_time = get_current_time();
+    //now_time = get_current_time();
     vars->last_frame_t = now_time;
     return (1);
 }

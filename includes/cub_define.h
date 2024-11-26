@@ -35,13 +35,14 @@
 # define BOX_SIZE 10.0
 
 /*SAMPLE PARAM*/
-# define SCALE 500.0
+# define SCALE 1
 # define SCALE_SCREEN 150.0
 # define STEP 0.02
-# define STEP_ANGLE 0.3
+# define STEP_ANGLE 1
 # define STEP_ANGLE_MOUSE 1
 # define STEP_HEIGHT_RATIO 0.05
 # define SAMPLE 1280
+//# define SAMPLE 4
 # define FOV 60.0
 # define GRID_SIZE 1
 

@@ -7,6 +7,7 @@ typedef struct s_game
 {
 	int			color_f;
 	int			color_c;
+    int         dir_player;//+++++++++++++++++++
 	// void		*mlx;
 	// void		*win;
 	int			map_col;
