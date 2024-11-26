@@ -1,36 +1,69 @@
-NAME = cub3D
+NAME		=	cub3D
 
-CC = cc
+# Directories and libraries
+LIBFT		=	libft/libft.a
+INC			=	include/
+SRC_DIR		=	srcs/
+OBJ_DIR		=	obj/
+MLX_DIR		=	mlx_linux/
+MLX_LIB		=	$(MLX_DIR)libmlx.a
 
-CFLAGS = -Wall -Wextra -Werror
+# Compiler and CFlags
+CC			=	cc
+# CFLAGS		=	-Wall -Wextra -Werror
+INCLUDES	=	-Iincludes -I/usr/include -Imlx -I./libft
+FLAGS		=	-Lmlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
+RM			=	rm -f
 
-SRCS = cub3d.c ft_math.c ft_vector.c draw_geo.c game_control.c \
-	render_game.c wall_check.c color.c util.c init.c draw_texture.c
+# source files
+SRCS		=	$(SRC_DIR)cub3d.c \
+				$(SRC_DIR)error_free.c \
+				$(SRC_DIR)parse.c \
+				$(SRC_DIR)init_setup.c \
+				$(SRC_DIR)utils.c \
+				$(SRC_DIR)print_struct.c \
+				$(SRC_DIR)ft_math.c \
+				$(SRC_DIR)ft_vector.c \
+				$(SRC_DIR)draw_geo.c \
+				$(SRC_DIR)game_control.c \
+				$(SRC_DIR)render_game.c \
+				$(SRC_DIR)wall_check.c \
+				$(SRC_DIR)color.c \
+				$(SRC_DIR)util.c \
+				$(SRC_DIR)init.c \
+				$(SRC_DIR)draw_texture.c
 
-LIBFT = ./libft
 
-MINILIBX = ./mlx_linux
+OBJS		=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 
-INCLUDE = -I./libft -I./header -I/usr/include -Imlx_linux
+# Build rules
+all:		$(NAME)
 
-LIBS = -L./libft -lft -L./mlx_linux -lmlx -lX11 -lXext -lm
+$(LIBFT):
+		@make -sC ./libft
 
-all: $(NAME)
+$(MLX_LIB):
+		@make -sC $(MLX_DIR)
 
-$(NAME): $(SRCS)
-	make -C $(LIBFT)
-	make -C $(MINILIBX)
-	$(CC) $(SRCS) $(CFLAGS) $(INCLUDE) $(LIBS) -o $(NAME)
+$(NAME):	$(OBJS) $(LIBFT) $(MLX_LIB)
+		@$(CC) $(CFLAGS) $(FLAGS) $(INCLUDES) $(OBJS) \
+		$(LIBFT) $(MLX_LIB) -o $(NAME)
+
+$(OBJ_DIR)%.o:	$(SRC_DIR)%.c
+		@mkdir -p $(@D)
+		@$(CC) $(CFLAGS) -Iinclude -Imlx -c $< -o $@
 
 clean:
-	make clean -C $(LIBFT)
+		@$(RM) -r $(OBJ_DIR)
+		@make clean -C ./libft
+		@make clean -C $(MLX_DIR)
 
-fclean:
-	rm -f $(NAME)
-	rm -f $(NAME_BONUS)
-	make fclean -C $(LIBFT)
-	make clean -C $(MINILIBX)
+fclean:		clean
+		@$(RM) $(NAME)
+		@$(RM) $(LIBFT)
+		@make clean -C $(MLX_DIR)
 
-re:	fclean all
+re:		fclean all
 
-.PHONY: all clean fclean re
+# Phony targets represent actions instead of files
+.PHONY:		all clean fclean re
