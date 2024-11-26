@@ -44,6 +44,46 @@ int get_texture_pixel_color(void *tex, t_vector *pos)
 }
 
 
+int fade_color(int color, double distance)
+{
+    int r, g, b;
+    double factor;
+
+    // 获取RGB颜色分量
+    r = get_r(color);
+    g = get_g(color);
+    b = get_b(color);
+
+
+    factor = 1.0 / (1.0 + pow(distance, 1)); // 较强的衰减
+
+    // 调整颜色亮度
+    r = (int)(r * factor) + 100;
+    g = (int)(g * factor) + 100;
+    b = (int)(b * factor) + 100;
+
+    // 确保RGB值在合法范围内
+    if (r < 0) {
+        r = 0;
+    } else if (r > 255) {
+        r = 255;
+    }
+
+    if (g < 0) {
+        g = 0;
+    } else if (g > 255) {
+        g = 255;
+    }
+
+    if (b < 0) {
+        b = 0;
+    } else if (b > 255) {
+        b = 255;
+    }
+
+    return (r << 16) | (g << 8) | b;
+}
+
 void draw_texture(t_vars *vars)
 {
     int i;
@@ -54,6 +94,7 @@ void draw_texture(t_vars *vars)
     int x;
     int y;
     void *texture;
+    int pixel_color;
     
     i = 0;
     while (i < (int)SAMPLE + 1)
@@ -62,9 +103,7 @@ void draw_texture(t_vars *vars)
         if (distance == 0)
             distance = 0.001;
         wall_height = DISPLAY_H / distance;
-        
         pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
-
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
         j = 0;
         if (vars->ray_color[i] == EAST)
@@ -79,7 +118,8 @@ void draw_texture(t_vars *vars)
         {
             y = POSITION_Y - wall_height / 2 + j;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
-            put_pixel_to_buf(vars, x, y, get_texture_pixel_color(texture, &pos_on_texture));
+            pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
+            put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
             j++;
         }
         i++;

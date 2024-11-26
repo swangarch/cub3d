@@ -86,6 +86,9 @@ void draw_texture(t_vars *vars);
 
 /*COLOR*/
 int create_trgb(int t, int r, int g, int b);
+int get_r(int color);
+int get_g(int color);
+int get_b(int color);
 
 /*UTILS*/
 time_t  get_current_time(void);

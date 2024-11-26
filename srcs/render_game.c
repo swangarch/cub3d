@@ -181,7 +181,6 @@ void    render_game(t_vars *vars)
     draw_sky(vars, vars->game->color_c);
     draw_ground(vars, vars->game->color_f);
     cal_render(vars);
-    //draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     //draw_colored_wall(vars);
     draw_texture(vars);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
