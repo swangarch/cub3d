@@ -32,6 +32,9 @@ typedef struct s_vars
     double      ray_dist[(int)SAMPLE + 1];
     double      ray_poswall[(int)SAMPLE + 1];
 
+    time_t      last_frame_t;
+    time_t      last_key_move_t;
+
     t_vector    posv;
     t_vector    dirv;
 

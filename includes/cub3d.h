@@ -79,6 +79,7 @@ void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale);
 /*RENDER*/
 void    render_game(t_vars *vars);
 void clear_image_buf(t_vars *vars);
+int    update_frame(t_vars *vars);
 
 /*TEXTURE*/
 void draw_texture(t_vars *vars);

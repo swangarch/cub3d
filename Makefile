@@ -41,6 +41,7 @@ all:		$(NAME)
 
 $(LIBFT):
 		@make -sC ./libft
+		@echo "Libft compilation success!"
 
 $(MLX_LIB):
 		@make -sC $(MLX_DIR)
@@ -48,6 +49,7 @@ $(MLX_LIB):
 $(NAME):	$(OBJS) $(LIBFT) $(MLX_LIB)
 		@$(CC) $(CFLAGS) $(FLAGS) $(INCLUDES) $(OBJS) \
 		$(LIBFT) $(MLX_LIB) -o $(NAME)
+		@echo "Compilation success!" 
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c
 		@mkdir -p $(@D)

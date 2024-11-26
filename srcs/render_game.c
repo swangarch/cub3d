@@ -46,33 +46,41 @@ void draw_colored_wall_line(t_vars *vars, int i)
     draw_line(vars, &base_pt, &bottom_pt, color_final);
 }
 
-void draw_visibility(t_vars *vars)
+void cal_render(t_vars *vars)
 {
     t_vector *ray;
-    ray = vars->ray;
 
+    ray = vars->ray;
     double sample_angle = FOV / SAMPLE;
     double sample_radians = to_radians(sample_angle);
     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
     int i = 0;
-
-    t_vector startpt_scaled;
-    t_vector endpt_added;
-    t_vector endpt_scaled;
-
     while (i < (int)SAMPLE + 1)///////////////////////////////
     {
         rotate_vector(&ray[i], &(vars->dirv), radians);
         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
         normalize_vector(&ray[i], vars->ray_dist[i]);
-        
+        vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
+        radians += sample_radians;
+        i++;
+    }
+}
+
+void draw_visibility(t_vars *vars)
+{
+    t_vector *ray;
+    ray = vars->ray;
+    int i = 0;
+
+    t_vector startpt_scaled;
+    t_vector endpt_added;
+    t_vector endpt_scaled;
+    while (i < (int)SAMPLE + 1)///////////////////////////////
+    {
         cpy_scale_vector(&startpt_scaled, &(vars->posv), BOX_SIZE);
         add_vector(&endpt_added, &(vars->posv), &ray[i]);
         cpy_scale_vector(&endpt_scaled, &endpt_added, BOX_SIZE);
-
-        draw_line(vars, &startpt_scaled, &endpt_scaled, WHITE);
-        vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
-        radians += sample_radians;
+        draw_line(vars, &startpt_scaled, &endpt_scaled, YELLOW);
         i++;
     }
 }
@@ -116,9 +124,31 @@ void    render_game(t_vars *vars)
     clear_image_buf(vars);
     draw_sky(vars, vars->game->color_c);
     draw_ground(vars, vars->game->color_f);
-    draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
+    cal_render(vars);
+    //draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     //draw_colored_wall(vars);
     draw_texture(vars);
     draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
+}
+
+int    update_frame(t_vars *vars)
+{
+    time_t now_time;
+
+    now_time = get_current_time();
+    if (vars->last_frame_t == 0)
+    {
+        vars->last_frame_t = now_time;
+        return (0);
+    }
+    if (now_time - vars->last_frame_t < 1000000 / FPS)
+    {
+        //vars->last_frame_t = now_time;
+        return (0);
+    }
+    render_game(vars);
+    now_time = get_current_time();
+    vars->last_frame_t = now_time;
+    return (1);
 }

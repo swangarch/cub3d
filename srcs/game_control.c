@@ -46,6 +46,21 @@ int	move_character(int keycode, t_vars *vars)
     double dirx;
     double diry;
 
+    time_t now_time;
+
+    now_time = get_current_time();
+    if (vars->last_key_move_t == 0)
+    {
+        vars->last_key_move_t = now_time;
+        return (0);
+    }
+    if (now_time - vars->last_key_move_t < 1000000 / FPS)
+    {
+        //vars->last_frame_t = now_time;
+        return (0);
+    }
+    vars->last_key_move_t = now_time;
+
     dirx = vars->dirv.x;
     diry = vars->dirv.y;
 
@@ -107,7 +122,7 @@ int	key_control(int keycode, t_vars *vars)
 		exit(0);
 	}
 	move_character(keycode, vars);
-    render_game(vars);
+    //render_game(vars);
 	return (0);
 }
 
@@ -146,7 +161,7 @@ int mouse_move(int x, int y, t_vars *vars)
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), radians);
     }
-    render_game(vars);
+    //render_game(vars);
     vars->last_mouse_move_t = now_time;
     return (0);
 }

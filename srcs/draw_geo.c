@@ -126,8 +126,8 @@ void draw_box(t_vars *vars, double x, double y, double size)
     SW.y = y + size / 2;
     SE.x = x + size / 2;
     SE.y = y + size / 2;
-    draw_line(vars, &NW, &NE, YELLOW);
-    draw_line(vars, &NE, &SE, GREEN);
-    draw_line(vars, &SE, &SW, MAGENTA);
-    draw_line(vars, &SW, &NW, CYAN);
+    draw_line(vars, &NW, &NE, WHITE);
+    draw_line(vars, &NE, &SE, WHITE);
+    draw_line(vars, &SE, &SW, WHITE);
+    draw_line(vars, &SW, &NW, WHITE);
 }

@@ -22,6 +22,9 @@
 # define T_MAP 6
 
 /*********************************************************/
+
+# define FPS 60
+
 /*SCREEN*/
 # define SCREEN_HEIGHT 720
 # define SCREEN_WIDTH 1280
@@ -35,8 +38,8 @@
 # define SCALE 500.0
 # define SCALE_SCREEN 150.0
 # define STEP 0.02
-# define STEP_ANGLE 1.0
-# define STEP_ANGLE_MOUSE 3.0
+# define STEP_ANGLE 0.3
+# define STEP_ANGLE_MOUSE 1
 # define STEP_HEIGHT_RATIO 0.05
 # define SAMPLE 1280
 # define FOV 60.0
@@ -50,8 +53,6 @@
 # define WHITE -1
 # define CYAN -16711681
 # define MAGENTA -65281
-// # define COLOR_SKY 5151677
-// # define COLOR_GROUND 13546394
 
 /*KEY CONTROL*/
 # define ESC 65307

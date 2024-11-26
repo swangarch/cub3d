@@ -16,25 +16,15 @@ void cub3d(t_game *game)
 {
     t_vars vars;
 
-    // char map[9][9] = {
-    // "11111111",
-    // "1N100001",
-    // "10100001",
-    // "10000001",
-    // "10011111",
-    // "10010001",
-    // "10010101",
-    // "10000001",
-    // "11111111",
-    // };
-    char **map = game->map;
-
+    // char **map = game->map;
     init_vars(&vars, game);
-    vars.map = map;
-    load_all_texture(&vars);
+    // vars.map = map;
+    // load_all_texture(&vars);
+    //render_game(&vars);
 
-    //mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
+    mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
     mlx_hook(vars.win, 2, (1L << 0), key_control, &vars);
+    mlx_loop_hook(vars.mlx, update_frame, &vars);
     mlx_loop(vars.mlx);
     //free()
 }
