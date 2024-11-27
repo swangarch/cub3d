@@ -16,8 +16,8 @@ void draw_colored_wall_line(t_vars *vars, int i)
 {
     int color_final = WHITE;
     double distance = vars->ray_dist[i];
-    if (distance == 0)
-        distance = 0.001;
+    // if (distance < MIN_WALL_DISTANCE)
+    //     distance = MIN_WALL_DISTANCE;
     double wall_height = DISPLAY_H / distance;
     double wall_height_top = (vars->height_ratio) * wall_height;
     double wall_height_bottom = (1.0 - vars->height_ratio) * wall_height;
@@ -67,6 +67,7 @@ void cal_render(t_vars *vars)
     }
 }
 
+/* 余弦加权间隔 !!!!!!!!!!!!!!!!!!!!!*/
 // void cal_render(t_vars *vars)
 // {
 //     t_vector *ray;
@@ -75,18 +76,21 @@ void cal_render(t_vars *vars)
 //     double sample_angle = FOV / SAMPLE;
 //     double sample_radians = to_radians(sample_angle);
 //     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
+
 //     int i = 0;
 //     while (i < (int)SAMPLE + 1)///////////////////////////////
 //     {
-//         rotate_vector(&ray[i], &(vars->dirv), radians);
+//         double weighted_angle = radians + cos(radians) * sample_radians;
+//         rotate_vector(&ray[i], &(vars->dirv), weighted_angle);
 //         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+//         vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
 //         normalize_vector(&ray[i], vars->ray_dist[i]);
-//         vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
 //         radians += sample_radians;
 //         i++;
 //     }
 // }
 
+/* 对数间隔 !!!!!!!!!!!!!!!!!!!!!*/
 // void cal_render(t_vars *vars)
 // {
 //     t_vector *ray;
@@ -94,30 +98,18 @@ void cal_render(t_vars *vars)
 //     ray = vars->ray;
 //     double sample_angle = FOV / SAMPLE;
 //     double sample_radians = to_radians(sample_angle);
-//     t_vector perp_v;
+//     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
 
-//     double magnitude;
-
-//     normalize_vector(&(vars->dirv), 1.0);
-//     rotate_vector(&ray[0], &(vars->dirv), to_radians(-FOV / 2.0));
-//     rotate_vector(&ray[(int)SAMPLE], &(vars->dirv), to_radians(FOV / 2.0));
-//     perp_v.x = ray[(int)SAMPLE].x - ray[0].x;
-//     perp_v.y = ray[(int)SAMPLE].y - ray[0].y;
-//     magnitude = vector_magnitude(&perp_v);
-//     double step_vector = magnitude / (int)SAMPLE;
-//     normalize_vector(&perp_v, step_vector);
-
+//     double log_factor = log(1.0 + SAMPLE);
 //     int i = 0;
 //     while (i < (int)SAMPLE + 1)///////////////////////////////
 //     {
-//         if (i > 0)
-//         {
-//             ray[i].x = ray[i - 1].x + perp_v.x;
-//             ray[i].y = ray[i - 1].y + perp_v.y;
-//             normalize_vector(&ray[i], 1.0);
-//         }
+//         double weighted_angle = radians + log(i + 1) * sample_radians / log_factor;
+//         rotate_vector(&ray[i], &(vars->dirv), weighted_angle);
 //         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+//         vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
 //         normalize_vector(&ray[i], vars->ray_dist[i]);
+//         radians += sample_radians;
 //         i++;
 //     }
 // }
@@ -180,6 +172,7 @@ void    render_game(t_vars *vars)
     clear_image_buf(vars);
     draw_sky(vars, vars->game->color_c);
     draw_ground(vars, vars->game->color_f);
+    move_character(vars);
     cal_render(vars);
     //draw_colored_wall(vars);
     draw_texture(vars);

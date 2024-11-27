@@ -43,6 +43,39 @@ int get_texture_pixel_color(void *tex, t_vector *pos)
     return (-1);
 }
 
+int color_range(int color_element)
+{
+    if (color_element > 255)
+    {
+        return (255);
+    }
+    if (color_element < 0)
+    {
+        return (0);
+    }
+    return (color_element);
+}
+
+int put_shadow(int color, double height, double wall_height)
+{
+    double exp;
+    double x;
+    int r, g, b;
+    double factor;
+
+    // 获取RGB颜色分量
+    r = get_r(color);
+    g = get_g(color);
+    b = get_b(color);
+
+    x = ft_abs(height - wall_height / 2.0);
+    factor = pow(M_E, - x / (wall_height / 2.0));
+    factor = log(factor + 1) * 2;
+    r = color_range(r * factor);
+    g = color_range(g * factor);
+    b = color_range(b * factor);
+    return (create_trgb(255, r, g, b));
+}
 
 int fade_color(int color, double distance)
 {
@@ -54,7 +87,7 @@ int fade_color(int color, double distance)
     g = get_g(color);
     b = get_b(color);
 
-    factor = 1.0 / (1.0 + pow(distance, 1)); // 较强的衰减
+    factor = 1.0 / (1.0 + pow(distance, 0.5)); // 较强的衰减
     // 调整颜色亮度
     r = (int)(r * factor) + 100;
     g = (int)(g * factor) + 100;
@@ -98,8 +131,8 @@ void draw_texture(t_vars *vars)
     while (i < (int)SAMPLE + 1)
     {
         distance = vars->ray_dist[i];
-        if (distance == 0)
-            distance = 0.001;
+        // if (distance < MIN_WALL_DISTANCE)
+        //     distance = MIN_WALL_DISTANCE;
         wall_height = DISPLAY_H / distance;
         pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
@@ -111,14 +144,23 @@ void draw_texture(t_vars *vars)
         else if (vars->ray_color[i] == NORTH)
             texture = vars->tex_n;  
         else if (vars->ray_color[i] == SOUTH)
-            texture = vars->tex_s;      
+            texture = vars->tex_s;   
+
+        if (POSITION_Y - wall_height / 2 + j < 0)
+            j = wall_height / 2 - POSITION_Y;
         while (j < (int)(wall_height))
         {
             y = POSITION_Y - wall_height / 2 + j;
+            if (y > DISPLAY_H)
+                break;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
             pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
-            if (FADE)
+            if (FADE && SHADOW)
+                put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE), distance));
+            else if (FADE)
                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
+            else if (SHADOW)
+                put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE));
             else
                 put_pixel_to_buf(vars, x, y, pixel_color);
             j++;

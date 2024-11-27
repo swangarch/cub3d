@@ -12,100 +12,83 @@
 
 # include "../includes/cub3d.h"
 
-int box_collision(t_vars *vars, double x, double y)
+int box_collision(t_vars *vars, t_vector *next_pos)
 {
-    (void)vars;
-    (void)x;
-    (void)y;
-    return (0);
-    // int i;
-    // int j;
+    int i;
+    int j;
 
-    // i = 0;
-    // j = 0;
-    // while (i < 9)
-    // {
-    //     j = 0;
-    //     while (j < 9)
-    //     {
-    //         if (vars->map[i][j] == '1')
-    //         {
-    //             if (x <= (double)i + GRID_SIZE / 2.0 && x >= (double)i - GRID_SIZE / 2.0 && y <= (double)j + GRID_SIZE / 2.0 && y >= (double)j - GRID_SIZE / 2.0)
-    //                 return (1);
-    //         }
-    //         j++;
-    //     }
-    //     i++;
-    // }
-    // return (0);
+    i = (int)floor(next_pos->x);
+    j = (int)floor(next_pos->y);
+    if (vars->map[j][i] == '1')
+        return (1);
+    return (0);
 }
 
-int	move_character(int keycode, t_vars *vars)
+int	move_character(t_vars *vars)
 {
     double radians;
     double dirx;
     double diry;
-
     time_t now_time;
+    t_vector next_pos;
 
     now_time = get_current_time();
-    if (vars->last_key_move_t == 0)
-    {
-        vars->last_key_move_t = now_time;
-        return (0);
-    }
-    if (now_time - vars->last_key_move_t < 1000000 / FPS)
-    {
-        //vars->last_frame_t = now_time;
-        return (0);
-    }
-    vars->last_key_move_t = now_time;
-
     dirx = vars->dirv.x;
     diry = vars->dirv.y;
-
     radians = to_radians(STEP_ANGLE);
-	if (keycode == A) //move left
+    if (vars->key_state[A] == 1)  //move left
 	{
-        vars->posv.x = vars->posv.x + STEP * diry;
-        vars->posv.y = vars->posv.y - STEP * dirx;
+        next_pos.x = vars->posv.x + STEP * diry;
+        next_pos.y = vars->posv.y - STEP * dirx;
+        if (box_collision(vars, &next_pos))
+            return (0);
+        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
 		return (1);
 	}
-	else if (keycode == D) //move right
+    else if (vars->key_state[D] == 1)  //move right
 	{
-        vars->posv.x = vars->posv.x - STEP * diry;
-        vars->posv.y = vars->posv.y + STEP * dirx;
+        next_pos.x = vars->posv.x - STEP * diry;
+        next_pos.y = vars->posv.y + STEP * dirx;
+        if (box_collision(vars, &next_pos))
+            return (0);
+        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
 		return (1);
 	}
-	else if (keycode == W) //move forward
+	else if (vars->key_state[S] == 1) //move forward
 	{
-        vars->posv.x = vars->posv.x - STEP * dirx;
-        vars->posv.y = vars->posv.y - STEP * diry;
+        next_pos.x = vars->posv.x - STEP * dirx;
+        next_pos.y = vars->posv.y - STEP * diry;
+        if (box_collision(vars, &next_pos))
+            return (0);
+        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
 		return (1);
 	}
-	else if (keycode == S) //move back
+	else if (vars->key_state[W] == 1) //move back
 	{
-        vars->posv.x = vars->posv.x + STEP * dirx;
-        vars->posv.y = vars->posv.y + STEP * diry;
+        next_pos.x = vars->posv.x + STEP * dirx;
+        next_pos.y = vars->posv.y + STEP * diry;
+        if (box_collision(vars, &next_pos))
+            return (0);
+        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
 		return (1);
 	}
-    else if (keycode == LEFT) //move top
+    else if (vars->key_state[LEFT_INT] == 1) //move top
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
 		return (1);
 	}
-    else if (keycode == RIGHT) //
+    else if (vars->key_state[RIGHT_INT] == 1) //
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), radians);
 		return (1);
 	}
-    else if (keycode == UP) //move top
+    else if (vars->key_state[UP_INT] == 1) //move top
 	{
         if (vars->height_ratio + STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio + STEP_HEIGHT_RATIO < 1.0)
             vars->height_ratio += STEP_HEIGHT_RATIO;
 		return (1);
 	}
-    else if (keycode == DOWN) //move top
+    else if (vars->key_state[DOWN_INT] == 1) //move top
 	{
         if (vars->height_ratio - STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio - STEP_HEIGHT_RATIO < 1.0)
             vars->height_ratio -= STEP_HEIGHT_RATIO;
@@ -114,15 +97,55 @@ int	move_character(int keycode, t_vars *vars)
 	return (0);
 }
 
-int	key_control(int keycode, t_vars *vars)
+int cross_press(t_vars *vars)
 {
-	if (keycode == 65307)
+    //destroy_vars(vars);
+    exit(0);
+}
+
+// int	key_control(int keycode, t_vars *vars)
+// {
+// 	if (keycode == 65307)
+// 	{
+// 		//destroy_vars(vars);
+// 		exit(0);
+// 	}
+// 	//move_character(keycode, vars);
+// 	return (0);
+// }
+
+int	key_press(int keycode, t_vars *vars)
+{
+	if (keycode == 65307)//esc
 	{
 		//destroy_vars(vars);
 		exit(0);
 	}
-	move_character(keycode, vars);
-    //render_game(vars);
+    if (keycode < 128)
+        vars->key_state[keycode] = 1;
+    else if (keycode == LEFT)
+        vars->key_state[LEFT_INT] = 1;
+    else if (keycode == RIGHT)
+        vars->key_state[RIGHT_INT] = 1;
+    else if (keycode == UP)
+        vars->key_state[UP_INT] = 1;
+    else if (keycode == DOWN)
+        vars->key_state[DOWN_INT] = 1;
+	return (0);
+}
+
+int	key_release(int keycode, t_vars *vars)
+{
+    if (keycode < 128)
+        vars->key_state[keycode] = 0;
+    else if (keycode == LEFT)
+        vars->key_state[LEFT_INT] = 0;
+    else if (keycode == RIGHT)
+        vars->key_state[RIGHT_INT] = 0;
+    else if (keycode == UP)
+        vars->key_state[UP_INT] = 0;
+    else if (keycode == DOWN)
+        vars->key_state[DOWN_INT] = 0;
 	return (0);
 }
 
@@ -161,7 +184,6 @@ int mouse_move(int x, int y, t_vars *vars)
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), radians);
     }
-    //render_game(vars);
     vars->last_mouse_move_t = now_time;
     return (0);
 }

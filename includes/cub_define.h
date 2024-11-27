@@ -37,7 +37,7 @@
 /*SAMPLE PARAM*/
 # define SCALE 1
 # define SCALE_SCREEN 150.0
-# define STEP 0.02
+# define STEP 0.05
 # define STEP_ANGLE 1
 # define STEP_ANGLE_MOUSE 1
 # define STEP_HEIGHT_RATIO 0.05
@@ -45,6 +45,9 @@
 //# define SAMPLE 4
 # define FOV 60.0
 # define GRID_SIZE 1
+
+# define MAX_VIEW_DISTANCE 1000.0
+# define MIN_WALL_DISTANCE 0.1
 
 /*COLORS*/
 # define GREEN -16711936
@@ -59,12 +62,16 @@
 # define ESC 65307
 # define D 100
 # define A 97
-# define W 115
-# define S 119
+# define W 119
+# define S 115
 # define LEFT 65361
+# define LEFT_INT 128
 # define RIGHT 65363
+# define RIGHT_INT 129
 # define UP 65362
+# define UP_INT 130
 # define DOWN 65364
+# define DOWN_INT 131
 
 /*ORIENTATION*/
 # define NORTH 1
@@ -90,5 +97,6 @@
 # define TIME_ITVAL_MOUSE 10000
 
 # define FADE 1
+# define SHADOW 1
 
 #endif

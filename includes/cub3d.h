@@ -62,9 +62,12 @@ void draw_ground(t_vars *vars, int color);
 void draw_sky(t_vars *vars, int);
 
 /*GAME CONTROL*/
-int	move_character(int keycode, t_vars *vars);
-int	key_control(int keycode, t_vars *vars);
+int	move_character(t_vars *vars);
+//int	key_control(int keycode, t_vars *vars);
+int	key_press(int keycode, t_vars *vars);
+int	key_release(int keycode, t_vars *vars);
 int mouse_move(int x, int y, t_vars *vars);
+int cross_press(t_vars *vars);
 
 /*VECTOR*/
 
