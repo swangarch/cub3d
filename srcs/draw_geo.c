@@ -126,6 +126,15 @@ void draw_box(t_vars *vars, double x, double y, double size)
     SW.y = y + size / 2;
     SE.x = x + size / 2;
     SE.y = y + size / 2;
+
+    int i = 1;
+    while (i < size -1)
+    {
+        draw_line(vars, &NW, &NE, WHITE);
+        NW.y++;
+        NE.y++;
+        i++;
+    }
     draw_line(vars, &NW, &NE, WHITE);
     draw_line(vars, &NE, &SE, WHITE);
     draw_line(vars, &SE, &SW, WHITE);

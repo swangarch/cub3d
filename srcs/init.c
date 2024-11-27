@@ -47,11 +47,10 @@ void init_vars(t_vars *vars, t_game *game)
     vars->height_ratio = 0.5;
 
     vars->last_frame_t = 0;
-    vars->last_key_move_t = 0;//
-
+    
     vars->last_mouse_pos.x = -1;//
     vars->last_mouse_pos.y = -1;//
-    vars->last_mouse_move_t = 0;//
+    vars->mouse_move_dir = 0;
     vars->game = game;
 
     vars->map = game->map;

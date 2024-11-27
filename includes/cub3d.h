@@ -63,6 +63,7 @@ void draw_sky(t_vars *vars, int);
 
 /*GAME CONTROL*/
 int	move_character(t_vars *vars);
+void rotate_when_mouse_move(t_vars *vars);
 //int	key_control(int keycode, t_vars *vars);
 int	key_press(int keycode, t_vars *vars);
 int	key_release(int keycode, t_vars *vars);

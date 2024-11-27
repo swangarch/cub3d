@@ -34,13 +34,15 @@ typedef struct s_vars
     double      ray_poswall[(int)SAMPLE + 1];
 
     time_t      last_frame_t;
-    time_t      last_key_move_t; //
+    // time_t      last_key_move_t; //
 
     t_vector    posv;
     t_vector    dirv;
 
+    double      mouse_move_dir;
+
     t_vector    last_mouse_pos;
-    time_t      last_mouse_move_t; //
+    // time_t      last_mouse_move_t; //
 
     int         key_state[256]; 
 

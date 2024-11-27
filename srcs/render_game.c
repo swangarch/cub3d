@@ -205,6 +205,7 @@ void    render_game(t_vars *vars)
     draw_sky(vars, vars->game->color_c);
     draw_ground(vars, vars->game->color_f);
     move_character(vars);
+    rotate_when_mouse_move(vars);
     cal_render(vars);
     //draw_colored_wall(vars);
     draw_texture(vars);

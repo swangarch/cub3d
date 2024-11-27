@@ -103,17 +103,6 @@ int cross_press(t_vars *vars)
     exit(0);
 }
 
-// int	key_control(int keycode, t_vars *vars)
-// {
-// 	if (keycode == 65307)
-// 	{
-// 		//destroy_vars(vars);
-// 		exit(0);
-// 	}
-// 	//move_character(keycode, vars);
-// 	return (0);
-// }
-
 int	key_press(int keycode, t_vars *vars)
 {
 	if (keycode == 65307)//esc
@@ -149,41 +138,71 @@ int	key_release(int keycode, t_vars *vars)
 	return (0);
 }
 
+// int mouse_move(int x, int y, t_vars *vars)
+// {
+//     int     dx;
+//     (void)y;
+
+//     if (vars->last_mouse_pos.x == -1)
+//     {
+//         vars->last_mouse_pos.x = x;
+//         // vars->last_mouse_move_t = now_time;
+//         return (0);
+//     }
+//     dx = x - vars->last_mouse_pos.x;
+//     vars->last_mouse_pos.x = x;
+//     //radians = to_radians(STEP_ANGLE_MOUSE);
+//     if (dx < 0)
+// 	{
+//         vars->mouse_move_dir = 1;
+//         //rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
+// 	}
+//     else if (dx > 0)
+// 	{
+//         vars->mouse_move_dir = -1;
+//         //rotate_vector(&(vars->dirv), &(vars->dirv), radians);
+//     }
+//     else
+//     {
+//         vars->mouse_move_dir = 0;
+//     }
+//     return (0);
+// }
+
 int mouse_move(int x, int y, t_vars *vars)
 {
-    double radians;
     int     dx;
-    time_t now_time;
     (void)y;
 
-    now_time = get_current_time();
-    if (vars->last_mouse_move_t == 0)
-    {
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    }
-    if (now_time - vars->last_mouse_move_t < TIME_ITVAL_MOUSE)
-    {
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    } 
-    if (vars->last_mouse_pos.x == -1)
-    {
-        vars->last_mouse_pos.x = x;
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    }
-    dx = x - vars->last_mouse_pos.x;
-    vars->last_mouse_pos.x = x;
-    radians = to_radians(STEP_ANGLE_MOUSE);
-    if (dx < 0)
+    if (x < SCREEN_WIDTH / 5.0 * 1.5)
 	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
+        vars->mouse_move_dir = 1 * (SCREEN_WIDTH / 5.0 * 1.5 - x);
 	}
-    else if (dx > 0)
+    else if (x > SCREEN_WIDTH / 5.0 * 3.5)
 	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), radians);
+        vars->mouse_move_dir = -1 * (x - SCREEN_WIDTH / 5.0 * 3.5);
     }
-    vars->last_mouse_move_t = now_time;
+    else
+    {
+        vars->mouse_move_dir = 0;
+    }
     return (0);
+}
+
+void rotate_when_mouse_move(t_vars *vars)
+{
+    double radians;
+    radians = to_radians(STEP_ANGLE_MOUSE);
+    // if (vars->mouse_move_dir > 0)
+    // {
+    //     rotate_vector(&(vars->dirv), &(vars->dirv), - radians * vars->mouse_move_dir);
+    // }
+    // else if(vars->mouse_move_dir < 0)
+    // {
+    //     rotate_vector(&(vars->dirv), &(vars->dirv), radians * vars->mouse_move_dir);
+    // }
+    if (vars->mouse_move_dir != 0)
+    {
+        rotate_vector(&(vars->dirv), &(vars->dirv), - radians * vars->mouse_move_dir);
+    }
 }
