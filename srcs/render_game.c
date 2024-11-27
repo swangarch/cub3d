@@ -46,26 +46,26 @@ void draw_colored_wall_line(t_vars *vars, int i)
     draw_line(vars, &base_pt, &bottom_pt, color_final);
 }
 
-void cal_render(t_vars *vars)
-{
-    t_vector *ray;
+// void cal_render(t_vars *vars)
+// {
+//     t_vector *ray;
 
-    ray = vars->ray;
-    double sample_angle = FOV / SAMPLE;
-    double sample_radians = to_radians(sample_angle);
-    double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
-    double angle_to_center;
-    int i = 0;
-    while (i < (int)SAMPLE + 1)///////////////////////////////
-    {
-        rotate_vector(&ray[i], &(vars->dirv), radians);
-        vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
-        normalize_vector(&ray[i], vars->ray_dist[i]);
-        vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
-        radians += sample_radians;
-        i++;
-    }
-}
+//     ray = vars->ray;
+//     double sample_angle = FOV / SAMPLE;
+//     double sample_radians = to_radians(sample_angle);
+//     double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
+//     double angle_to_center;
+//     int i = 0;
+//     while (i < (int)SAMPLE + 1)///////////////////////////////
+//     {
+//         rotate_vector(&ray[i], &(vars->dirv), radians);
+//         vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+//         normalize_vector(&ray[i], vars->ray_dist[i]);
+//         vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
+//         radians += sample_radians;
+//         i++;
+//     }
+// }
 
 /* 余弦加权间隔 !!!!!!!!!!!!!!!!!!!!!*/
 // void cal_render(t_vars *vars)
@@ -113,6 +113,38 @@ void cal_render(t_vars *vars)
 //         i++;
 //     }
 // }
+
+/*Vector version*/
+void cal_render(t_vars *vars)
+{
+    t_vector    *ray;
+    t_vector    camera;
+
+    rotate_vector(&camera, &(vars->dirv), to_radians(90));
+    normalize_vector(&camera, tan(to_radians(FOV / 2)));
+    ray = vars->ray;
+    t_vector    sample_vector;
+    sample_vector.x = camera.x / (SAMPLE / 2);
+    sample_vector.y = camera.y / (SAMPLE / 2);
+    t_vector    start_vector;
+    start_vector.x = -sample_vector.x * SAMPLE / 2;
+    start_vector.y = -sample_vector.y * SAMPLE / 2;
+    double  radians;
+
+    int i = 0;
+    while (i < (int)SAMPLE + 1)///////////////////////////////
+    {
+        ray[i].x = vars->dirv.x + start_vector.x;
+        ray[i].y = vars->dirv.y + start_vector.y;
+        radians = atan(vector_magnitude(&start_vector) / vector_magnitude(&vars->dirv));
+        vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
+        vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
+        normalize_vector(&ray[i], vars->ray_dist[i]);
+        start_vector.x += sample_vector.x;
+        start_vector.y += sample_vector.y;
+        i++;
+    }
+}
 
 void draw_visibility(t_vars *vars)
 {
