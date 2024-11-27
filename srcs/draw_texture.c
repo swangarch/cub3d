@@ -54,9 +54,7 @@ int fade_color(int color, double distance)
     g = get_g(color);
     b = get_b(color);
 
-
     factor = 1.0 / (1.0 + pow(distance, 1)); // 较强的衰减
-
     // 调整颜色亮度
     r = (int)(r * factor) + 100;
     g = (int)(g * factor) + 100;
@@ -119,7 +117,10 @@ void draw_texture(t_vars *vars)
             y = POSITION_Y - wall_height / 2 + j;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
             pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
-            put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
+            if (FADE)
+                put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
+            else
+                put_pixel_to_buf(vars, x, y, pixel_color);
             j++;
         }
         i++;

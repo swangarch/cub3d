@@ -89,4 +89,6 @@
 /*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
 
+# define FADE 1
+
 #endif
