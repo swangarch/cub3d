@@ -144,11 +144,11 @@ void draw_texture(t_vars *vars)
         else if (vars->ray_color[i] == SOUTH)
             texture = vars->tex_s;   
 
-        if (POSITION_Y - wall_height / 2 + j < 0)
-            j = wall_height / 2 - POSITION_Y;
+        if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
+            j = wall_height / 2 - DISPLAY_H / 2.0;
         while (j < (int)(wall_height))
         {
-            y = POSITION_Y - wall_height / 2 + j;
+            y = DISPLAY_H / 2.0 - wall_height / 2 + j;
             if (y > DISPLAY_H)
                 break;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
@@ -159,6 +159,66 @@ void draw_texture(t_vars *vars)
                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
             else if (SHADOW)
                 put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE));
+            else
+                put_pixel_to_buf(vars, x, y, pixel_color);
+            j++;
+        }
+        i++;
+    }
+    // if (!vars->tex_s)
+    //     return (ft_putstr_fd("Error: texture doesn't exist\n", 2), (void)0);
+    // mlx_put_image_to_window(vars->mlx, vars->win, vars->tex_s, 500, 500);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+}
+
+// void draw_object(t_vars *vars)
+// {
+
+// }
+
+
+void draw_obj(t_vars *vars)
+{
+    int i;
+    int j;
+    t_vector pos_on_obj;
+    double obj_distance;
+    double wall_height;
+    int x;
+    int y;
+    void *texture;
+    int pixel_color;
+    
+    i = 0;
+    while (i < (int)SAMPLE)
+    {
+        obj_distance = vars->ray_obj_dist[i];
+        wall_height = DISPLAY_H / obj_distance;
+        pos_on_obj.x = vars->ray_obj_pos[i] * TEXTURE_SIZE;
+        x = POSITION_X + i * (DISPLAY_W / SAMPLE);
+        j = 0;
+        texture = vars->tex_object; 
+
+        if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
+            j = wall_height / 2 - DISPLAY_H / 2.0;
+        while (j < (int)(wall_height))
+        {
+            y = DISPLAY_H / 2.0 - wall_height / 2 + j;
+            if (y > DISPLAY_H)
+                break;
+            pos_on_obj.y = j / wall_height * TEXTURE_SIZE;
+            pixel_color = get_texture_pixel_color(texture, &pos_on_obj);
+            if (get_t(pixel_color) >= 1)
+            {
+                j++;
+                continue;
+            }
+            if (FADE && SHADOW)
+                put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE), obj_distance));
+            else if (FADE)
+                put_pixel_to_buf(vars, x, y, fade_color(pixel_color, obj_distance));
+            else if (SHADOW)
+                put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE));
             else
                 put_pixel_to_buf(vars, x, y, pixel_color);
             j++;

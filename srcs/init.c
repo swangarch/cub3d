@@ -52,9 +52,14 @@ void init_vars(t_vars *vars, t_game *game)
     vars->last_mouse_pos.y = -1;//
     vars->mouse_move_dir = 0;
     vars->hp = 1.0;
+    vars->touch_wall = 0;
+    vars->show_map = 1;
+    vars->map_size = MAP_SIZE;
+
     vars->game = game;
 
     vars->map = game->map;
+    vars->map[15][15] = 'C';
     ft_memset(&(vars->key_state), 0, 256 * sizeof(int));
 
     vars->mlx = mlx_init();//protect
@@ -88,10 +93,11 @@ int load_all_texture(t_vars *vars)  //protect
     int success;
 
     success = 0;
-    success = load_texture(vars, &(vars->tex_w), vars->game->tex_path[T_WEST]);
-    success = load_texture(vars, &(vars->tex_e), vars->game->tex_path[T_EAST]);
-    success = load_texture(vars, &(vars->tex_n), vars->game->tex_path[T_NORTH]);
-    success = load_texture(vars, &(vars->tex_s), vars->game->tex_path[T_SOUTH]);
+    success += load_texture(vars, &(vars->tex_w), vars->game->tex_path[T_WEST]);
+    success += load_texture(vars, &(vars->tex_e), vars->game->tex_path[T_EAST]);
+    success += load_texture(vars, &(vars->tex_n), vars->game->tex_path[T_NORTH]);
+    success += load_texture(vars, &(vars->tex_s), vars->game->tex_path[T_SOUTH]);
+    success += load_texture(vars, &(vars->tex_object), "textures/object.xpm");
 
     return (success);
 }

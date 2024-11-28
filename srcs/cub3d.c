@@ -18,12 +18,7 @@ void cub3d(t_game *game)
 {
     t_vars vars;
 
-    // char **map = game->map;
     init_vars(&vars, game);
-    // vars.map = map;
-    // load_all_texture(&vars);
-    //render_game(&vars);
-
     mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
     mlx_hook(vars.win, 2, (1L << 0), key_press, &vars);
     mlx_hook(vars.win, 3, (1L << 1), key_release, &vars);

@@ -33,6 +33,11 @@ typedef struct s_vars
     double      ray_dist[(int)SAMPLE];
     double      ray_poswall[(int)SAMPLE];
 
+    t_vector    ray_obj[(int)SAMPLE];
+    int         ray_obj_color[(int)SAMPLE];
+    double      ray_obj_dist[(int)SAMPLE];
+    double      ray_obj_pos[(int)SAMPLE];
+
     time_t      last_frame_t;
 
     t_vector    posv;
@@ -44,6 +49,9 @@ typedef struct s_vars
     double      height_ratio;
 
     double      hp;
+    int         touch_wall;
+    int         show_map;
+    double      map_size;
 
 	void		*mlx;
 	void		*win;
@@ -58,6 +66,8 @@ typedef struct s_vars
     void        *tex_e;
     void        *tex_n;
     void        *tex_s;
+
+    void        *tex_object;
 
 	t_game		*game;
 }	t_vars;

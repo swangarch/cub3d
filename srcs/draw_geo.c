@@ -111,7 +111,7 @@ void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
     }
 }
 
-void draw_box(t_vars *vars, double x, double y, double size)
+void draw_box(t_vars *vars, double x, double y, double size, int color)
 {
     t_vector NW;
     t_vector NE;
@@ -130,43 +130,62 @@ void draw_box(t_vars *vars, double x, double y, double size)
     int i = 1;
     while (i < size -1)
     {
-        draw_line(vars, &NW, &NE, WHITE);
+        draw_line(vars, &NW, &NE, color);
         NW.y++;
         NE.y++;
         i++;
     }
-    draw_line(vars, &NW, &NE, WHITE);
-    draw_line(vars, &NE, &SE, WHITE);
-    draw_line(vars, &SE, &SW, WHITE);
-    draw_line(vars, &SW, &NW, WHITE);
+    draw_line(vars, &NW, &NE, color);
+    draw_line(vars, &NE, &SE, color);
+    draw_line(vars, &SE, &SW, color);
+    draw_line(vars, &SW, &NW, color);
 }
 
-// void draw_rec(t_vars *vars, t_vector *pt_1, t_vector *pt_2)
-// {
-//     t_vector NW;
-//     t_vector NE;
-//     t_vector SW;
-//     t_vector SE;
+void draw_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
+{
+    t_vector NW;
+    t_vector NE;
+    t_vector SW;
+    t_vector SE;
 
-//     NW.x = x - size / 2;
-//     NW.y = y - size / 2;
-//     NE.x = x + size / 2;
-//     NE.y = y - size / 2;
-//     SW.x = x - size / 2;
-//     SW.y = y + size / 2;
-//     SE.x = x + size / 2;
-//     SE.y = y + size / 2;
+    NW.x = pt1->x;
+    NW.y = pt1->y;
+    NE.x = pt2->x;
+    NE.y = pt1->y;
+    SW.x = pt1->x;
+    SW.y = pt2->y;
+    SE.x = pt2->x;
+    SE.y = pt2->y;
 
-//     int i = 1;
-//     while (i < size -1)
-//     {
-//         draw_line(vars, &NW, &NE, WHITE);
-//         NW.y++;
-//         NE.y++;
-//         i++;
-//     }
-//     draw_line(vars, &NW, &NE, WHITE);
-//     draw_line(vars, &NE, &SE, WHITE);
-//     draw_line(vars, &SE, &SW, WHITE);
-//     draw_line(vars, &SW, &NW, WHITE);
-// }
+    draw_line(vars, &NW, &NE, color);
+    draw_line(vars, &NE, &SE, color);
+    draw_line(vars, &SE, &SW, color);
+    draw_line(vars, &SW, &NW, color);
+}
+
+void fill_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
+{
+    t_vector NW;
+    t_vector NE;
+    t_vector SW;
+    t_vector SE;
+
+    NW.x = pt1->x;
+    NW.y = pt1->y;
+    NE.x = pt2->x;
+    NE.y = pt1->y;
+    SW.x = pt1->x;
+    SW.y = pt2->y;
+    SE.x = pt2->x;
+    SE.y = pt2->y;
+
+    int i;
+    i = 0;
+    while (i < pt2->y - pt1->y)
+    {
+        draw_line(vars, &NW, &NE, color);
+        NW.y++;
+        NE.y++;
+        i++;
+    }
+}

@@ -9,7 +9,7 @@ MLX_DIR		=	mlx_linux/
 MLX_LIB		=	$(MLX_DIR)libmlx.a
 
 # Compiler and CFlags
-CC			=	cc
+CC			=	cc -g
 # CFLAGS		=	-Wall -Wextra -Werror
 INCLUDES	=	-Iincludes -I/usr/include -Imlx -I./libft
 FLAGS		=	-Lmlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
@@ -31,7 +31,10 @@ SRCS		=	$(SRC_DIR)cub3d.c \
 				$(SRC_DIR)color.c \
 				$(SRC_DIR)util.c \
 				$(SRC_DIR)init.c \
-				$(SRC_DIR)draw_texture.c
+				$(SRC_DIR)draw_texture.c \
+				$(SRC_DIR)ui.c \
+				$(SRC_DIR)update_state.c
+
 
 
 OBJS		=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))

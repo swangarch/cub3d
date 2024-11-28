@@ -56,10 +56,13 @@ double len_2pt(t_vector *v1, t_vector *v2);
 /*DRAW GEOMETRY*/
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
-void draw_box(t_vars *vars, double x, double y, double size);
+void draw_box(t_vars *vars, double x, double y, double size, int color);
 
 void draw_ground(t_vars *vars, int color);
 void draw_sky(t_vars *vars, int);
+
+void draw_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color);
+void fill_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color);
 
 /*GAME CONTROL*/
 int	move_character(t_vars *vars);
@@ -87,14 +90,26 @@ int    update_frame(t_vars *vars);
 
 /*TEXTURE*/
 void draw_texture(t_vars *vars);
+void draw_obj(t_vars *vars);
 
 /*COLOR*/
 int create_trgb(int t, int r, int g, int b);
 int get_r(int color);
 int get_g(int color);
 int get_b(int color);
+int get_t(int color);
 
 /*UTILS*/
 time_t  get_current_time(void);
+
+/*UI*/
+void draw_ui(t_vars *vars);
+
+/*UPDATE STATE*/
+void    update_state(t_vars *vars);
+
+
+
+double obj_distance(t_vars *vars, t_vector *vector, int index);
 
 #endif

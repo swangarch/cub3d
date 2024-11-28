@@ -7,9 +7,6 @@ void	init_game(t_game *game)
 	if (!game)
 		return ;
 	i = 0;
-	// game->mlx = NULL;
-	// game->win = NULL;
-	// game->index = NULL;
 	game->color_c = 0;
 	game->color_f = 0;
 	game->num_player = 0;

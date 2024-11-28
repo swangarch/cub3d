@@ -19,8 +19,12 @@ int box_collision(t_vars *vars, t_vector *next_pos)
 
     i = (int)floor(next_pos->x);
     j = (int)floor(next_pos->y);
-    if (vars->map[j][i] == '1')
+    if (vars->map[j][i] == '1' || vars->map[j][i] == 'C')
+    {   
+        vars->touch_wall = 1;
         return (1);
+    }
+    vars->touch_wall = 0;
     return (0);
 }
 
@@ -43,56 +47,56 @@ int	move_character(t_vars *vars)
         if (box_collision(vars, &next_pos))
             return (0);
         cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-		return (1);
+		//return (1);
 	}
-    else if (vars->key_state[D] == 1)  //move right
+    if (vars->key_state[D] == 1)  //move right
 	{
         next_pos.x = vars->posv.x - STEP * diry;
         next_pos.y = vars->posv.y + STEP * dirx;
         if (box_collision(vars, &next_pos))
             return (0);
         cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-		return (1);
+		//return (1);
 	}
-	else if (vars->key_state[S] == 1) //move forward
+	if (vars->key_state[S] == 1) //move forward
 	{
         next_pos.x = vars->posv.x - STEP * dirx;
         next_pos.y = vars->posv.y - STEP * diry;
         if (box_collision(vars, &next_pos))
             return (0);
         cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-		return (1);
+		//return (1);
 	}
-	else if (vars->key_state[W] == 1) //move back
+	if (vars->key_state[W] == 1) //move back
 	{
         next_pos.x = vars->posv.x + STEP * dirx;
         next_pos.y = vars->posv.y + STEP * diry;
         if (box_collision(vars, &next_pos))
             return (0);
         cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-		return (1);
+		//return (1);
 	}
-    else if (vars->key_state[LEFT_INT] == 1) //move top
+    if (vars->key_state[LEFT_INT] == 1) //move top
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
-		return (1);
+		// return (1);
 	}
-    else if (vars->key_state[RIGHT_INT] == 1) //
+    if (vars->key_state[RIGHT_INT] == 1) //
 	{
         rotate_vector(&(vars->dirv), &(vars->dirv), radians);
-		return (1);
+		// return (1);
 	}
-    else if (vars->key_state[UP_INT] == 1) //move top
+    if (vars->key_state[UP_INT] == 1) //move top
 	{
         if (vars->height_ratio + STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio + STEP_HEIGHT_RATIO < 1.0)
             vars->height_ratio += STEP_HEIGHT_RATIO;
-		return (1);
+		// return (1);
 	}
-    else if (vars->key_state[DOWN_INT] == 1) //move top
+    if (vars->key_state[DOWN_INT] == 1) //move top
 	{
         if (vars->height_ratio - STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio - STEP_HEIGHT_RATIO < 1.0)
             vars->height_ratio -= STEP_HEIGHT_RATIO;
-		return (1);
+		// return (1);
 	}
 	return (0);
 }
@@ -110,6 +114,11 @@ int	key_press(int keycode, t_vars *vars)
 		//destroy_vars(vars);
 		exit(0);
 	}
+    if (keycode == M && vars->key_state[M] == 1)
+    {
+        vars->key_state[M] = 0;
+        return (1);
+    }
     if (keycode < 128)
         vars->key_state[keycode] = 1;
     else if (keycode == LEFT)
@@ -125,6 +134,8 @@ int	key_press(int keycode, t_vars *vars)
 
 int	key_release(int keycode, t_vars *vars)
 {
+    if (keycode == M)
+        return (1);
     if (keycode < 128)
         vars->key_state[keycode] = 0;
     else if (keycode == LEFT)
@@ -137,37 +148,6 @@ int	key_release(int keycode, t_vars *vars)
         vars->key_state[DOWN_INT] = 0;
 	return (0);
 }
-
-// int mouse_move(int x, int y, t_vars *vars)
-// {
-//     int     dx;
-//     (void)y;
-
-//     if (vars->last_mouse_pos.x == -1)
-//     {
-//         vars->last_mouse_pos.x = x;
-//         // vars->last_mouse_move_t = now_time;
-//         return (0);
-//     }
-//     dx = x - vars->last_mouse_pos.x;
-//     vars->last_mouse_pos.x = x;
-//     //radians = to_radians(STEP_ANGLE_MOUSE);
-//     if (dx < 0)
-// 	{
-//         vars->mouse_move_dir = 1;
-//         //rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
-// 	}
-//     else if (dx > 0)
-// 	{
-//         vars->mouse_move_dir = -1;
-//         //rotate_vector(&(vars->dirv), &(vars->dirv), radians);
-//     }
-//     else
-//     {
-//         vars->mouse_move_dir = 0;
-//     }
-//     return (0);
-// }
 
 int mouse_move(int x, int y, t_vars *vars)
 {
@@ -193,14 +173,6 @@ void rotate_when_mouse_move(t_vars *vars)
 {
     double radians;
     radians = to_radians(STEP_ANGLE_MOUSE);
-    // if (vars->mouse_move_dir > 0)
-    // {
-    //     rotate_vector(&(vars->dirv), &(vars->dirv), - radians * vars->mouse_move_dir);
-    // }
-    // else if(vars->mouse_move_dir < 0)
-    // {
-    //     rotate_vector(&(vars->dirv), &(vars->dirv), radians * vars->mouse_move_dir);
-    // }
     if (vars->mouse_move_dir != 0)
     {
         rotate_vector(&(vars->dirv), &(vars->dirv), - radians * vars->mouse_move_dir);

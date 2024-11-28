@@ -23,16 +23,17 @@
 
 /*********************************************************/
 
-# define FPS 60
+# define FPS 48
 
 /*SCREEN*/
+// # define SCREEN_HEIGHT 360
+// # define SCREEN_WIDTH 640
+
 # define SCREEN_HEIGHT 720
 # define SCREEN_WIDTH 1280
 
-/*MAP*/
-// # define MAP_POSX 100
-// # define MAP_POSY 100
-# define BOX_SIZE 10.0
+
+# define MAP_SIZE 10.0
 
 /*SAMPLE PARAM*/
 # define SCALE 1
@@ -46,7 +47,7 @@
 # define FOV 60.0
 # define GRID_SIZE 1
 
-# define MAX_VIEW_DISTANCE 1000.0
+# define MAX_VIEW_DISTANCE 500.0
 # define MIN_WALL_DISTANCE 0.1
 
 /*COLORS*/
@@ -72,6 +73,11 @@
 # define UP_INT 130
 # define DOWN 65364
 # define DOWN_INT 131
+# define M 109
+// # define MINUS 45         // -
+// # define PLUS 43          // +
+# define NUM_9 57
+# define NUM_0 48
 
 /*ORIENTATION*/
 # define NORTH 1
@@ -89,14 +95,19 @@
 
 /*RENDER ON THE SCREEN*/
 # define POSITION_X 0
-# define DISPLAY_W 1280
-# define DISPLAY_H 768
-# define POSITION_Y 384
+# define DISPLAY_W SCREEN_WIDTH
+# define DISPLAY_H SCREEN_HEIGHT
+//# define POSITION_Y 384
 
 /*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
 
+/*SPECIAL EFFECT*/
 # define FADE 1
 # define SHADOW 1
+
+/*UI*/
+# define HP_W 100
+# define HP_H 10
 
 #endif
