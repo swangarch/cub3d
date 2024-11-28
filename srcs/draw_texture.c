@@ -128,11 +128,9 @@ void draw_texture(t_vars *vars)
     int pixel_color;
     
     i = 0;
-    while (i < (int)SAMPLE + 1)
+    while (i < (int)SAMPLE)
     {
         distance = vars->ray_dist[i];
-        // if (distance < MIN_WALL_DISTANCE)
-        //     distance = MIN_WALL_DISTANCE;
         wall_height = DISPLAY_H / distance;
         pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);

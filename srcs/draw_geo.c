@@ -140,3 +140,33 @@ void draw_box(t_vars *vars, double x, double y, double size)
     draw_line(vars, &SE, &SW, WHITE);
     draw_line(vars, &SW, &NW, WHITE);
 }
+
+// void draw_rec(t_vars *vars, t_vector *pt_1, t_vector *pt_2)
+// {
+//     t_vector NW;
+//     t_vector NE;
+//     t_vector SW;
+//     t_vector SE;
+
+//     NW.x = x - size / 2;
+//     NW.y = y - size / 2;
+//     NE.x = x + size / 2;
+//     NE.y = y - size / 2;
+//     SW.x = x - size / 2;
+//     SW.y = y + size / 2;
+//     SE.x = x + size / 2;
+//     SE.y = y + size / 2;
+
+//     int i = 1;
+//     while (i < size -1)
+//     {
+//         draw_line(vars, &NW, &NE, WHITE);
+//         NW.y++;
+//         NE.y++;
+//         i++;
+//     }
+//     draw_line(vars, &NW, &NE, WHITE);
+//     draw_line(vars, &NE, &SE, WHITE);
+//     draw_line(vars, &SE, &SW, WHITE);
+//     draw_line(vars, &SW, &NW, WHITE);
+// }

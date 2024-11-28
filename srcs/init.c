@@ -51,6 +51,7 @@ void init_vars(t_vars *vars, t_game *game)
     vars->last_mouse_pos.x = -1;//
     vars->last_mouse_pos.y = -1;//
     vars->mouse_move_dir = 0;
+    vars->hp = 1.0;
     vars->game = game;
 
     vars->map = game->map;

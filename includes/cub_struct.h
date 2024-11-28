@@ -28,29 +28,26 @@ typedef struct s_vector
 
 typedef struct s_vars
 {
-    t_vector    ray[(int)SAMPLE + 1];
-    int         ray_color[(int)SAMPLE + 1];
-    double      ray_dist[(int)SAMPLE + 1];
-    double      ray_poswall[(int)SAMPLE + 1];
+    t_vector    ray[(int)SAMPLE];
+    int         ray_color[(int)SAMPLE];
+    double      ray_dist[(int)SAMPLE];
+    double      ray_poswall[(int)SAMPLE];
 
     time_t      last_frame_t;
-    // time_t      last_key_move_t; //
 
     t_vector    posv;
     t_vector    dirv;
 
     double      mouse_move_dir;
-
     t_vector    last_mouse_pos;
-    // time_t      last_mouse_move_t; //
+    int         key_state[256];
+    double      height_ratio;
 
-    int         key_state[256]; 
+    double      hp;
 
 	void		*mlx;
 	void		*win;
-	// char		(*map)[9];
     char		**map;
-
     char        *buf_img;
     void        *buf_img_ptr;
     int         bits_per_pixel;
@@ -62,7 +59,6 @@ typedef struct s_vars
     void        *tex_n;
     void        *tex_s;
 
-    double      height_ratio;
 	t_game		*game;
 }	t_vars;
 
