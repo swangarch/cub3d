@@ -53,6 +53,8 @@ typedef struct s_vars
     int         show_map;
     double      map_size;
 
+    int         show_fps;
+
 	void		*mlx;
 	void		*win;
     char		**map;

@@ -169,12 +169,27 @@ int mouse_move(int x, int y, t_vars *vars)
     return (0);
 }
 
+// int mouse_move(int x, int y, t_vars *vars)
+// {
+//     int     dx;
+//     (void)y;
+
+//     if (ft_abs(x - vars->last_mouse_pos.x <= 1.0))
+//     {
+//         vars->mouse_move_dir = 0;
+//         return (0);
+//     }
+//     vars->mouse_move_dir = x - vars->last_mouse_pos.x;
+//     vars->last_mouse_pos.x = x;
+//     return (0);
+// }
+
 void rotate_when_mouse_move(t_vars *vars)
 {
     double radians;
     radians = to_radians(STEP_ANGLE_MOUSE);
     if (vars->mouse_move_dir != 0)
     {
-        rotate_vector(&(vars->dirv), &(vars->dirv), - radians * vars->mouse_move_dir);
+        rotate_vector(&(vars->dirv), &(vars->dirv), -radians * vars->mouse_move_dir);
     }
 }

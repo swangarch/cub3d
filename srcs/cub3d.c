@@ -12,19 +12,22 @@
 
 # include "../includes/cub3d.h"
 
-
+void game_loop(t_vars *vars)
+{
+    mlx_hook(vars->win, 6, (1L << 6), mouse_move, vars);
+    mlx_hook(vars->win, 2, (1L << 0), key_press, vars);
+    mlx_hook(vars->win, 3, (1L << 1), key_release, vars);
+    mlx_hook(vars->win, 17, 0, cross_press, vars);
+    mlx_loop_hook(vars->mlx, update_frame, vars);
+    mlx_loop(vars->mlx);
+}
 
 void cub3d(t_game *game)
 {
     t_vars vars;
 
     init_vars(&vars, game);
-    mlx_hook(vars.win, 6, (1L << 6), mouse_move, &vars);
-    mlx_hook(vars.win, 2, (1L << 0), key_press, &vars);
-    mlx_hook(vars.win, 3, (1L << 1), key_release, &vars);
-    mlx_hook(vars.win, 17, 0, cross_press, &vars);
-    mlx_loop_hook(vars.mlx, update_frame, &vars);
-    mlx_loop(vars.mlx);
+    game_loop(&vars);
     //free()
 }
 

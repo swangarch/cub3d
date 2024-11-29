@@ -217,6 +217,8 @@ void    render_game(t_vars *vars)
 int    update_frame(t_vars *vars)
 {
     time_t now_time;
+    time_t time_passed;
+    int fps;
 
     now_time = get_current_time();
     if (vars->last_frame_t == 0)
@@ -224,11 +226,19 @@ int    update_frame(t_vars *vars)
         vars->last_frame_t = now_time;
         return (0);
     }
-    if (now_time - vars->last_frame_t < 1000000 / FPS)
+    time_passed = now_time - vars->last_frame_t;
+    if (time_passed < 1000000 / FPS)
     {
         return (0);
     }
     render_game(vars);
+    if (vars->key_state[F])
+    {
+        fps = 1000000.0 / time_passed;
+        ft_printf("FPS: %d\n", fps);
+    }
+    
+    // mlx_string_put(vars->mlx, vars->win, 0, SCREEN_HEIGHT - 50, WHITE, fps);
     vars->last_frame_t = now_time;
     return (1);
 }

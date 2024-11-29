@@ -54,6 +54,7 @@ void init_vars(t_vars *vars, t_game *game)
     vars->hp = 1.0;
     vars->touch_wall = 0;
     vars->show_map = 1;
+    vars->show_fps = 0;
     vars->map_size = MAP_SIZE;
 
     vars->game = game;
