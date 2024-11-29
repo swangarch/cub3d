@@ -14,7 +14,7 @@
 
 // void    damage()
 
-void    update_state(t_vars *vars)
+void    life(t_vars *vars)
 {
     if ((vars->key_state[W] || vars->key_state[A] || vars->key_state[S] || vars->key_state[D]) && !vars->touch_wall)
     {
@@ -23,12 +23,17 @@ void    update_state(t_vars *vars)
         return;
     }
     if (vars->hp > 0)
-        vars->hp -= 0.001;
+        vars->hp -= 0.0005;
     else
     {
         //destroy vars
-        ft_putstr_fd("Game over 菜就多练\n", 1);
+        ft_putstr_fd("Game over\n", 1);
         exit(0);
     }
+}
+
+void    update_state(t_vars *vars)
+{
+    life(vars);
 }
 

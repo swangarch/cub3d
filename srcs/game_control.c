@@ -119,6 +119,16 @@ int	key_press(int keycode, t_vars *vars)
         vars->key_state[M] = 0;
         return (1);
     }
+    if (keycode == O && vars->key_state[O] == 1)
+    {
+        vars->key_state[O] = 0;
+        return (1);
+    }
+    if (keycode == P && vars->key_state[P] == 1)
+    {
+        vars->key_state[P] = 0;
+        return (1);
+    }
     if (keycode < 128)
         vars->key_state[keycode] = 1;
     else if (keycode == LEFT)
@@ -134,7 +144,7 @@ int	key_press(int keycode, t_vars *vars)
 
 int	key_release(int keycode, t_vars *vars)
 {
-    if (keycode == M)
+    if (keycode == M || keycode == P || keycode == O)
         return (1);
     if (keycode < 128)
         vars->key_state[keycode] = 0;

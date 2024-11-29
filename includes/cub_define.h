@@ -75,6 +75,8 @@
 # define DOWN_INT 131
 # define M 109
 # define F 102
+# define O 111
+# define P 112
 // # define MINUS 45         // -
 // # define PLUS 43          // +
 # define NUM_9 57

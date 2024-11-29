@@ -70,11 +70,12 @@ int put_shadow(int color, double height, double wall_height)
 
     x = ft_abs(height - wall_height / 2.0);
     factor = pow(M_E, - x / (wall_height / 2.0));
-    factor = log(factor + 1) * 2.3;
+    //factor = log(factor + 1) * 2.3;
+    factor = log(factor + 1) + 0.4;
     r = color_range(r * factor);
     g = color_range(g * factor);
     b = color_range(b * factor);
-    return (create_trgb(255, r, g, b));
+    return (create_trgb(0, r, g, b));
 }
 
 int fade_color(int color, double distance)
@@ -87,7 +88,7 @@ int fade_color(int color, double distance)
     g = get_g(color);
     b = get_b(color);
 
-    factor = 1.0 / (1.0 + pow(distance, 0.5)); // 较强的衰减
+    factor = 1.0 / (1.0 + pow(distance, 1)); // 较强的衰减
     // 调整颜色亮度
     r = (int)(r * factor) + 100;
     g = (int)(g * factor) + 100;
@@ -153,11 +154,11 @@ void draw_texture(t_vars *vars)
                 break;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
             pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
-            if (FADE && SHADOW)
+            if (vars->key_state[O] && vars->key_state[P])
                 put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE), distance));
-            else if (FADE)
+            else if (vars->key_state[O])
                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
-            else if (SHADOW)
+            else if (vars->key_state[P])
                 put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE));
             else
                 put_pixel_to_buf(vars, x, y, pixel_color);
@@ -176,6 +177,59 @@ void draw_texture(t_vars *vars)
 
 // }
 
+
+// void draw_obj(t_vars *vars)
+// {
+//     int i;
+//     int j;
+//     t_vector pos_on_obj;
+//     double obj_distance;
+//     double wall_height;
+//     int x;
+//     int y;
+//     void *texture;
+//     int pixel_color;
+    
+//     i = 0;
+//     while (i < (int)SAMPLE)
+//     {
+//         obj_distance = vars->ray_obj_dist[i];
+//         wall_height = DISPLAY_H / obj_distance;
+//         pos_on_obj.x = vars->ray_obj_pos[i] * TEXTURE_SIZE;
+//         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
+//         j = 0;
+//         texture = vars->tex_object; 
+
+//         if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
+//             j = wall_height / 2 - DISPLAY_H / 2.0;
+//         while (j < (int)(wall_height))
+//         {
+//             y = DISPLAY_H / 2.0 - wall_height / 2 + j;
+//             if (y > DISPLAY_H)
+//                 break;
+//             pos_on_obj.y = j / wall_height * TEXTURE_SIZE;
+//             pixel_color = get_texture_pixel_color(texture, &pos_on_obj);
+//             if (get_t(pixel_color) >= 1)
+//             {
+//                 j++;
+//                 continue;
+//             }
+//             if (FADE && SHADOW)
+//                 put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE), obj_distance));
+//             else if (FADE)
+//                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, obj_distance));
+//             else if (SHADOW)
+//                 put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE));
+//             else
+//                 put_pixel_to_buf(vars, x, y, pixel_color);
+//             j++;
+//         }
+//         i++;
+//     }
+//     // if (!vars->tex_s)
+//     //     return (ft_putstr_fd("Error: texture doesn't exist\n", 2), (void)0);
+//     // mlx_put_image_to_window(vars->mlx, vars->win, vars->tex_s, 500, 500);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+// }
 
 void draw_obj(t_vars *vars)
 {
@@ -213,20 +267,16 @@ void draw_obj(t_vars *vars)
                 j++;
                 continue;
             }
-            if (FADE && SHADOW)
+            if (vars->key_state[O] && vars->key_state[P])
                 put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE), obj_distance));
-            else if (FADE)
+            else if (vars->key_state[O])
                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, obj_distance));
-            else if (SHADOW)
+            else if (vars->key_state[P])
                 put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_obj.y, TEXTURE_SIZE));
             else
                 put_pixel_to_buf(vars, x, y, pixel_color);
             j++;
         }
         i++;
-    }
-    // if (!vars->tex_s)
-    //     return (ft_putstr_fd("Error: texture doesn't exist\n", 2), (void)0);
-    // mlx_put_image_to_window(vars->mlx, vars->win, vars->tex_s, 500, 500);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 }

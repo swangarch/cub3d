@@ -237,8 +237,6 @@ int    update_frame(t_vars *vars)
         fps = 1000000.0 / time_passed;
         ft_printf("FPS: %d\n", fps);
     }
-    
-    // mlx_string_put(vars->mlx, vars->win, 0, SCREEN_HEIGHT - 50, WHITE, fps);
     vars->last_frame_t = now_time;
     return (1);
 }
