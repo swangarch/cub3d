@@ -33,7 +33,7 @@
 # define SCREEN_WIDTH 1280
 
 
-# define MAP_SIZE 10.0
+# define MAP_SIZE 8.0
 
 /*SAMPLE PARAM*/
 # define SCALE 1
@@ -58,6 +58,7 @@
 # define WHITE -1
 # define CYAN -16711681
 # define MAGENTA -65281
+# define GREY_L 15000804
 
 /*KEY CONTROL*/
 # define ESC 65307
@@ -94,7 +95,11 @@
 
 /*DOUBLE ERROR*/
 # define MIN_ERR 0.000000000001
+// # define MIN_ERR 0.0000000000000000000001
 # define MIN_ERR2 0.0
+
+#define S_SIZE 50
+#define VERY_LARGE_VALUE 1e30
 
 /*RENDER ON THE SCREEN*/
 # define POSITION_X 0
@@ -104,10 +109,6 @@
 
 /*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
-
-/*SPECIAL EFFECT*/
-# define FADE 1
-# define SHADOW 1
 
 /*UI*/
 # define HP_W 100

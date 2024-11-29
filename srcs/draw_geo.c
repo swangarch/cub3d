@@ -128,7 +128,7 @@ void draw_box(t_vars *vars, double x, double y, double size, int color)
     SE.y = y + size / 2;
 
     int i = 1;
-    while (i < size -1)
+    while (i < size)
     {
         draw_line(vars, &NW, &NE, color);
         NW.y++;

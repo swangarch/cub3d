@@ -56,4 +56,12 @@ double vector_magnitude(t_vector *v)
     return (sqrt(v->x * v->x + v->y * v->y)); 
 }
 
+int closest_int(double num)
+{
+    if (num - (int)num >= 0.5)
+        return((int)ceil(num));
+    else
+        return ((int)floor(num));
+}
+
 

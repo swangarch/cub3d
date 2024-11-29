@@ -52,6 +52,7 @@ double to_radians(double angle);
 double ft_abs(double num);
 int double_eql(double a, double b);
 double len_2pt(t_vector *v1, t_vector *v2);
+int closest_int(double num);
 
 /*DRAW GEOMETRY*/
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
@@ -87,6 +88,7 @@ void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale);
 void    render_game(t_vars *vars);
 void clear_image_buf(t_vars *vars);
 int    update_frame(t_vars *vars);
+int get_texture_pixel_color(void *tex, t_vector *pos);
 
 /*TEXTURE*/
 void draw_texture(t_vars *vars);
@@ -98,6 +100,7 @@ int get_r(int color);
 int get_g(int color);
 int get_b(int color);
 int get_t(int color);
+int color_range(int color_element);
 
 /*UTILS*/
 time_t  get_current_time(void);
@@ -108,8 +111,14 @@ void draw_ui(t_vars *vars);
 /*UPDATE STATE*/
 void    update_state(t_vars *vars);
 
+/*SPECIAL EFFECT*/
+int put_shadow(int color, double height, double wall_height);
+int fade_color(int color, double distance);
+int put_vertical_shadow(int color);
+
 
 
 double obj_distance(t_vars *vars, t_vector *vector, int index);
+void cal_render_obj(t_vars *vars);
 
 #endif

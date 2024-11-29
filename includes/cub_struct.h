@@ -33,6 +33,7 @@ typedef struct s_vars
 
     t_vector    ray_obj[(int)SAMPLE];
     int         ray_obj_color[(int)SAMPLE];
+    // int         ray_touch_obj[(int)SAMPLE];
     double      ray_obj_dist[(int)SAMPLE];
     double      ray_obj_pos[(int)SAMPLE];
 
@@ -52,6 +53,7 @@ typedef struct s_vars
     double      map_size;
 
     int         show_fps;
+
 
     int         fade;
     int         shadow;

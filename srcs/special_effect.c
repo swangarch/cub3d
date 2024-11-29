@@ -1,0 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   special_effect.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shuwang <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/29 16:35:14 by shuwang           #+#    #+#             */
+/*   Updated: 2024/11/29 16:35:16 by shuwang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cub3d.h"
+
+int put_shadow(int color, double height, double wall_height)
+{
+    double exp;
+    double x;
+    int r, g, b;
+    double factor;
+
+    // 获取RGB颜色分量
+    r = get_r(color);
+    g = get_g(color);
+    b = get_b(color);
+
+    x = ft_abs(height - wall_height / 2.0);
+    factor = pow(M_E, - x / (wall_height / 2.0));
+    //factor = log(factor + 1) * 2.3;
+    factor = log(factor + 1) + 0.6;  ///const
+    r = color_range(r * factor);
+    g = color_range(g * factor);
+    b = color_range(b * factor);
+    return (create_trgb(0, r, g, b));
+}
+
+int put_vertical_shadow(int color)
+{
+    int r, g, b;
+    // 获取RGB颜色分量
+    r = get_r(color);
+    g = get_g(color);
+    b = get_b(color);
+
+    int increment = -30;
+    r = color_range(r + increment);
+    g = color_range(g + increment);
+    b = color_range(b + increment);
+    return (create_trgb(0, r, g, b));
+}
+
+int fade_color(int color, double distance)
+{
+    int r, g, b;
+    double factor;
+
+    // 获取RGB颜色分量
+    r = get_r(color);
+    g = get_g(color);
+    b = get_b(color);
+
+    factor = 1.0 / (1.0 + pow(distance, 1.1)) + 0.5; // 较强的衰减  //const
+    // 调整颜色亮度
+    r = color_range((int)(r * factor) + 10);
+    g = color_range((int)(g * factor) + 10);
+    b = color_range((int)(b * factor) + 10);
+
+    // 确保RGB值在合法范围内
+    if (r < 0) {
+        r = 0;
+    } else if (r > 255) {
+        r = 255;
+    }
+
+    if (g < 0) {
+        g = 0;
+    } else if (g > 255) {
+        g = 255;
+    }
+
+    if (b < 0) {
+        b = 0;
+    } else if (b > 255) {
+        b = 255;
+    }
+
+    return (r << 16) | (g << 8) | b;
+}

@@ -142,9 +142,6 @@ void draw_map(t_vars *vars, double x, double y)
         //ft_putstr_fd("minus\n", 1);
         vars->map_size -= 0.1;
     }
-    
-   // double size = vars->map_size;
-
     if ((vars->game->map_col - 1) * vars->map_size > SCREEN_WIDTH)
         vars->map_size = SCREEN_WIDTH / (double)(vars->game->map_col - 1);
     if ((vars->game->map_row) * vars->map_size > SCREEN_HEIGHT)
@@ -156,44 +153,30 @@ void draw_map(t_vars *vars, double x, double y)
         {
             if (vars->map[j][i] == '1')
                  draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, WHITE);
+            if (vars->map[j][i] == '0')
+                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, GREY_L);
+            if (vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || vars->map[j][i] == 'E' || vars->map[j][i] == 'W')
+                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, CYAN);
+            i++;
+        }
+        j++;
+    }
+    draw_visibility(vars, vars->map_size);
+
+    j = 0;
+    while (vars->map[j])
+    {
+        i = 0;
+        while (vars->map[j][i])
+        {
             if (vars->map[j][i] == 'C')
                  draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, RED);
             i++;
         }
         j++;
     }
-    draw_visibility(vars, vars->map_size);
-    draw_obj_visibility(vars, vars->map_size);
+    //draw_obj_visibility(vars, vars->map_size);
 }
-
-
-
-void cal_render_obj(t_vars *vars)
-{
-    t_vector    *ray_obj;
-    t_vector    camera;
-    t_vector    sample_vector;
-    t_vector    start_vector;
-    double  radians;
-    int i;
-
-    rotate_vector(&camera, &(vars->dirv), to_radians(90));
-    normalize_vector(&camera, tan(to_radians(FOV / 2)));
-    ray_obj = vars->ray_obj;
-    cpy_scale_vector(&sample_vector, &camera, 2.0 / SAMPLE);
-    cpy_scale_vector(&start_vector, &sample_vector, - SAMPLE / 2.0);
-    i = -1;
-    while (++i < (int)SAMPLE)///////////////////////////////
-    {
-        add_vector(&ray_obj[i], &vars->dirv, &start_vector);
-        radians = atan(vector_magnitude(&start_vector) / vector_magnitude(&vars->dirv));
-        vars->ray_obj_dist[i] = obj_distance(vars, &ray_obj[i], i);
-        normalize_vector(&ray_obj[i], vars->ray_obj_dist[i]);
-        vars->ray_obj_dist[i] = vars->ray_obj_dist[i] * cos(radians);
-        add_vector(&start_vector, &start_vector, &sample_vector);
-    }
-}
-
 
 void    render_game(t_vars *vars)
 {

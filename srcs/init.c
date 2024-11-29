@@ -64,6 +64,9 @@ void init_vars(t_vars *vars, t_game *game)
     vars->fade = 1;
     vars->shadow = 1;
 
+    // vars->obj_end_i = -1;
+    // vars->obj_start_i = -1;
+
     vars->game = game;
 
     vars->map = game->map;
