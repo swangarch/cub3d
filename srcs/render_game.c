@@ -102,25 +102,6 @@ void    draw_colored_wall(t_vars *vars)
     }
 }
 
-void draw_obj_visibility(t_vars *vars, double size)
-{
-    t_vector *ray_obj;
-    ray_obj = vars->ray_obj;
-    int i = 0;
-
-    t_vector startpt_scaled;
-    t_vector endpt_added;
-    t_vector endpt_scaled;
-    while (i < (int)SAMPLE)///////////////////////////////
-    {
-        cpy_scale_vector(&startpt_scaled, &(vars->posv), size);
-        add_vector(&endpt_added, &(vars->posv), &ray_obj[i]);
-        cpy_scale_vector(&endpt_scaled, &endpt_added, size);
-        draw_line(vars, &startpt_scaled, &endpt_scaled, RED);
-        i++;
-    }
-}
-
 void draw_map(t_vars *vars, double x, double y)
 {
     int i;
@@ -133,28 +114,36 @@ void draw_map(t_vars *vars, double x, double y)
         return ;
 
     if (vars->key_state[NUM_0])
-    {
-        //ft_putstr_fd("plus\n", 1);
         vars->map_size += 0.1;
-    }
     if (vars->key_state[NUM_9] && vars->map_size >= 7.0)
-    {
-        //ft_putstr_fd("minus\n", 1);
         vars->map_size -= 0.1;
-    }
     if ((vars->game->map_col - 1) * vars->map_size > SCREEN_WIDTH)
         vars->map_size = SCREEN_WIDTH / (double)(vars->game->map_col - 1);
     if ((vars->game->map_row) * vars->map_size > SCREEN_HEIGHT)
         vars->map_size = SCREEN_HEIGHT / (double)(vars->game->map_row);
+    j = 0;
     while (vars->map[j])
     {
         i = 0;
         while (vars->map[j][i])
         {
+            draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, GREY_L);
+            i++;
+        }
+        j++;
+    }
+    j = 0;
+    while (vars->map[j])
+    {
+        i = 0;
+        while (vars->map[j][i])
+        {
+            // if (vars->map[j][i] == '0')
+            //      draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, GREY_L);
+            if (vars->map[j][i] == '1')
+                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0 + MAP_SHADOW_SIZE * vars->map_size, y + j * vars->map_size + vars->map_size / 2.0 + MAP_SHADOW_SIZE * vars->map_size, vars->map_size, GREY_M);
             if (vars->map[j][i] == '1')
                  draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, WHITE);
-            if (vars->map[j][i] == '0')
-                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, GREY_L);
             if (vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || vars->map[j][i] == 'E' || vars->map[j][i] == 'W')
                  draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, CYAN);
             i++;
@@ -175,7 +164,7 @@ void draw_map(t_vars *vars, double x, double y)
         }
         j++;
     }
-    //draw_obj_visibility(vars, vars->map_size);
+    draw_obj_visibility(vars, vars->map_size);
 }
 
 void    render_game(t_vars *vars)

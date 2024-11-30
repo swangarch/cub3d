@@ -19,9 +19,15 @@ int box_collision(t_vars *vars, t_vector *next_pos)
 
     i = (int)floor(next_pos->x);
     j = (int)floor(next_pos->y);
-    if (vars->map[j][i] == '1' || vars->map[j][i] == 'C')
+    if (vars->map[j][i] == '1')
     {   
         vars->touch_wall = 1;
+        return (1);
+    }
+    if (vars->map[j][i] == 'C')
+    {   
+        vars->touch_wall = 1;
+        eat(vars, i , j);
         return (1);
     }
     vars->touch_wall = 0;

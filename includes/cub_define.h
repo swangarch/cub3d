@@ -34,6 +34,7 @@
 
 
 # define MAP_SIZE 8.0
+# define MAP_SHADOW_SIZE 0.25
 
 /*SAMPLE PARAM*/
 # define SCALE 1
@@ -59,6 +60,7 @@
 # define CYAN -16711681
 # define MAGENTA -65281
 # define GREY_L 15000804
+# define GREY_M 12239561
 
 /*KEY CONTROL*/
 # define ESC 65307
@@ -75,6 +77,7 @@
 # define DOWN 65364
 # define DOWN_INT 131
 # define M 109
+# define E 101
 # define F 102
 # define O 111
 # define P 112

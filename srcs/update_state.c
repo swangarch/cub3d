@@ -23,7 +23,7 @@ void    life(t_vars *vars)
         return;
     }
     if (vars->hp > 0)
-        vars->hp -= 0.0005;
+        vars->hp -= 0.001;
     else
     {
         //destroy vars
@@ -32,8 +32,22 @@ void    life(t_vars *vars)
     }
 }
 
+void    eat(t_vars *vars, int i, int j)
+{
+    if (vars->key_state[E])
+    {
+        vars->map[j][i] = '0';
+        vars->pos_obj.x = -1;
+        vars->pos_obj.y = -1;
+        if (vars->hp += 0.5 > 1.0)
+            vars->hp = 1;
+        else
+            vars->hp += 0.5;
+        ft_putstr_fd("Get one object\n", 1);
+    }
+}
+
 void    update_state(t_vars *vars)
 {
     life(vars);
 }
-

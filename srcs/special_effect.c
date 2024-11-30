@@ -64,25 +64,5 @@ int fade_color(int color, double distance)
     r = color_range((int)(r * factor) + 10);
     g = color_range((int)(g * factor) + 10);
     b = color_range((int)(b * factor) + 10);
-
-    // 确保RGB值在合法范围内
-    if (r < 0) {
-        r = 0;
-    } else if (r > 255) {
-        r = 255;
-    }
-
-    if (g < 0) {
-        g = 0;
-    } else if (g > 255) {
-        g = 255;
-    }
-
-    if (b < 0) {
-        b = 0;
-    } else if (b > 255) {
-        b = 255;
-    }
-
     return (r << 16) | (g << 8) | b;
 }

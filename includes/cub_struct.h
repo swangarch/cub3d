@@ -33,9 +33,10 @@ typedef struct s_vars
 
     t_vector    ray_obj[(int)SAMPLE];
     int         ray_obj_color[(int)SAMPLE];
-    // int         ray_touch_obj[(int)SAMPLE];
+
     double      ray_obj_dist[(int)SAMPLE];
     double      ray_obj_pos[(int)SAMPLE];
+    double      ray_obj_dist_pt_ln[(int)SAMPLE];
 
     time_t      last_frame_t;
 
@@ -61,6 +62,7 @@ typedef struct s_vars
 	void		*mlx;
 	void		*win;
     char		**map;
+    t_vector    pos_obj;
     char        *buf_img;
     void        *buf_img_ptr;
     int         bits_per_pixel;

@@ -64,13 +64,13 @@ void init_vars(t_vars *vars, t_game *game)
     vars->fade = 1;
     vars->shadow = 1;
 
-    // vars->obj_end_i = -1;
-    // vars->obj_start_i = -1;
 
     vars->game = game;
 
     vars->map = game->map;
-    vars->map[15][15] = 'C';
+    vars->pos_obj.x = 15.5;
+    vars->pos_obj.y = 15.5;
+    vars->map[(int)vars->pos_obj.x][(int)vars->pos_obj.y] = 'C';
     ft_memset(&(vars->key_state), 0, 256 * sizeof(int));
 
     vars->mlx = mlx_init();//protect

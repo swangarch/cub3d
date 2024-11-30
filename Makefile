@@ -35,7 +35,7 @@ SRCS		=	$(SRC_DIR)cub3d.c \
 				$(SRC_DIR)ui.c \
 				$(SRC_DIR)update_state.c \
 				$(SRC_DIR)special_effect.c \
-				$(SRC_DIR)object_check.c
+				$(SRC_DIR)sprite_animation.c
 
 
 

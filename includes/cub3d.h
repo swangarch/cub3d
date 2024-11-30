@@ -83,6 +83,8 @@ double vector_magnitude(t_vector *v);
 
 void add_vector(t_vector *v_result, t_vector *v1, t_vector *v2);
 void cpy_scale_vector(t_vector *v_result, t_vector *v, double scale);
+void vector_2pt(t_vector *v_result, t_vector *end, t_vector *begin);
+double dot_product(t_vector *v1, t_vector *v2);
 
 /*RENDER*/
 void    render_game(t_vars *vars);
@@ -110,15 +112,15 @@ void draw_ui(t_vars *vars);
 
 /*UPDATE STATE*/
 void    update_state(t_vars *vars);
+void    eat(t_vars *vars, int i, int j);
 
 /*SPECIAL EFFECT*/
 int put_shadow(int color, double height, double wall_height);
 int fade_color(int color, double distance);
 int put_vertical_shadow(int color);
 
-
-
-double obj_distance(t_vars *vars, t_vector *vector, int index);
+//double obj_distance(t_vars *vars, t_vector *vector, int index);
+void draw_obj_visibility(t_vars *vars, double size);
 void cal_render_obj(t_vars *vars);
 
 #endif

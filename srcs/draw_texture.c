@@ -23,8 +23,8 @@ int get_texture_pixel_color(void *tex, t_vector *pos)
     int x;
     int y;
 
-    x = closest_int(pos->x);
-    y = closest_int(pos->y);
+    x = round(pos->x);  //use round function of math lib
+    y = round(pos->y);
     tex_ptr = mlx_get_data_addr(tex, &bits_per_pixel, &size_line, &endian);
     pixel_index =  y * size_line + x * bits_per_pixel / 8;
     if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * size_line) // 防止越界
