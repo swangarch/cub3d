@@ -9,7 +9,7 @@ MLX_DIR		=	mlx_linux/
 MLX_LIB		=	$(MLX_DIR)libmlx.a
 
 # Compiler and CFlags
-CC			=	cc -g
+CC			=	cc
 # CFLAGS		=	-Wall -Wextra -Werror
 INCLUDES	=	-Iincludes -I/usr/include -Imlx -I./libft
 FLAGS		=	-Lmlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
@@ -52,7 +52,7 @@ $(MLX_LIB):
 		@make -sC $(MLX_DIR)
 
 $(NAME):	$(OBJS) $(LIBFT) $(MLX_LIB)
-		@$(CC) $(CFLAGS) $(FLAGS) $(INCLUDES) $(OBJS) \
+		@$(CC) $(CFLAGS) $(OBJS) $(FLAGS) $(INCLUDES) \
 		$(LIBFT) $(MLX_LIB) -o $(NAME)
 		@echo "Compilation success!" 
 
