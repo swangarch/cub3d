@@ -124,7 +124,7 @@ void draw_obj(t_vars *vars)
             continue;
         } 
         obj_distance = vars->ray_obj_dist[i];
-        wall_height = DISPLAY_H / obj_distance;
+        wall_height = DISPLAY_H / obj_distance * 1.2;
         pos_on_obj.x = (vars->ray_obj_dist_pt_ln[i] + 0.5) * TEXTURE_SIZE;
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
         j = 0;

@@ -123,4 +123,6 @@ int put_vertical_shadow(int color);
 void draw_obj_visibility(t_vars *vars, double size);
 void cal_render_obj(t_vars *vars);
 
+void draw_map(t_vars *vars, double x, double y);
+
 #endif

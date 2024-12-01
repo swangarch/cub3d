@@ -47,6 +47,7 @@
 //# define SAMPLE 4
 # define FOV 60.0
 # define GRID_SIZE 1
+# define HEIGHT_RATIO 1.5
 
 # define MAX_VIEW_DISTANCE 500.0
 # define MIN_WALL_DISTANCE 0.1

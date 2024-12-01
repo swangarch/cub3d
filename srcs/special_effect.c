@@ -26,7 +26,6 @@ int put_shadow(int color, double height, double wall_height)
 
     x = ft_abs(height - wall_height / 2.0);
     factor = pow(M_E, - x / (wall_height / 2.0));
-    //factor = log(factor + 1) * 2.3;
     factor = log(factor + 1) + 0.6;  ///const
     r = color_range(r * factor);
     g = color_range(g * factor);

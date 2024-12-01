@@ -52,7 +52,7 @@ void draw_texture(t_vars *vars)
     while (i < (int)SAMPLE)
     {
         distance = vars->ray_dist[i];
-        wall_height = DISPLAY_H / distance;
+        wall_height = DISPLAY_H / distance * HEIGHT_RATIO;
         pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
         j = 0;
@@ -74,11 +74,18 @@ void draw_texture(t_vars *vars)
                 break;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
             pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
+            if (get_t(pixel_color) >= 1)
+            {
+                j++;
+                continue;
+            }
             if (vars->key_state[O] && vars->key_state[P])
             {
                 if (vars->ray_color[i] % 2)
                     pixel_color = put_vertical_shadow(pixel_color);
-                put_pixel_to_buf(vars, x, y, fade_color(put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE), distance));
+                pixel_color = fade_color(pixel_color, distance);
+                //pixel_color = put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE);
+                put_pixel_to_buf(vars, x, y, pixel_color);
             }
             else if (vars->key_state[O])
                 put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
@@ -86,7 +93,8 @@ void draw_texture(t_vars *vars)
             {
                 if (vars->ray_color[i] % 2)
                     pixel_color = put_vertical_shadow(pixel_color);
-                put_pixel_to_buf(vars, x, y, put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE));
+                //pixel_color = put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE);
+                put_pixel_to_buf(vars, x, y, pixel_color);
             }
             else
                 put_pixel_to_buf(vars, x, y, pixel_color);
