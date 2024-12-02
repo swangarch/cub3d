@@ -19,11 +19,11 @@ void    life(t_vars *vars)
     if ((vars->key_state[W] || vars->key_state[A] || vars->key_state[S] || vars->key_state[D]) && !vars->touch_wall)
     {
         if (vars->hp < 1.0)
-            vars->hp += 0.002;
+            vars->hp += 0.001;
         return;
     }
     if (vars->hp > 0)
-        vars->hp -= 0.001;
+        vars->hp -= 0.0005;
     else
     {
         //destroy vars
