@@ -40,9 +40,10 @@
 # define SCALE 1
 # define SCALE_SCREEN 150.0
 # define STEP 0.05
+# define CHECK_STEP 3.0
 # define STEP_ANGLE 1
 # define STEP_ANGLE_MOUSE 0.007
-# define STEP_HEIGHT_RATIO 0.05
+// # define STEP_HEIGHT_RATIO 0.05
 # define SAMPLE 1280
 //# define SAMPLE 4
 # define FOV 60.0
@@ -74,10 +75,10 @@
 # define LEFT_INT 128
 # define RIGHT 65363
 # define RIGHT_INT 129
-# define UP 65362
-# define UP_INT 130
-# define DOWN 65364
-# define DOWN_INT 131
+// # define UP 65362
+// // # define UP_INT 130
+// # define DOWN 65364
+// # define DOWN_INT 131
 # define M 109
 # define E 101
 # define F 102

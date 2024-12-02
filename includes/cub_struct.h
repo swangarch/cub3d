@@ -46,7 +46,7 @@ typedef struct s_vars
     double      mouse_move_dir;
     t_vector    last_mouse_pos;
     int         key_state[256];
-    double      height_ratio;
+    //double      height_ratio;
 
     double      hp;
     int         touch_wall;

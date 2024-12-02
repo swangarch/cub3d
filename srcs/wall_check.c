@@ -59,6 +59,8 @@ double hit_wall(t_vars *vars, t_vector *intersect, int index, t_vector map_loc)
     //     return -1;
 
     // 检查当前网格是否是墙壁
+    if  (map_loc.x >= vars->game->map_col - 1 || map_loc.y >= vars->game->map_row || map_loc.x < 0 || map_loc.y < 0)
+        return (-1);
     if (vars->map[(int)map_loc.y][(int)map_loc.x] == '1')
     {
         // 计算当前网格的中心坐标

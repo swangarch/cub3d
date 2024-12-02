@@ -12,50 +12,6 @@
 
 # include "../includes/cub3d.h"
 
-void draw_colored_wall_line(t_vars *vars, int i)  ////no need
-{
-    int color_final = WHITE;
-    double distance = vars->ray_dist[i];
-    double wall_height = DISPLAY_H / distance;
-    double wall_height_top = (vars->height_ratio) * wall_height;
-    double wall_height_bottom = (1.0 - vars->height_ratio) * wall_height;
-
-    if (vars->ray_color[i] == WEST)
-        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, 0);
-    else if (vars->ray_color[i] == EAST)
-        color_final = create_trgb(255, 0, (int)((vars->ray_poswall[i]) * 255), 0);
-    else if (vars->ray_color[i] == NORTH)
-        color_final = create_trgb(255, 0, 0, (int)((vars->ray_poswall[i]) * 255));
-    else if (vars->ray_color[i] == SOUTH)
-        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, (int)((vars->ray_poswall[i]) * 255));
-
-    t_vector    base_pt;
-    t_vector    top_pt;
-    t_vector    bottom_pt;
-
-    base_pt.x = POSITION_X + i * (DISPLAY_W / SAMPLE);
-    base_pt.y = DISPLAY_H / 2.0;
-    top_pt.x = base_pt.x;
-    top_pt.y = DISPLAY_H / 2.0 + wall_height_top;
-    bottom_pt.x = base_pt.x;
-    bottom_pt.y = DISPLAY_H / 2.0 - wall_height_bottom;
-
-    draw_line(vars, &base_pt, &top_pt, color_final);
-    draw_line(vars, &base_pt, &bottom_pt, color_final);
-}
-
-void    draw_colored_wall(t_vars *vars)
-{
-    int i;
-
-    i = 0;
-    while (i < (int)SAMPLE)
-    {
-        draw_colored_wall_line(vars, i);
-        i++;
-    }
-}
-
 /*Vector version*/
 void cal_render(t_vars *vars)
 {
@@ -113,22 +69,13 @@ static void render_floor_sky(t_vars *vars)
         if (y < SCREEN_HEIGHT / 2) {
             // 渲染天空
             for (int x = 0; x < SCREEN_WIDTH; x++) {
-                // if (!SKY)
-                // {
-                //     floor_x = vars->posv.x + row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.x + (x / (double)SCREEN_WIDTH) * (ray_dir_right.x - ray_dir_left.x));
-                //     floor_y = vars->posv.x + row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.y + (x / (double)SCREEN_WIDTH) * (ray_dir_right.y - ray_dir_left.y));
-                // }
-                // else
-                // {
                 floor_x = row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.x + (x / (double)SCREEN_WIDTH) * (ray_dir_right.x - ray_dir_left.x));
                 floor_y = row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.y + (x / (double)SCREEN_WIDTH) * (ray_dir_right.y - ray_dir_left.y));
-                // }
                 tex_sky.x = (int)(floor_x * TEXTURE_SIZE / 3.0) % TEXTURE_SIZE;
                 tex_sky.y = (int)(floor_y * TEXTURE_SIZE / 3.0) % TEXTURE_SIZE;
                 if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
                 if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
                 pixel_color = get_texture_pixel_color(vars->tex_c, &tex_sky);
-                //pixel_color = fade_color(pixel_color, vars->ray_dist[(int)floor_x]);
                 put_pixel_to_buf(vars, x, y, pixel_color);
             }
         } else {
@@ -141,7 +88,6 @@ static void render_floor_sky(t_vars *vars)
                 if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
                 if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
                 pixel_color = get_texture_pixel_color(vars->tex_f, &tex_sky);
-                //pixel_color = fade_color(pixel_color, vars->ray_dist[(int)floor_x]);
                 put_pixel_to_buf(vars, x, y, pixel_color);
             }
         }
@@ -153,16 +99,14 @@ void    render_game(t_vars *vars)
 {
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
-    // draw_sky(vars, vars->game->color_c);
-    // draw_ground(vars, vars->game->color_f);
-    //render_floor_sky(vars);
     move_character(vars);
     rotate_when_mouse_move(vars);
     update_state(vars);
     cal_render(vars);
     cal_render_obj(vars);
-    //draw_colored_wall(vars);
     render_floor_sky(vars);
+    // draw_sky(vars, vars->game->color_c);
+    // draw_ground(vars, vars->game->color_f);
     draw_texture(vars);
     draw_obj(vars);
     draw_map(vars, 0, 0);
@@ -184,9 +128,7 @@ int    update_frame(t_vars *vars)
     }
     time_passed = now_time - vars->last_frame_t;
     if (time_passed < 1000000 / FPS)
-    {
         return (0);
-    }
     render_game(vars);
     if (vars->key_state[F])
     {

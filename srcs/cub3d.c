@@ -28,7 +28,6 @@ void cub3d(t_game *game)
 
     init_vars(&vars, game);
     game_loop(&vars);
-    //free()
 }
 
 int main(int argc, char **argv)
@@ -44,8 +43,6 @@ int main(int argc, char **argv)
 	init_game(&game);
 	if (parse_map(&game, argv[1]))
 		map_error(MES_INVALD_MAP_ERR);//free game!!!
-    //errorchecking
-    //parsing
     cub3d(&game);
     return (0);
 }

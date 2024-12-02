@@ -44,7 +44,6 @@ void init_vars(t_vars *vars, t_game *game)
     vars->posv.y = game->player_y;
     set_init_dir(vars, game->dir_player);//++++++++++
     normalize_vector(&(vars->dirv), 1.0);
-    vars->height_ratio = 0.5;
 
     vars->last_frame_t = 0;
     
