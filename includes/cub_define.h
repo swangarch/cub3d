@@ -48,6 +48,7 @@
 # define FOV 60.0
 # define GRID_SIZE 1
 # define HEIGHT_RATIO 1.5
+//# define HEIGHT_RATIO 0.68
 
 # define MAX_VIEW_DISTANCE 500.0
 # define MIN_WALL_DISTANCE 0.1
@@ -113,6 +114,7 @@
 
 /*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
+# define SKY 1
 
 /*UI*/
 # define HP_W 100

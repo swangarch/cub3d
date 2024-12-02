@@ -73,6 +73,13 @@ typedef struct s_vars
     void        *tex_e;
     void        *tex_n;
     void        *tex_s;
+    void        *tex_s_1;
+    void        *tex_w_1;
+    void        *tex_s_2;
+    void        *tex_w_2;
+
+    void        *tex_c;
+    void        *tex_f;
 
     void        *tex_object;
 

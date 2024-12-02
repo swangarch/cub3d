@@ -26,8 +26,8 @@ void    life(t_vars *vars)
         vars->hp -= 0.0005;
     else
     {
-        //destroy vars
-        ft_putstr_fd("Game over\n", 1);
+        destroy_vars(vars);
+        ft_putstr_fd("Game over!\n", 1);
         exit(0);
     }
 }
@@ -43,11 +43,28 @@ void    eat(t_vars *vars, int i, int j)
             vars->hp = 1;
         else
             vars->hp += 0.5;
-        ft_putstr_fd("Get one object\n", 1);
+        destroy_vars(vars);
+        ft_putstr_fd("Congratulations, You win!\n", 1);
+        exit(0);
+    }
+}
+
+void    update_animation_frame(t_vars *vars)
+{
+    if (get_current_time() % 4000000 < 2000000)
+    {
+        vars->tex_s = vars->tex_s_1;
+        vars->tex_w = vars->tex_w_1;
+    }
+    else
+    {
+        vars->tex_s = vars->tex_s_2;
+        vars->tex_w = vars->tex_w_2;
     }
 }
 
 void    update_state(t_vars *vars)
 {
     life(vars);
+    update_animation_frame(vars);
 }

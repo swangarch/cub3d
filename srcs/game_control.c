@@ -109,7 +109,7 @@ int	move_character(t_vars *vars)
 
 int cross_press(t_vars *vars)
 {
-    //destroy_vars(vars);
+    destroy_vars(vars);
     exit(0);
 }
 
@@ -117,24 +117,17 @@ int	key_press(int keycode, t_vars *vars)
 {
 	if (keycode == 65307)//esc
 	{
-		//destroy_vars(vars);
+		destroy_vars(vars);
 		exit(0);
 	}
     if (keycode == M && vars->key_state[M] == 1)
     {
-        vars->key_state[M] = 0;
-        return (1);
+        return (vars->key_state[M] = 0, 1);
     }
     if (keycode == O && vars->key_state[O] == 1)
-    {
-        vars->key_state[O] = 0;
-        return (1);
-    }
+        return (vars->key_state[O] = 0, 1);
     if (keycode == P && vars->key_state[P] == 1)
-    {
-        vars->key_state[P] = 0;
-        return (1);
-    }
+        return (vars->key_state[P] = 0, 1);
     if (keycode < 128)
         vars->key_state[keycode] = 1;
     else if (keycode == LEFT)

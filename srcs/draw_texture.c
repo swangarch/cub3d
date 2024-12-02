@@ -35,6 +35,21 @@ int get_texture_pixel_color(void *tex, t_vector *pos)
     return (-1);
 }
 
+void *get_texture(t_vars *vars, int i)
+{
+    void *texture;
+
+    if (vars->ray_color[i] == EAST)
+        texture = vars->tex_e;
+    else if (vars->ray_color[i] == WEST)
+        texture = vars->tex_w;
+    else if (vars->ray_color[i] == NORTH)
+        texture = vars->tex_n;  
+    else if (vars->ray_color[i] == SOUTH)
+        texture = vars->tex_s;
+    return(texture);
+}
+
 void draw_texture(t_vars *vars)
 {
     int i;
@@ -56,14 +71,7 @@ void draw_texture(t_vars *vars)
         pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
         x = POSITION_X + i * (DISPLAY_W / SAMPLE);
         j = 0;
-        if (vars->ray_color[i] == EAST)
-            texture = vars->tex_e;
-        else if (vars->ray_color[i] == WEST)
-            texture = vars->tex_w;
-        else if (vars->ray_color[i] == NORTH)
-            texture = vars->tex_n;  
-        else if (vars->ray_color[i] == SOUTH)
-            texture = vars->tex_s;   
+        texture = get_texture(vars, i);  
 
         if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
             j = wall_height / 2 - DISPLAY_H / 2.0;

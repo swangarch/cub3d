@@ -19,25 +19,11 @@ void draw_visibility(t_vars *vars, double size)
     }
 }
 
-void draw_map(t_vars *vars, double x, double y)
+void draw_map_shadow(t_vars *vars, double x, double y)
 {
     int i;
     int j;
 
-    i = 0;
-    j = 0;
-
-    if (!vars->key_state[M])
-        return ;
-
-    if (vars->key_state[NUM_0])
-        vars->map_size += 0.1;
-    if (vars->key_state[NUM_9] && vars->map_size >= 7.0)
-        vars->map_size -= 0.1;
-    if ((vars->game->map_col - 1) * vars->map_size > SCREEN_WIDTH)
-        vars->map_size = SCREEN_WIDTH / (double)(vars->game->map_col - 1);
-    if ((vars->game->map_row) * vars->map_size > SCREEN_HEIGHT)
-        vars->map_size = SCREEN_HEIGHT / (double)(vars->game->map_row);
     j = 0;
     while (vars->map[j])  //map issue map 14
     {
@@ -50,16 +36,21 @@ void draw_map(t_vars *vars, double x, double y)
         }
         j++;
     }
+}
+
+void draw_map_element(t_vars *vars, double x, double y)
+{
+    int i;
+    int j;
+
     j = 0;
     while (vars->map[j])
     {
         i = 0;
         while (vars->map[j][i])
         {
-            // if (vars->map[j][i] == '0')
-                // draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, GREY_L);
             if (vars->map[j][i] == '1')
-                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0 + MAP_SHADOW_SIZE * vars->map_size, y + j * vars->map_size + vars->map_size / 2.0 + MAP_SHADOW_SIZE * vars->map_size, vars->map_size, GREY_M);
+                 draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0 + vars->map_size * MAP_SHADOW_SIZE, y + j * vars->map_size + vars->map_size / 2.0 + vars->map_size * MAP_SHADOW_SIZE, vars->map_size, GREY_M);
             if (vars->map[j][i] == '1')
                  draw_box(vars, x + i * vars->map_size *1 + vars->map_size / 2.0, y + j * vars->map_size + vars->map_size / 2.0, vars->map_size, WHITE);
             if (vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || vars->map[j][i] == 'E' || vars->map[j][i] == 'W')
@@ -69,6 +60,12 @@ void draw_map(t_vars *vars, double x, double y)
         j++;
     }
     draw_visibility(vars, vars->map_size);
+}
+
+void draw_map_obj(t_vars *vars, double x, double y)
+{
+    int i;
+    int j;
 
     j = 0;
     while (vars->map[j])
@@ -83,4 +80,21 @@ void draw_map(t_vars *vars, double x, double y)
         j++;
     }
     draw_obj_visibility(vars, vars->map_size);
+}
+
+void draw_map(t_vars *vars, double x, double y)
+{
+    if (!vars->key_state[M])
+        return ;
+    if (vars->key_state[NUM_0])
+        vars->map_size += 0.1;
+    if (vars->key_state[NUM_9] && vars->map_size >= 7.0)
+        vars->map_size -= 0.1;
+    if ((vars->game->map_col - 1) * vars->map_size > SCREEN_WIDTH)
+        vars->map_size = SCREEN_WIDTH / (double)(vars->game->map_col - 1);
+    if ((vars->game->map_row) * vars->map_size > SCREEN_HEIGHT)
+        vars->map_size = SCREEN_HEIGHT / (double)(vars->game->map_row);
+    draw_map_shadow(vars, x, y);
+    draw_map_element(vars, x, y);
+    //draw_map_obj(vars, x, y);
 }

@@ -125,4 +125,6 @@ void cal_render_obj(t_vars *vars);
 
 void draw_map(t_vars *vars, double x, double y);
 
+void	destroy_vars(t_vars *vars);
+
 #endif

@@ -83,18 +83,86 @@ void cal_render(t_vars *vars)
     }
 }
 
+static void render_floor_sky(t_vars *vars)
+{
+    t_vector ray_dir_left;      // 左边射线
+    t_vector ray_dir_right;     // 右边射线
+    t_vector    tex_sky;
+    t_vector    camera;
+
+    int pixel_color;
+    double row_distances[SCREEN_HEIGHT]; // 预计算行的距离
+    for (int y = SCREEN_HEIGHT / 2; y < SCREEN_HEIGHT; y++) {
+        row_distances[y] = (SCREEN_HEIGHT / 2.0) / (y - SCREEN_HEIGHT / 2.0);
+    }
+    double row_distances_sky[SCREEN_HEIGHT]; // 预计算行的距离
+    for (int y = SCREEN_HEIGHT / 2 - 1; y >= 0; y--) {
+        row_distances_sky[y] = (SCREEN_HEIGHT / 2.0) / (SCREEN_HEIGHT / 2.0 - y);
+    }
+    rotate_vector(&camera, &(vars->dirv), to_radians(90));
+    normalize_vector(&camera, tan(to_radians(FOV / 2)));
+    ray_dir_left.x = vars->dirv.x - camera.x;
+    ray_dir_left.y = vars->dirv.y - camera.y;
+    ray_dir_right.x = vars->dirv.x + camera.x;
+    ray_dir_right.y = vars->dirv.y + camera.y;
+
+    double floor_x;
+    double floor_y;
+
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        if (y < SCREEN_HEIGHT / 2) {
+            // 渲染天空
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                // if (!SKY)
+                // {
+                //     floor_x = vars->posv.x + row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.x + (x / (double)SCREEN_WIDTH) * (ray_dir_right.x - ray_dir_left.x));
+                //     floor_y = vars->posv.x + row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.y + (x / (double)SCREEN_WIDTH) * (ray_dir_right.y - ray_dir_left.y));
+                // }
+                // else
+                // {
+                floor_x = row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.x + (x / (double)SCREEN_WIDTH) * (ray_dir_right.x - ray_dir_left.x));
+                floor_y = row_distances_sky[y] * HEIGHT_RATIO * (ray_dir_left.y + (x / (double)SCREEN_WIDTH) * (ray_dir_right.y - ray_dir_left.y));
+                // }
+                tex_sky.x = (int)(floor_x * TEXTURE_SIZE / 3.0) % TEXTURE_SIZE;
+                tex_sky.y = (int)(floor_y * TEXTURE_SIZE / 3.0) % TEXTURE_SIZE;
+                if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
+                if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
+                pixel_color = get_texture_pixel_color(vars->tex_c, &tex_sky);
+                //pixel_color = fade_color(pixel_color, vars->ray_dist[(int)floor_x]);
+                put_pixel_to_buf(vars, x, y, pixel_color);
+            }
+        } else {
+            // 渲染地板
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                double floor_x = vars->posv.x + row_distances[y] * HEIGHT_RATIO * (ray_dir_left.x + (x / (double)SCREEN_WIDTH) * (ray_dir_right.x - ray_dir_left.x));
+                double floor_y = vars->posv.y + row_distances[y] * HEIGHT_RATIO * (ray_dir_left.y + (x / (double)SCREEN_WIDTH) * (ray_dir_right.y - ray_dir_left.y));
+                tex_sky.x = (int)(floor_x * TEXTURE_SIZE / 1.0) % TEXTURE_SIZE;
+                tex_sky.y = (int)(floor_y * TEXTURE_SIZE / 1.0) % TEXTURE_SIZE;
+                if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
+                if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
+                pixel_color = get_texture_pixel_color(vars->tex_f, &tex_sky);
+                //pixel_color = fade_color(pixel_color, vars->ray_dist[(int)floor_x]);
+                put_pixel_to_buf(vars, x, y, pixel_color);
+            }
+        }
+    }
+}
+
+
 void    render_game(t_vars *vars)
 {
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
-    draw_sky(vars, vars->game->color_c);
-    draw_ground(vars, vars->game->color_f);
+    // draw_sky(vars, vars->game->color_c);
+    // draw_ground(vars, vars->game->color_f);
+    //render_floor_sky(vars);
     move_character(vars);
     rotate_when_mouse_move(vars);
     update_state(vars);
     cal_render(vars);
     cal_render_obj(vars);
     //draw_colored_wall(vars);
+    render_floor_sky(vars);
     draw_texture(vars);
     draw_obj(vars);
     draw_map(vars, 0, 0);

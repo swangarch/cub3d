@@ -22,3 +22,9 @@ void	free_char_array(char **array)
 	}
 	free(array);
 }
+
+void	destroy_vars(t_vars *vars)
+{
+	(void)vars;
+	return ; 
+}
