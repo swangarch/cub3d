@@ -12,7 +12,7 @@
 
 # include "../includes/cub3d.h"
 
-int get_texture_pixel_color(void *tex, t_vector *pos, int color)
+int get_texcolor(void *tex, t_vector *pos, int color)
 {
     void *tex_ptr;
     int bits_per_pixel;
@@ -45,65 +45,51 @@ void *get_texture(t_vars *vars, int i)
     return(texture);
 }
 
+static void render_texture_pixel(t_vars *vars, int *pos_screen, int pixel_color, int i)
+{
+    int x;
+    int y;
+    
+    if (get_t(pixel_color) >= 1)
+        return ;
+    x = pos_screen[0];
+    y = pos_screen[1];
+    if (vars->key_state[P])
+    {
+        if (vars->ray_color[i] % 2)
+            pixel_color = put_vertical_shadow(pixel_color);
+    }
+    if (vars->key_state[O])
+        pixel_color = fade_color(pixel_color, vars->ray_dist[i]);
+    put_pixel_to_buf(vars, x, y, pixel_color);
+}
+
 void draw_texture(t_vars *vars)
 {
     int i;
     int j;
-    t_vector pos_on_texture;
-    double distance;
+    t_vector postex;
     double wall_height;
-    int x;
-    int y;
-    void *texture;
-    int pixel_color;
+    int pos_screen[2];
     
-    
-    i = 0;
-    while (i < (int)SAMPLE)
+    i = -1;
+    while (++i < (int)SAMPLE)
     {
-        distance = vars->ray_dist[i];
-        wall_height = DISPLAY_H / distance * HEIGHT_RATIO;
-        pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
-        x = POSITION_X + i * (DISPLAY_W / SAMPLE);
+        wall_height = DISPLAY_H / vars->ray_dist[i] * HEIGHT_RATIO;
+        postex.x = vars->ray_poswall[i] * TEXTURE_SIZE;
+        pos_screen[0] = POSITION_X + i * (DISPLAY_W / SAMPLE);
         j = 0;
-        texture = get_texture(vars, i);  
-
         if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
             j = wall_height / 2 - DISPLAY_H / 2.0;
         while (j < (int)(wall_height))
         {
-            y = DISPLAY_H / 2.0 - wall_height / 2 + j;
-            if (y > DISPLAY_H)
+            pos_screen[1] = DISPLAY_H / 2.0 - wall_height / 2 + j;
+            if (pos_screen[1] > DISPLAY_H)
                 break;
-            pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
-            pixel_color = get_texture_pixel_color(texture, &pos_on_texture, -1);
-            if (get_t(pixel_color) >= 1)
-            {
-                j++;
-                continue;
-            }
-            if (vars->key_state[O] && vars->key_state[P])
-            {
-                if (vars->ray_color[i] % 2)
-                    pixel_color = put_vertical_shadow(pixel_color);
-                pixel_color = fade_color(pixel_color, distance);
-                //pixel_color = put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE);
-                put_pixel_to_buf(vars, x, y, pixel_color);
-            }
-            else if (vars->key_state[O])
-                put_pixel_to_buf(vars, x, y, fade_color(pixel_color, distance));
-            else if (vars->key_state[P])
-            {
-                if (vars->ray_color[i] % 2)
-                    pixel_color = put_vertical_shadow(pixel_color);
-                //pixel_color = put_shadow(pixel_color, pos_on_texture.y, TEXTURE_SIZE);
-                put_pixel_to_buf(vars, x, y, pixel_color);
-            }
-            else
-                put_pixel_to_buf(vars, x, y, pixel_color);
+            postex.y = j / wall_height * TEXTURE_SIZE;
+            render_texture_pixel(vars, pos_screen, get_texcolor(get_texture(vars, i), &postex, -1), i);
             j++;
         }
-        i++;
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 }
 

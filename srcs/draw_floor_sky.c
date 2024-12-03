@@ -86,7 +86,7 @@ void render_floor_sky_texture(t_vars *vars)
                 tex_sky.y = (int)(floor_y * TEXTURE_SIZE / 3.0) % TEXTURE_SIZE;
                 if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
                 if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
-                pixel_color = get_texture_pixel_color(vars->tex_c, &tex_sky, -1);
+                pixel_color = get_texcolor(vars->tex_c, &tex_sky, -1);
                 put_pixel_to_buf(vars, x, y, pixel_color);
             }
         } else {
@@ -98,7 +98,7 @@ void render_floor_sky_texture(t_vars *vars)
                 tex_sky.y = (int)(floor_y * TEXTURE_SIZE / 1.0) % TEXTURE_SIZE;
                 if (tex_sky.x < 0) tex_sky.x += TEXTURE_SIZE;
                 if (tex_sky.y < 0) tex_sky.y += TEXTURE_SIZE;
-                pixel_color = get_texture_pixel_color(vars->tex_f, &tex_sky, -1);
+                pixel_color = get_texcolor(vars->tex_f, &tex_sky, -1);
                 put_pixel_to_buf(vars, x, y, pixel_color);
             }
         }

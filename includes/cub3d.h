@@ -52,7 +52,7 @@ double to_radians(double angle);
 double ft_abs(double num);
 int double_eql(double a, double b);
 double len_2pt(t_vector *v1, t_vector *v2);
-int closest_int(double num);
+//int closest_int(double num);
 
 /*DRAW GEOMETRY*/
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
@@ -87,14 +87,14 @@ void vector_2pt(t_vector *v_result, t_vector *end, t_vector *begin);
 double dot_product(t_vector *v1, t_vector *v2);
 
 /*RENDER*/
-void    render_game(t_vars *vars);
+void    render_frame(t_vars *vars);
 void clear_image_buf(t_vars *vars);
 int    update_frame(t_vars *vars);
-int get_texture_pixel_color(void *tex, t_vector *pos, int color);
+int get_texcolor(void *tex, t_vector *pos, int color);
 
 /*TEXTURE*/
 void draw_texture(t_vars *vars);
-void draw_obj(t_vars *vars);
+void draw_obj(t_vars *vars, int i, int j);
 
 /*COLOR*/
 int create_trgb(int t, int r, int g, int b);
@@ -119,8 +119,10 @@ int put_shadow(int color, double height, double wall_height);
 int fade_color(int color, double distance);
 int put_vertical_shadow(int color);
 
+// void render_texture_pixel(t_vars *vars, int *pos_screen, int pixel_color, int i);
+
 //double obj_distance(t_vars *vars, t_vector *vector, int index);
-void draw_obj_visibility(t_vars *vars, double size);
+//void draw_obj_visibility(t_vars *vars, double size);
 void cal_render_obj(t_vars *vars);
 
 void draw_map(t_vars *vars, double x, double y);

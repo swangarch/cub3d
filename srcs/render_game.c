@@ -77,7 +77,7 @@ void    render_frame(t_vars *vars)
     cal_render_obj(vars); //bonus
     render_floor_sky(vars);  //bonus
     draw_texture(vars);
-    draw_obj(vars); //bonus
+    draw_obj(vars, -1, -1); //bonus
     draw_map(vars, 0, 0); //bonus
     draw_ui(vars); //bonus
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
