@@ -12,21 +12,16 @@
 
 # include "../includes/cub3d.h"
 
-int get_texture_pixel_color(void *tex, t_vector *pos)
+int get_texture_pixel_color(void *tex, t_vector *pos, int color)
 {
     void *tex_ptr;
     int bits_per_pixel;
     int size_line;
     int endian;
     int pixel_index;
-    int color;
-    int x;
-    int y;
-
-    x = round(pos->x);  //use round function of math lib
-    y = round(pos->y);
+    
     tex_ptr = mlx_get_data_addr(tex, &bits_per_pixel, &size_line, &endian);
-    pixel_index =  y * size_line + x * bits_per_pixel / 8;
+    pixel_index =  round(pos->y) * size_line + round(pos->x) * bits_per_pixel / 8;
     if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * size_line) // 防止越界
     {
         color = *(int *)(tex_ptr + pixel_index); // 写入颜色
@@ -81,7 +76,7 @@ void draw_texture(t_vars *vars)
             if (y > DISPLAY_H)
                 break;
             pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
-            pixel_color = get_texture_pixel_color(texture, &pos_on_texture);
+            pixel_color = get_texture_pixel_color(texture, &pos_on_texture, -1);
             if (get_t(pixel_color) >= 1)
             {
                 j++;

@@ -33,15 +33,3 @@ int get_t(int color) {
     return (color >> 24) & 0xFF;
 }
 
-int color_range(int color_element)
-{
-    if (color_element > 255)
-    {
-        return (255);
-    }
-    if (color_element < 0)
-    {
-        return (0);
-    }
-    return (color_element);
-}

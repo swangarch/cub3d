@@ -33,19 +33,17 @@ void draw_sight(t_vars *vars)
 {
     t_vector v1a;
     t_vector v1b;
-
     t_vector v2a;
     t_vector v2b;
     
-    v1a.x = SCREEN_WIDTH / 2;
-    v1b.x = SCREEN_WIDTH / 2;
-    v1a.y = SCREEN_HEIGHT / 2 - 20;
-    v1b.y = SCREEN_HEIGHT / 2 + 20;
-
-    v2a.y = SCREEN_HEIGHT / 2;
-    v2b.y = SCREEN_HEIGHT / 2;
-    v2a.x = SCREEN_WIDTH / 2 - 20;
-    v2b.x = SCREEN_WIDTH / 2 + 20;
+    v1a.x = SCREEN_WIDTH / 2.0;
+    v1b.x = SCREEN_WIDTH / 2.0;
+    v1a.y = SCREEN_HEIGHT / 2.0 - 20.0;
+    v1b.y = SCREEN_HEIGHT / 2.0 + 20.0;
+    v2a.y = SCREEN_HEIGHT / 2.0;
+    v2b.y = SCREEN_HEIGHT / 2.0;
+    v2a.x = SCREEN_WIDTH / 2.0 - 20.0;
+    v2b.x = SCREEN_WIDTH / 2.0 + 20.0;
     draw_line(vars, &v1a, &v1b, WHITE);
     draw_line(vars, &v2a, &v2b, WHITE);
 }

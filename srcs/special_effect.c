@@ -58,7 +58,7 @@ int fade_color(int color, double distance)
     g = get_g(color);
     b = get_b(color);
 
-    factor = 1.0 / (1.0 + pow(distance, 1.1)) + 0.5; // 较强的衰减  //const
+    factor = 1.0 / (1.0 + pow(distance, 0.5)) + 0.5;
     // 调整颜色亮度
     r = color_range((int)(r * factor) + 10);
     g = color_range((int)(g * factor) + 10);

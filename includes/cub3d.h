@@ -57,7 +57,7 @@ int closest_int(double num);
 /*DRAW GEOMETRY*/
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color);
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color);
-void draw_box(t_vars *vars, double x, double y, double size, int color);
+void draw_box(t_vars *vars, t_vector *pos, double size, int color);
 
 void draw_ground(t_vars *vars, int color);
 void draw_sky(t_vars *vars, int);
@@ -90,7 +90,7 @@ double dot_product(t_vector *v1, t_vector *v2);
 void    render_game(t_vars *vars);
 void clear_image_buf(t_vars *vars);
 int    update_frame(t_vars *vars);
-int get_texture_pixel_color(void *tex, t_vector *pos);
+int get_texture_pixel_color(void *tex, t_vector *pos, int color);
 
 /*TEXTURE*/
 void draw_texture(t_vars *vars);
@@ -124,6 +124,7 @@ void draw_obj_visibility(t_vars *vars, double size);
 void cal_render_obj(t_vars *vars);
 
 void draw_map(t_vars *vars, double x, double y);
+void render_floor_sky(t_vars *vars);
 
 void	destroy_vars(t_vars *vars);
 

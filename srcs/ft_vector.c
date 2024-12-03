@@ -54,8 +54,3 @@ void vector_2pt(t_vector *v_result, t_vector *end, t_vector *begin)
     v_result->x = end->x - begin->x;
     v_result->y = end->y - begin->y;
 }
-
-double dot_product(t_vector *v1, t_vector *v2)
-{
-    return (v1->x * v2->x + v1->y * v2->y);
-}

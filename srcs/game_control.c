@@ -12,101 +12,6 @@
 
 # include "../includes/cub3d.h"
 
-int box_collision(t_vars *vars, t_vector *next_pos)
-{
-    int i;
-    int j;
-
-    i = (int)floor(next_pos->x);
-    j = (int)floor(next_pos->y);
-    if (vars->map[j][i] == '1')
-    {   
-        vars->touch_wall = 1;
-        return (1);
-    }
-    if (vars->map[j][i] == 'C')
-    {   
-        vars->touch_wall = 1;
-        eat(vars, i , j);
-        return (1);
-    }
-    vars->touch_wall = 0;
-    return (0);
-}
-
-void set_next_pos(t_vars *vars, t_vector *next_pos, t_vector *check_pos, int case_dir)
-{
-    if (case_dir == W)
-    {
-        next_pos->x = vars->posv.x + STEP * vars->dirv.x;
-        next_pos->y = vars->posv.y + STEP * vars->dirv.y;
-        check_pos->x = vars->posv.x + STEP * CHECK_STEP * vars->dirv.x;
-        check_pos->y = vars->posv.y + STEP * CHECK_STEP * vars->dirv.y;
-    }
-    if (case_dir == S)
-    {
-        next_pos->x = vars->posv.x - STEP * vars->dirv.x;
-        next_pos->y = vars->posv.y - STEP * vars->dirv.y;
-        check_pos->x = vars->posv.x - STEP * CHECK_STEP * vars->dirv.x;
-        check_pos->y = vars->posv.y - STEP * CHECK_STEP * vars->dirv.y;
-    }
-    if (case_dir == A)
-        return (next_pos->x = vars->posv.x + STEP * vars->dirv.y, \
-            next_pos->y = vars->posv.y - STEP * vars->dirv.x, \
-            check_pos->x = vars->posv.x + STEP * CHECK_STEP * vars->dirv.y, \
-            check_pos->y = vars->posv.y - STEP * CHECK_STEP * vars->dirv.x, (void)0);
-    if (case_dir == D)
-        return (next_pos->x = vars->posv.x - STEP * vars->dirv.y, \
-            next_pos->y = vars->posv.y + STEP * vars->dirv.x, \
-            check_pos->x = vars->posv.x - STEP * CHECK_STEP * vars->dirv.y, \
-            check_pos->y = vars->posv.y + STEP * CHECK_STEP * vars->dirv.x, (void)0);
-}
-
-// void set_next_pos_perp(t_vars *vars, t_vector *next_pos, t_vector *check_pos, int case_dir)
-// {
-//     if (case_dir == A)
-// }
-
-int	move_character(t_vars *vars)
-{
-    t_vector next_pos;
-    t_vector check_pos;
-
-    if (vars->key_state[A] == 1)  //move left
-	{
-        set_next_pos(vars, &next_pos, &check_pos, A);
-        if (box_collision(vars, &check_pos))
-            return (0);
-        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-	}
-    if (vars->key_state[S] == 1) //move forward
-	{
-        set_next_pos(vars, &next_pos, &check_pos, S);
-        if (box_collision(vars, &check_pos))
-            return (0);
-        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-	}
-    if (vars->key_state[D] == 1)  //move right
-	{
-        set_next_pos(vars, &next_pos, &check_pos, D);
-        if (box_collision(vars, &check_pos))
-            return (0);
-        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-	}
-	if (vars->key_state[W] == 1) //move back
-	{
-        set_next_pos(vars, &next_pos, &check_pos, W);
-        if (box_collision(vars, &check_pos))
-            return (0);
-        cpy_scale_vector(&(vars->posv), &next_pos, 1.0);
-	}
-    if (vars->key_state[LEFT_INT] == 1) //rotate left
-        rotate_vector(&(vars->dirv), &(vars->dirv), -to_radians(STEP_ANGLE));
-    if (vars->key_state[RIGHT_INT] == 1) //rotate left
-        rotate_vector(&(vars->dirv), &(vars->dirv), to_radians(STEP_ANGLE));
-	return (0);
-}
-
 int cross_press(t_vars *vars)
 {
     destroy_vars(vars);
@@ -120,18 +25,18 @@ int	key_press(int keycode, t_vars *vars)
 		destroy_vars(vars);
 		exit(0);
 	}
-    if (keycode == M && vars->key_state[M] == 1)
+    if (keycode == M && vars->key_state[M] == PRESSED)
         return (vars->key_state[M] = 0, 1);
-    if (keycode == O && vars->key_state[O] == 1)
+    if (keycode == O && vars->key_state[O] == PRESSED)
         return (vars->key_state[O] = 0, 1);
-    if (keycode == P && vars->key_state[P] == 1)
+    if (keycode == P && vars->key_state[P] == PRESSED)
         return (vars->key_state[P] = 0, 1);
     if (keycode < 128)
-        vars->key_state[keycode] = 1;
+        vars->key_state[keycode] = PRESSED;
     else if (keycode == LEFT)
-        vars->key_state[LEFT_INT] = 1;
+        vars->key_state[LEFT_INT] = PRESSED;
     else if (keycode == RIGHT)
-        vars->key_state[RIGHT_INT] = 1;
+        vars->key_state[RIGHT_INT] = PRESSED;
 	return (0);
 }
 
@@ -140,11 +45,11 @@ int	key_release(int keycode, t_vars *vars)
     if (keycode == M || keycode == P || keycode == O)
         return (1);
     if (keycode < 128)
-        vars->key_state[keycode] = 0;
+        vars->key_state[keycode] = RELEASED;
     else if (keycode == LEFT)
-        vars->key_state[LEFT_INT] = 0;
+        vars->key_state[LEFT_INT] = RELEASED;
     else if (keycode == RIGHT)
-        vars->key_state[RIGHT_INT] = 0;
+        vars->key_state[RIGHT_INT] = RELEASED;
 	return (0);
 }
 

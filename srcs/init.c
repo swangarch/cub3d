@@ -56,13 +56,11 @@ void init_vars(t_vars *vars, t_game *game)
     vars->show_fps = 0;
     vars->map_size = MAP_SIZE;
 
-
     vars->key_state[O] = 1;
     vars->key_state[P] = 1;
     vars->key_state[M] = 1;
     vars->fade = 1;
     vars->shadow = 1;
-
 
     vars->game = game;
 
@@ -112,10 +110,8 @@ int load_all_texture(t_vars *vars)  //protect
     success += load_texture(vars, &(vars->tex_s_1), vars->game->tex_path[T_SOUTH]);
     success += load_texture(vars, &(vars->tex_w_1), vars->game->tex_path[T_WEST]);
     success += load_texture(vars, &(vars->tex_object), "textures/object.xpm");
-
     success += load_texture(vars, &(vars->tex_f), "textures/ta8_ground.xpm");
     success += load_texture(vars, &(vars->tex_c), "textures/sky.xpm");
-
     return (success);
 }
 

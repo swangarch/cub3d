@@ -32,15 +32,14 @@
 # define SCREEN_HEIGHT 720
 # define SCREEN_WIDTH 1280
 
-
 # define MAP_SIZE 8.0
-# define MAP_SHADOW_SIZE 0.25
+# define SHADSIZ 0.25
 
 /*SAMPLE PARAM*/
 # define SCALE 1
 # define SCALE_SCREEN 150.0
 # define STEP 0.05
-# define CHECK_STEP 3.0
+# define CK_STEP 3.0
 # define STEP_ANGLE 1
 # define STEP_ANGLE_MOUSE 0.007
 // # define STEP_HEIGHT_RATIO 0.05
@@ -88,6 +87,9 @@
 // # define PLUS 43          // +
 # define NUM_9 57
 # define NUM_0 48
+
+# define PRESSED 1
+# define RELEASED 0
 
 /*ORIENTATION*/
 # define NORTH 1

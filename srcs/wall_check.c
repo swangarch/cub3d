@@ -12,66 +12,50 @@
 
 # include "../includes/cub3d.h"
 
-int on_box(t_vars *vars, t_vector* center, t_vector *intersect, int index)
+int on_box(t_vars *vars, t_vector* center, t_vector *ist, int index)
 {
-    double x = intersect->x;
-    double y = intersect->y;
     double top_y = center->y + GRID_SIZE / 2.0;
     double bottom_y = center->y - GRID_SIZE / 2.0;
     double left_x = center->x - GRID_SIZE / 2.0;
     double right_x = center->x + GRID_SIZE / 2.0;
 
-    if (double_eql(x, left_x) && y >= bottom_y + MIN_ERR2 && y <= top_y - MIN_ERR2)
-    {
-        vars->ray_color[index] = WEST;
-        vars->ray_poswall[index] = top_y - y;
-        return (WEST);
-    }
-    else if (double_eql(x, right_x) && y >= bottom_y + MIN_ERR2 && y <= top_y - MIN_ERR2)
-    {
-        vars->ray_color[index] = EAST;
-        vars->ray_poswall[index] = y - bottom_y;
-        return (EAST);
-    }
-    else if (double_eql(y, top_y) && x >= left_x + MIN_ERR2 && x <= right_x - MIN_ERR2)
-    {
-        vars->ray_color[index] = NORTH;
-        vars->ray_poswall[index] = right_x - x;
-        return (NORTH);
-    }
-    else if (double_eql(y, bottom_y) && x >= left_x + MIN_ERR2 && x <= right_x - MIN_ERR2)
-    {
-        vars->ray_color[index] = SOUTH;
-        vars->ray_poswall[index] = x - left_x;
-        return (SOUTH);
-    }
+    if (double_eql(ist->x, left_x) && ist->y >= bottom_y + MIN_ERR2 && ist->y <= top_y - MIN_ERR2)
+        return (vars->ray_color[index] = WEST, vars->ray_poswall[index] = top_y - ist->y, WEST);
+    else if (double_eql(ist->x, right_x) && ist->y >= bottom_y + MIN_ERR2 && ist->y <= top_y - MIN_ERR2)
+        return (vars->ray_color[index] = EAST, vars->ray_poswall[index] = ist->y - bottom_y, EAST);
+    else if (double_eql(ist->y, top_y) && ist->x >= left_x + MIN_ERR2 && ist->x <= right_x - MIN_ERR2)
+        return (vars->ray_color[index] = NORTH, vars->ray_poswall[index] = right_x - ist->x, NORTH);
+    else if (double_eql(ist->y, bottom_y) && ist->x >= left_x + MIN_ERR2 && ist->x <= right_x - MIN_ERR2)
+        return (vars->ray_color[index] = SOUTH, vars->ray_poswall[index] = ist->x - left_x, SOUTH);
     return (NOT_ONBOX);
 }
 
 double hit_wall(t_vars *vars, t_vector *intersect, int index, t_vector map_loc)
 {
-    // int map_x = (int)floor(intersect->x); // 当前网格单元 x 坐标
-    // int map_y = (int)floor(intersect->y); // 当前网格单元 y 坐标
     t_vector box_pos;
 
     // 确保坐标在地图范围内
-    // if (map_y < 0 || map_y >= vars->game->map_row || map_x < 0 || map_x >= vars->game->map_col)
-    //     return -1;
-
-    // 检查当前网格是否是墙壁
     if  (map_loc.x >= vars->game->map_col - 1 || map_loc.y >= vars->game->map_row || map_loc.x < 0 || map_loc.y < 0)
         return (-1);
+    // 检查当前网格是否是墙壁
     if (vars->map[(int)map_loc.y][(int)map_loc.x] == '1')
     {
         // 计算当前网格的中心坐标
         box_pos.x = map_loc.x + GRID_SIZE / 2.0;
         box_pos.y = map_loc.y + GRID_SIZE / 2.0;
-
         // 检查光线是否在墙壁的范围内
         if (on_box(vars, &box_pos, intersect, index) != NOT_ONBOX)
             return len_2pt(&(vars->posv), intersect);
     }
     return (-1);
+}
+
+static int get_dir_unit(double num1, double num2)
+{
+    if (num1 > num2)
+        return (1);
+    else 
+        return (-1);
 }
 
 double wall_distance(t_vars *vars, t_vector *vector, int index)
@@ -80,15 +64,11 @@ double wall_distance(t_vars *vars, t_vector *vector, int index)
     double y = vars->posv.y;  // 出发点 y 坐标
     double dx = vector->x;  // 已归一化的方向向量 x 分量
     double dy = vector->y;  // 已归一化的方向向量 y 分量
-
-    int step_x = (dx > 0) ? 1 : -1;  // x 方向步长（+1 或 -1）
-    int step_y = (dy > 0) ? 1 : -1;  // y 方向步长（+1 或 -1）
-
+    int step_x = get_dir_unit(dx, 0); // ? 1 : -1;  // x 方向步长（+1 或 -1）
+    int step_y = get_dir_unit(dy, 0); // ? 1 : -1;  // y 方向步长（+1 或 -1）
     double t_max_x = (step_x > 0) ? ceil(x) - x : x - floor(x);  // 到达下一个 x 网格线的时间
     double t_max_y = (step_y > 0) ? ceil(y) - y : y - floor(y);  // 到达下一个 y 网格线的时间
     //------------------------------------------
-    // t_max_x /= ft_abs(dx);  // 归一化时间
-    // t_max_y /= ft_abs(dy);  // 归一化时间
     if (dx != 0)
         t_max_x /= ft_abs(dx);
     else
@@ -109,12 +89,6 @@ double wall_distance(t_vars *vars, t_vector *vector, int index)
     else
         t_delta_y = VERY_LARGE_VALUE;
     //-------------------------------------------
-    // double intersect_x = x;
-    // double intersect_y = y;量
-
-    // 初始网格坐标
-    // int map_x = (int)floor(x);
-    // int map_y = (int)floor(y);
     t_vector    map_loc;//++++++++++++++++
     map_loc.x = floor(x);//+++++++++++++++
     map_loc.y = floor(y);//+++++++++++++++

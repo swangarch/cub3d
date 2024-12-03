@@ -34,34 +34,12 @@ double to_radians(double angle)
     return (radians);
 }
 
-double len_2pt(t_vector *v1, t_vector *v2)
-{
-    double  sqr;
-    double x1;
-    double y1;
-    double x2;
-    double y2;
-
-    x1 = v1->x;
-    y1 = v1->y;
-    x2 = v2->x;
-    y2 = v2->y;
-
-    sqr = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-    return (sqr);
-}
-
 double vector_magnitude(t_vector *v)
 {
     return (sqrt(v->x * v->x + v->y * v->y)); 
 }
 
-// int closest_int(double num)
-// {
-//     if (num - (int)num >= 0.5)
-//         return((int)ceil(num));
-//     else
-//         return ((int)floor(num));
-// }
-
-
+double dot_product(t_vector *v1, t_vector *v2)
+{
+    return (v1->x * v2->x + v1->y * v2->y);
+}
