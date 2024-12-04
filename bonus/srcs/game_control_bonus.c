@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 int cross_press(t_vars *vars)
 {
@@ -20,7 +20,7 @@ int cross_press(t_vars *vars)
 
 int	key_press(int keycode, t_vars *vars)
 {
-	if (keycode == 65307)
+	if (keycode == 65307)//esc
 	{
 		destroy_vars(vars);
 		exit(0);
@@ -34,9 +34,7 @@ int	key_press(int keycode, t_vars *vars)
     if (keycode < 128)
         vars->key_state[keycode] = PRESSED;
     else if (keycode == LEFT)
-    {
         vars->key_state[LEFT_INT] = PRESSED;
-    }
     else if (keycode == RIGHT)
     {
         vars->key_state[RIGHT_INT] = PRESSED;
@@ -51,14 +49,24 @@ int	key_release(int keycode, t_vars *vars)
     if (keycode < 128)
         vars->key_state[keycode] = RELEASED;
     else if (keycode == LEFT)
-    {
         vars->key_state[LEFT_INT] = RELEASED;
-    }
     else if (keycode == RIGHT)
     {
         vars->key_state[RIGHT_INT] = RELEASED;
     }
 	return (0);
+}
+
+int mouse_move(int x, int y, t_vars *vars)
+{
+    (void)y;
+    if (x < SCREEN_WIDTH / 5.0 * 1.5)
+        vars->mouse_move_dir = 1 * (SCREEN_WIDTH / 5.0 * 1.5 - x);
+    else if (x > SCREEN_WIDTH / 5.0 * 3.5)
+        vars->mouse_move_dir = -1 * (x - SCREEN_WIDTH / 5.0 * 3.5);
+    else
+        vars->mouse_move_dir = 0;
+    return (0);
 }
 
 void rotate_when_mouse_move(t_vars *vars)

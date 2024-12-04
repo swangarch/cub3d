@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 void put_pixel_to_buf(t_vars *vars, int x, int y, int color)
 {
@@ -71,10 +71,15 @@ void    render_frame(t_vars *vars)
     mlx_clear_window(vars->mlx, vars->win);
     clear_image_buf(vars);
     move_character(vars);
+    rotate_when_mouse_move(vars);  //bonus
+    update_state(vars);
     cal_render(vars);
-    draw_ground(vars, vars->game->color_f);
-    draw_sky(vars, vars->game->color_c);
+    cal_render_obj(vars); //bonus
+    render_floor_sky(vars);  //bonus
     draw_texture(vars);
+    draw_obj(vars, -1, -1); //bonus
+    draw_map(vars, 0, 0); //bonus
+    draw_ui(vars); //bonus
     mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }
 

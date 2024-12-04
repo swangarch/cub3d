@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 double dist_line_pt(t_vector *v1, t_vector *vdir, t_vector *v2) 
 {

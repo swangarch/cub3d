@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 void    life(t_vars *vars)
 {

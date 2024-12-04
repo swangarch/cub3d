@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 int get_texcolor(void *tex, t_vector *pos, int color)
 {

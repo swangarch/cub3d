@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 void game_loop(t_vars *vars)
 {
+    mlx_hook(vars->win, 6, (1L << 6), mouse_move, vars);
     mlx_hook(vars->win, 2, (1L << 0), key_press, vars);
     mlx_hook(vars->win, 3, (1L << 1), key_release, vars);
     mlx_hook(vars->win, 17, 0, cross_press, vars);
@@ -32,7 +33,6 @@ void cub3d(t_game *game)
 int main(int argc, char **argv)
 {
     t_game	game;
-    int i;
 
 	if (argc == 1)
 		map_error(MES_NO_MAP_ERR);
@@ -42,13 +42,7 @@ int main(int argc, char **argv)
 		map_error(MES_WRONG_NAME_ERR);
 	init_game(&game);
 	if (parse_map(&game, argv[1]))
-    {
-        i = 0;
-        free_char_array(game.map);
-	    while (i < LEN_TEX)
-		    free(game.tex_path[i++]);
-        map_error(MES_INVALD_MAP_ERR);
-    }
+		map_error(MES_INVALD_MAP_ERR);//free game!!!
     cub3d(&game);
     return (0);
 }

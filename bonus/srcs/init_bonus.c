@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
+/*++++++++++++++++++++++++++++++++++++*/
 static void set_init_dir(t_vars *vars, int dir_player)
 {
     if (dir_player == NORTH)
@@ -35,6 +36,7 @@ static void set_init_dir(t_vars *vars, int dir_player)
         vars->dirv.y = 0;
     }
 }
+/*++++++++++++++++++++++++++++++++++++*/
 
 void init_vars(t_vars *vars, t_game *game)
 {
@@ -42,16 +44,19 @@ void init_vars(t_vars *vars, t_game *game)
     vars->posv.y = game->player_y;
     set_init_dir(vars, game->dir_player);//++++++++++
     normalize_vector(&(vars->dirv), 1.0);
+    vars->height_ratio = 0.5;
 
     vars->last_frame_t = 0;
     
     vars->last_mouse_pos.x = -1;//
     vars->last_mouse_pos.y = -1;//
     vars->mouse_move_dir = 0;
+    vars->hp = 1.0;
     vars->touch_wall = 0;
     vars->show_map = 1;
     vars->show_fps = 0;
     vars->map_size = MAP_SIZE;
+
 
     vars->key_state[O] = 1;
     vars->key_state[P] = 1;
@@ -59,18 +64,14 @@ void init_vars(t_vars *vars, t_game *game)
     vars->fade = 1;
     vars->shadow = 1;
 
+
     vars->game = game;
 
     vars->map = game->map;
+    vars->pos_obj.x = 15.5;
+    vars->pos_obj.y = 15.5;
+    vars->map[(int)vars->pos_obj.x][(int)vars->pos_obj.y] = 'C';
     ft_memset(&(vars->key_state), 0, 256 * sizeof(int));
-
-    vars->mlx = NULL;
-    vars->win = NULL;
-    vars->buf_img = NULL;
-    vars->tex_e = NULL;
-    vars->tex_n = NULL;
-    vars->tex_s = NULL;
-    vars->tex_w = NULL;
 
     vars->mlx = mlx_init();//protect
     load_all_texture(vars);
@@ -87,7 +88,9 @@ int load_texture(t_vars *vars, void **img, char *path) //protect
     if (!*img)
     {
         ft_putstr_fd("Error: load image failed\n", 2);
-        return (-1);
+        // return (-1);
+        //free
+        exit(EXIT_FAILURE);
     }
     if (img_height != TEXTURE_SIZE || img_width != TEXTURE_SIZE)
     {
@@ -107,6 +110,15 @@ int load_all_texture(t_vars *vars)  //protect
     success += load_texture(vars, &(vars->tex_e), vars->game->tex_path[T_EAST]);
     success += load_texture(vars, &(vars->tex_n), vars->game->tex_path[T_NORTH]);
     success += load_texture(vars, &(vars->tex_s), vars->game->tex_path[T_SOUTH]);
+    success += load_texture(vars, &(vars->tex_s_2), vars->game->tex_path[T_SOUTH_SP]);
+    success += load_texture(vars, &(vars->tex_w_2), vars->game->tex_path[T_WEST_SP]);
+    success += load_texture(vars, &(vars->tex_s_1), vars->game->tex_path[T_SOUTH]);
+    success += load_texture(vars, &(vars->tex_w_1), vars->game->tex_path[T_WEST]);
+    success += load_texture(vars, &(vars->tex_object), vars->game->tex_path[T_OBJ]);
+
+    success += load_texture(vars, &(vars->tex_f), vars->game->tex_path[T_FLOOR_SP]);
+    success += load_texture(vars, &(vars->tex_c), vars->game->tex_path[T_CEILING_SP]);
+
     return (success);
 }
 

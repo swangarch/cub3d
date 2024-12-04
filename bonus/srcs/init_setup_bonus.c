@@ -1,4 +1,4 @@
-#include "../includes/cub3d.h"
+#include "../includes/cub3d_bonus.h"
 
 void	init_game(t_game *game)
 {
@@ -7,8 +7,8 @@ void	init_game(t_game *game)
 	if (!game)
 		return ;
 	i = 0;
-	game->color_c = -1;
-	game->color_f = -1;
+	game->color_c = 0;
+	game->color_f = 0;
 	game->num_player = 0;
 	game->map = NULL;
 	while (i < LEN_TEX)

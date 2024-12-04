@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+# include "../includes/cub3d_bonus.h"
 
 static int box_collision(t_vars *vars, t_vector *next_pos)
 {
@@ -22,6 +22,12 @@ static int box_collision(t_vars *vars, t_vector *next_pos)
     if (vars->map[j][i] == '1')
     {   
         vars->touch_wall = 1;
+        return (1);
+    }
+    if (vars->map[j][i] == 'C')
+    {   
+        vars->touch_wall = 1;
+        eat(vars, i , j);
         return (1);
     }
     vars->touch_wall = 0;
@@ -66,15 +72,15 @@ int	move_character(t_vars *vars)
     t_vector check_pos;
     double radians;
 
-    if (vars->key_state[A] == PRESSED)  //move left
+    if (vars->key_state[A] == PRESSED)
         move_step(vars, &next_pos, &check_pos, A);
-    if (vars->key_state[S] == PRESSED) //move forward
+    if (vars->key_state[S] == PRESSED)
         move_step(vars, &next_pos, &check_pos, S);
-    if (vars->key_state[D] == PRESSED)  //move right
+    if (vars->key_state[D] == PRESSED)
     {
         move_step(vars, &next_pos, &check_pos, D);
     }
-	if (vars->key_state[W] == PRESSED) //move back
+	if (vars->key_state[W] == PRESSED)
     {
         move_step(vars, &next_pos, &check_pos, W);
     }

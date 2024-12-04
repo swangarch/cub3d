@@ -1,4 +1,4 @@
-#include "../includes/cub3d.h"
+#include "../includes/cub3d_bonus.h"
 
 int	check_map_name(char *str)
 {
@@ -33,15 +33,15 @@ int	parse_map(t_game *game, char *path_map)
 		line = get_next_line(fd);
 	}
 	close(fd);
+	if (game->color_c < 0 || game->color_f < 0)
+		return (1);
 	if (!flag || set_map_check(game, map_buffer))
 		return (ft_lstclear(&map_buffer, free), 1);
 	ft_lstclear(&map_buffer, free);
 	fd = 0;
-	while (game->tex_path[fd])
+	while (game->tex_path[fd] && fd < 6)
 		++fd;
-	if (fd != 4)
-		return (1);
-	if (game->color_c < 0 || game->color_f < 0)
+	if (fd != 6)
 		return (1);
 	return (0);
 }
@@ -54,11 +54,46 @@ int	set_map_check(t_game *game, t_list *map_buffer)
 		return (1);
 	if (set_map_full(game, &map, map_buffer))
 		return (ft_putstr_fd("Malloc failed!", 2), 1);
+	// game->index = (int **)malloc((game->map_row + 2) * sizeof(int *));
+	// if (!game->index)
+	// {
+	// 	ft_putstr_fd("Malloc failed!", 2);
+	// 	return (free_char_array(map), 1);
+	// }
+	// i = 0;
+	// while (i < game->map_row + 2)
+	// {
+	// 	game->index[i] = (int *)malloc((game->map_col + 1) * sizeof(int));
+	// 	//check and free
+	// 	j = 0;
+	// 	while (j < game->map_col + 1)
+	// 	{
+	// 		game->index[i][j] = 0;
+	// 		++j;
+	// 	}
+	// 	++i;
+	// }
 	if (check_inclosed_wall(map, 0, 0, game))
+		return (free_char_array(map), 1);
+	check_access_eat(map, (int)game->eat_y, (int)game->eat_x, game);
+	if (game->eat_access != 1)
 		return (free_char_array(map), 1);
 	if (check_space_inside(map))
 		return (free_char_array(map), 1);
 	return (free_char_array(map), 0);
+}
+
+void	check_access_eat(char **map, int i, int j, t_game *game)
+{
+	if (map[i][j] == '1')
+		return ;
+	if (map[i][j] == 'C')
+		++game->eat_access;
+	map[i][j] = '1';
+	check_access_eat(map, i - 1, j, game);
+	check_access_eat(map, i + 1, j, game);
+	check_access_eat(map, i, j - 1, game);
+	check_access_eat(map, i, j + 1, game);
 }
 
 int	check_space_inside(char **map)
@@ -86,7 +121,7 @@ int	check_inclosed_wall(char **map, int i, int j, t_game *game)
 	if (i < 0 || i >= game->map_row + 2 || j < 0 \
 		|| j >= game->map_col + 1 || map[i][j] == '1')
 		return (0);
-	if (ft_in_set(map[i][j], "0NSWE"))
+	if (ft_in_set(map[i][j], "0NSWEC"))
 		return (1);
 	map[i][j] = '1';
 	if (check_inclosed_wall(map, i - 1, j, game))
@@ -191,7 +226,7 @@ int	check_element(t_game *game, t_list *map_buffer)
 	game->map_row = ft_lstsize(map_buffer);
 	if (game->map_row < 3 || valid_element(game, map_buffer))
 		return (1);
-	if (game->map_col < 3 || game->num_player != 1)
+	if (game->map_col < 3 || game->num_player != 1 || game->num_eat != 1)
 		return (1);
 	return (0);
 }
@@ -208,7 +243,7 @@ int	valid_element(t_game *game, t_list *map_buffer)
 	while (map_buffer)
 	{
 		line = (char *)map_buffer->content;
-		if (check_line_element(line, " 01NSWE"))
+		if (check_line_element(line, " 01NSWEC"))
 			return (1);
 		i = 0;
 		while (line[i])
@@ -226,6 +261,12 @@ int	valid_element(t_game *game, t_list *map_buffer)
 				++game->num_player;
 				game->player_x = (double)i + 0.5;
 				game->player_y = (double)size + 0.5;
+			}
+			else if (line[i] == 'C')
+			{
+				++game->num_eat;
+				game->eat_x = (double)i + 0.5;
+				game->eat_y = (double)size + 0.5;
 			}
 			++i;
 		}
@@ -264,6 +305,8 @@ int	check_line_element(char *line, const char *set)
 			return (1);
 		++i;
 	}
+	// if (line[i] != '\n')
+	// 	return (1);
 	if (line[i] == '\n' && line[i + 1])
 		return (1);
 	if (line[i] == '\n' && line[i - 1] == ' ')
@@ -284,7 +327,7 @@ int	parse_oneline(t_game *game, char *line, t_list **map)
 	type = check_tex_type(line);
 	if (type != T_MAP && (game->set[type] || game->set[T_MAP]))
 		return (0);
-	if (type >= T_NORTH && type <= T_EAST)
+	if (type >= T_NORTH && type <= T_CEILING_SP)
 		return (parse_texture(game, type, line));
 	if (type == T_CEILING || type == T_FLOOR)
 	{
@@ -323,7 +366,6 @@ int	parse_color(t_game *game, int type, char *line)
 		game->color_c = (c[0] << 16) | (c[1] << 8) | c[2];
 	else if (type == T_FLOOR)
 		game->color_f = (c[0] << 16) | (c[1] << 8) | c[2];
-	free_char_array(part_color);
 	return (1);
 }
 
@@ -351,15 +393,27 @@ int	check_tex_type(char *line)
 {
 	if (!ft_strncmp(line, "NO", 2) && line[2] == ' ')
 		return (T_NORTH);
-	else if (!ft_strncmp(line, "SO", 2) && line[2] == ' ')
+	if (!ft_strncmp(line, "SO", 2) && line[2] == ' ')
 		return (T_SOUTH);
-	else if (!ft_strncmp(line, "WE", 2) && line[2] == ' ')
+	if (!ft_strncmp(line, "WE", 2) && line[2] == ' ')
 		return (T_WEST);
-	else if (!ft_strncmp(line, "EA", 2) && line[2] == ' ')
+	if (!ft_strncmp(line, "EA", 2) && line[2] == ' ')
 		return (T_EAST);
-	else if (!ft_strncmp(line, "F", 1) && line[1] == ' ')
+	if (!ft_strncmp(line, "OB", 2) && line[2] == ' ')
+		return (T_OBJ);
+	if (!ft_strncmp(line, "OBP", 3) && line[3] == ' ')
+		return (T_OBJ_SP);
+	if (!ft_strncmp(line, "SO1", 3) && line[3] == ' ')
+		return (T_SOUTH_SP);
+	if (!ft_strncmp(line, "WE1", 3) && line[3] == ' ')
+		return (T_WEST_SP);
+	if (!ft_strncmp(line, "FP", 2) && line[2] == ' ')
+		return (T_FLOOR_SP);
+	if (!ft_strncmp(line, "CP", 2) && line[2] == ' ')
+		return (T_CEILING_SP);
+	if (!ft_strncmp(line, "F", 1) && line[1] == ' ')
 		return (T_FLOOR);
-	else if (!ft_strncmp(line, "C", 1) && line[1] == ' ')
+	if (!ft_strncmp(line, "C", 1) && line[1] == ' ')
 		return (T_CEILING);
 	return (T_MAP);
 }

@@ -23,8 +23,31 @@ void	free_char_array(char **array)
 	free(array);
 }
 
+static void	destroy_all_image(t_vars *vars)
+{
+	if (vars->buf_img)
+		mlx_destroy_image(vars->mlx, vars->buf_img);
+	if (vars->tex_e)
+		mlx_destroy_image(vars->mlx, vars->tex_e);
+	if (vars->tex_n)
+		mlx_destroy_image(vars->mlx, vars->tex_n);
+	if (vars->tex_s)
+		mlx_destroy_image(vars->mlx, vars->tex_s);
+	if (vars->tex_w)
+		mlx_destroy_image(vars->mlx, vars->tex_w);
+}
+
 void	destroy_vars(t_vars *vars)
 {
-	(void)vars;
-	return ; 
+	int	i;
+
+	i = 0;
+	free_char_array(vars->game->map);
+	while (i < LEN_TEX)
+		free(vars->game->tex_path[i++]);
+	destroy_all_image(vars);
+	if (vars->win)
+		mlx_destroy_window(vars->mlx, vars->win);
+	mlx_destroy_display(vars->mlx);
+	free(vars->mlx);
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/cub3d.h"
+#include "../includes/cub3d_bonus.h"
 
 void draw_visibility(t_vars *vars, double size)
 {
@@ -44,7 +44,6 @@ void draw_map_background(t_vars *vars, t_vector *pos)
 {
     int i;
     int j;
-    t_vector pos_pixel;
     int index[2];
 
     j = 0;
