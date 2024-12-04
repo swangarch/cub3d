@@ -109,8 +109,8 @@ int load_all_texture(t_vars *vars)  //protect
     success += load_texture(vars, &(vars->tex_w_2), "textures/ta4.xpm");
     success += load_texture(vars, &(vars->tex_s_1), vars->game->tex_path[T_SOUTH]);
     success += load_texture(vars, &(vars->tex_w_1), vars->game->tex_path[T_WEST]);
-    success += load_texture(vars, &(vars->tex_object), "textures/object.xpm");
-    success += load_texture(vars, &(vars->tex_f), "textures/ta8_ground.xpm");
+    success += load_texture(vars, &(vars->tex_object), "textures/ta_art.xpm");
+    success += load_texture(vars, &(vars->tex_f), "textures/ta9.xpm");
     success += load_texture(vars, &(vars->tex_c), "textures/sky.xpm");
     return (success);
 }
