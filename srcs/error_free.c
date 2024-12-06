@@ -48,6 +48,16 @@ void	destroy_vars(t_vars *vars)
 	destroy_all_image(vars);
 	if (vars->win)
 		mlx_destroy_window(vars->mlx, vars->win);
-	mlx_destroy_display(vars->mlx);
-	free(vars->mlx);
+	if (vars->mlx)
+	{
+		mlx_destroy_display(vars->mlx);
+		free(vars->mlx);
+	}
+}
+
+void	finish_error(t_vars *vars, char *str)
+{
+	ft_putstr_fd(str, STDERR_FILENO);
+	destroy_vars(vars);
+    exit(EXIT_FAILURE);
 }

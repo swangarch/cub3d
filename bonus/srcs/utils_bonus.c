@@ -49,3 +49,10 @@ int	lst_add_back_buffer(t_list **map, char *line)
 	ft_lstadd_back(map, new_node);
 	return (1);
 }
+
+void	finish_error(t_vars *vars, char *str)
+{
+	ft_putstr_fd(str, STDERR_FILENO);
+	destroy_vars(vars);
+    exit(EXIT_FAILURE);
+}

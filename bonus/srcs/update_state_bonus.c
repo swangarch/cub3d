@@ -14,7 +14,8 @@
 
 void    life(t_vars *vars)
 {
-    if ((vars->key_state[W] || vars->key_state[A] || vars->key_state[S] || vars->key_state[D]) && !vars->touch_wall)
+    if ((vars->key_state[W] || vars->key_state[A] || vars->key_state[S] || \
+        vars->key_state[D]) && !vars->touch_wall)
     {
         if (vars->hp < 1.0)
             vars->hp += 0.001;
@@ -53,11 +54,13 @@ void    update_animation_frame(t_vars *vars)
     {
         vars->tex_s = vars->tex_s_1;
         vars->tex_w = vars->tex_w_1;
+        vars->tex_object = vars->tex_object_1;
     }
     else
     {
         vars->tex_s = vars->tex_s_2;
         vars->tex_w = vars->tex_w_2;
+        vars->tex_object = vars->tex_object_2;
     }
 }
 

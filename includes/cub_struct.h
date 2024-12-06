@@ -24,6 +24,19 @@ typedef struct s_vector
     double         y;
 }	t_vector;
 
+typedef struct s_drawl{
+    int x0;
+    int y0;
+    int x1;
+    int y1;
+    int dx;
+    int dy;
+    int sx;
+    int sy;
+    int err;
+    int e2;
+} t_drawl;
+
 typedef struct s_vars
 {
     t_vector    ray[(int)SAMPLE];

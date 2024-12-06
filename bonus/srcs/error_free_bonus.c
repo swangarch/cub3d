@@ -23,8 +23,57 @@ void	free_char_array(char **array)
 	free(array);
 }
 
+static void	destroy_all_image_two(t_vars *vars)
+{
+	if (vars->tex_object_1)
+		mlx_destroy_image(vars->mlx, vars->tex_object_1);
+	if (vars->tex_object_2)
+		mlx_destroy_image(vars->mlx, vars->tex_object_2);
+}
+
+static void	destroy_all_image_one(t_vars *vars)
+{
+	if (vars->buf_img)
+		mlx_destroy_image(vars->mlx, vars->buf_img);
+	if (vars->tex_e)
+		mlx_destroy_image(vars->mlx, vars->tex_e);
+	if (vars->tex_n)
+		mlx_destroy_image(vars->mlx, vars->tex_n);
+	// if (vars->tex_s)
+	// 	mlx_destroy_image(vars->mlx, vars->tex_s);
+	// if (vars->tex_w)
+	// 	mlx_destroy_image(vars->mlx, vars->tex_w);
+	if (vars->tex_w_1)
+		mlx_destroy_image(vars->mlx, vars->tex_w_1);
+	if (vars->tex_w_2)
+		mlx_destroy_image(vars->mlx, vars->tex_w_2);
+	if (vars->tex_s_1)
+		mlx_destroy_image(vars->mlx, vars->tex_s_1);
+	if (vars->tex_s_2)
+		mlx_destroy_image(vars->mlx, vars->tex_s_2);
+	if (vars->tex_c)
+		mlx_destroy_image(vars->mlx, vars->tex_c);
+	if (vars->tex_f)
+		mlx_destroy_image(vars->mlx, vars->tex_f);
+	// if (vars->tex_object)
+	// 	mlx_destroy_image(vars->mlx, vars->tex_object);
+}
+
 void	destroy_vars(t_vars *vars)
 {
-	(void)vars;
-	return ; 
+	int	i;
+
+	i = 0;
+	free_char_array(vars->game->map);
+	while (i < LEN_TEX)
+		free(vars->game->tex_path[i++]);
+	destroy_all_image_one(vars);
+	destroy_all_image_two(vars);
+	if (vars->win)
+		mlx_destroy_window(vars->mlx, vars->win);
+	if (vars->mlx)
+	{
+		mlx_destroy_display(vars->mlx);
+		free(vars->mlx);
+	}
 }

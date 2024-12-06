@@ -67,6 +67,7 @@ void rotate_when_mouse_move(t_vars *vars)
     radians = to_radians(STEP_ANGLE_MOUSE);
     if (vars->mouse_move_dir != 0)
     {
-        rotate_vector(&(vars->dirv), &(vars->dirv), -radians * vars->mouse_move_dir);
+        rotate_vector(&(vars->dirv), &(vars->dirv), \
+            -radians * vars->mouse_move_dir);
     }
 }

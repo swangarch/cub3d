@@ -33,6 +33,7 @@ void cub3d(t_game *game)
 int main(int argc, char **argv)
 {
     t_game	game;
+    int i;
 
 	if (argc == 1)
 		map_error(MES_NO_MAP_ERR);
@@ -42,7 +43,13 @@ int main(int argc, char **argv)
 		map_error(MES_WRONG_NAME_ERR);
 	init_game(&game);
 	if (parse_map(&game, argv[1]))
-		map_error(MES_INVALD_MAP_ERR);//free game!!!
+    {
+        i = 0;
+        free_char_array(game.map);
+	    while (i < LEN_TEX)
+		    free(game.tex_path[i++]);
+        map_error(MES_INVALD_MAP_ERR);
+    }
     cub3d(&game);
     return (0);
 }

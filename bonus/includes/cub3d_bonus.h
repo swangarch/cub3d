@@ -11,8 +11,6 @@
 # include <stdio.h>//for test!!!!!!!!!!1
 
 void	map_error(char *str);
-// void	start_game(t_game *game);
-// int		update(t_game *game);
 int	check_map_name(char *str);
 int	parse_map(t_game *game, char *path_map);
 int	parse_oneline(t_game *game, char *line, t_list **map);
@@ -42,7 +40,7 @@ void	check_access_eat(char **map, int i, int j, t_game *game);
 /*INIT*/
 void init_vars(t_vars *vars, t_game *game);
 int load_texture(t_vars *vars, void **img, char *path);
-int load_all_texture(t_vars *vars);
+void load_all_texture(t_vars *vars);
 
 /*MATH*/
 double to_radians(double angle);
@@ -90,7 +88,7 @@ int    update_frame(t_vars *vars);
 int get_texcolor(void *tex, t_vector *pos, int color);
 
 /*TEXTURE*/
-void draw_texture(t_vars *vars);
+void draw_texture(t_vars *vars, int i, int j);
 void draw_obj(t_vars *vars, int i, int j);
 
 /*COLOR*/
@@ -117,12 +115,15 @@ int fade_color(int color, double distance);
 int put_vertical_shadow(int color);
 
 //double obj_distance(t_vars *vars, t_vector *vector, int index);
-void draw_obj_visibility(t_vars *vars, double size);
-void cal_render_obj(t_vars *vars);
+//void draw_obj_visibility(t_vars *vars, double size);
+void cal_render_obj(t_vars *vars, double radians, int i);
 
 void draw_map(t_vars *vars, double x, double y);
 void render_floor_sky(t_vars *vars);
 
 void	destroy_vars(t_vars *vars);
+void	finish_error(t_vars *vars, char *str);
+
+// int get_unit(double num1, double num2);
 
 #endif

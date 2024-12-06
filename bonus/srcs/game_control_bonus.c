@@ -20,7 +20,7 @@ int cross_press(t_vars *vars)
 
 int	key_press(int keycode, t_vars *vars)
 {
-	if (keycode == 65307)//esc
+	if (keycode == 65307)
 	{
 		destroy_vars(vars);
 		exit(0);

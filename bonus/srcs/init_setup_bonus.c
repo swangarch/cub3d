@@ -7,9 +7,11 @@ void	init_game(t_game *game)
 	if (!game)
 		return ;
 	i = 0;
-	game->color_c = 0;
-	game->color_f = 0;
+	game->color_c = -1;
+	game->color_f = -1;
 	game->num_player = 0;
+	game->num_eat = 0;
+	game->eat_access = 0;
 	game->map = NULL;
 	while (i < LEN_TEX)
 		game->tex_path[i++] = NULL;

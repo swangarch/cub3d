@@ -58,7 +58,8 @@ void cal_render(t_vars *vars)
     while (++i < (int)SAMPLE)///////////////////////////////
     {
         add_vector(&vars->ray[i], &vars->dirv, &start_vector);
-        radians = atan(vector_magnitude(&start_vector) / vector_magnitude(&vars->dirv));
+        radians = atan(vector_magnitude(&start_vector) / \
+            vector_magnitude(&vars->dirv));
         vars->ray_dist[i] = wall_distance(vars, &vars->ray[i], i);
         normalize_vector(&vars->ray[i], vars->ray_dist[i]);
         vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
@@ -74,9 +75,9 @@ void    render_frame(t_vars *vars)
     rotate_when_mouse_move(vars);  //bonus
     update_state(vars);
     cal_render(vars);
-    cal_render_obj(vars); //bonus
+    cal_render_obj(vars, 0, -1); //bonus
     render_floor_sky(vars);  //bonus
-    draw_texture(vars);
+    draw_texture(vars, -1, 0);
     draw_obj(vars, -1, -1); //bonus
     draw_map(vars, 0, 0); //bonus
     draw_ui(vars); //bonus

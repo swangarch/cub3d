@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d_bonus.h"
+# include "../includes/cub3d.h"
 
 static int get_unit(int num1, int num2)
 {
@@ -20,35 +20,41 @@ static int get_unit(int num1, int num2)
         return (-1);
 }
 
+static void init_drawline(t_drawl *dl, t_vector *v0, t_vector *v1)
+{
+    dl->x0 = v0->x;
+    dl->y0 = v0->y;
+    dl->x1 = v1->x;
+    dl->y1 = v1->y;
+    dl->dx = ft_abs(dl->x1 - dl->x0);
+    dl->dy = ft_abs(dl->y1 - dl->y0);
+    dl->sx = get_unit(dl->x0, dl->x1); // x方向的步进
+    dl->sy = get_unit(dl->y0, dl->y1); // y方向的步进
+    dl->err = dl->dx - dl->dy;           // 初始误差
+}
+
 void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
 {
-    int x0 = v0->x;
-    int y0 = v0->y;
-    int x1 = v1->x;
-    int y1 = v1->y;
-    int dx = ft_abs(x1 - x0);
-    int dy = ft_abs(y1 - y0);
-    int sx = get_unit(x0, x1); // x方向的步进
-    int sy = get_unit(y0, y1); // y方向的步进
-    int err = dx - dy;           // 初始误差
-    int e2;
+    t_drawl dl;
+    init_drawline(&dl, v0, v1);
 
     while (1) 
     {
-        if (x0 >= 0 && x0 < SCREEN_WIDTH && y0 >= 0 && y0 < SCREEN_HEIGHT)
-            put_pixel_to_buf(vars, x0, y0, color);
+        if (dl.x0 >= 0 && dl.x0 < SCREEN_WIDTH && dl.y0 >= 0 && \
+            dl.y0 < SCREEN_HEIGHT)
+            put_pixel_to_buf(vars, dl.x0, dl.y0, color);
         else
             break;
-        if (x0 == x1 && y0 == y1)
+        if (dl.x0 == dl.x1 && dl.y0 == dl.y1)
             break; // 到达终点
-        e2 = 2 * err; // 误差两倍，用于判断步进方向
-        if (e2 > -dy) {
-            err -= dy; // 减去y的增量
-            x0 += sx;  // x向前一步
+        dl.e2 = 2 * dl.err; // 误差两倍，用于判断步进方向
+        if (dl.e2 > -dl.dy) {
+            dl.err -= dl.dy; // 减去y的增量
+            dl.x0 += dl.sx;  // x向前一步
         }
-        if (e2 < dx) {
-            err += dx; // 增加x的增量
-            y0 += sy;  // y向前一步
+        if (dl.e2 < dl.dx) {
+            dl.err += dl.dx; // 增加x的增量
+            dl.y0 += dl.sy;  // y向前一步
         }
     }
 }
@@ -128,27 +134,3 @@ void fill_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
         i++;
     }
 }
-
-// void fill_circle(t_vars *vars, t_vector *pt1, double size, int color)
-// {
-//     t_vector NW;
-//     t_vector NE;
-//     t_vector SW;
-//     t_vector SE;
-//     int i;
-//     int j;
-//     t_vector pos;
-
-//     i = vars->posv.x - size / 2.0;
-//     j = vars->posv.y - size / 2.0;
-//     while (i < vars->posv.x + size / 2.0)
-//     {
-//         j = vars->posv.y - size / 2.0;
-//         {
-//             pos.x = i * ;
-//             pos.y = j;
-//             if (len_2pt() <= size / 2.0)
-//                 put_pixel_to_buf(vars, i, j, color);
-//         }
-//     }
-// }

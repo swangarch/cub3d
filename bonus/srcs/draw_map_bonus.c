@@ -47,14 +47,17 @@ void draw_map_background(t_vars *vars, t_vector *pos)
     int index[2];
 
     j = 0;
-    while (vars->map[j])  //map issue map 14
+    while (vars->map[j])
     {
         i = 0;
         while (vars->map[j][i])
         {
             index[0] = i;
             index[1] = j;
-            if ( vars->map[j][i] == '0' || vars->map[j][i] == '1' || vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || vars->map[j][i] == 'E' || vars->map[j][i] == 'W' ||  vars->map[j][i] == 'C')
+            if ( vars->map[j][i] == '0' || vars->map[j][i] == '1' || \
+                vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || \
+                vars->map[j][i] == 'E' || vars->map[j][i] == 'W' || \
+                vars->map[j][i] == 'C')
                 draw_current_pos(vars, pos, index, GREY_L);
             i++;
         }
@@ -82,36 +85,13 @@ void draw_map_element(t_vars *vars, t_vector *pos, int i, int j)
             }
             if (vars->map[j][i] == '1')
                 draw_current_pos(vars, pos, index, WHITE);
-            if (vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || vars->map[j][i] == 'E' || vars->map[j][i] == 'W')
+            if (vars->map[j][i] == 'N' || vars->map[j][i] == 'S' || \
+                vars->map[j][i] == 'E' || vars->map[j][i] == 'W')
                 draw_current_pos(vars, pos, index, CYAN);
         }
     }
     draw_visibility(vars, vars->map_size);
 }
-// void draw_map_obj(t_vars *vars, double x, double y)
-// {
-//     int i;
-//     int j;
-//     t_vector pos_pixel;
-
-//     j = 0;
-//     while (vars->map[j])
-//     {
-//         i = 0;
-//         while (vars->map[j][i])
-//         {
-//             if (vars->map[j][i] == 'C')
-//             {
-//                 pos_pixel.x = x + i * vars->map_size *1 + vars->map_size / 2.0;
-//                 pos_pixel.y = y + j * vars->map_size + vars->map_size / 2.0;
-//                 draw_box(vars, &pos_pixel, vars->map_size, RED);
-//             }
-//             i++;
-//         }
-//         j++;
-//     }
-//     draw_obj_visibility(vars, vars->map_size);
-// }
 
 void draw_map(t_vars *vars, double x, double y)
 {
@@ -134,5 +114,4 @@ void draw_map(t_vars *vars, double x, double y)
     draw_map_element(vars, &pos, -1, -1);
     cpy_scale_vector(&player_pos, &vars->posv, vars->map_size);
     draw_box(vars, &player_pos, vars->map_size / 2.0, RED);
-    //draw_map_obj(vars, x, y);
 }

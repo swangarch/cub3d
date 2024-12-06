@@ -34,7 +34,8 @@ static int box_collision(t_vars *vars, t_vector *next_pos)
     return (0);
 }
 
-static void set_next_pos(t_vars *vars, t_vector *nx_pos, t_vector *ck_pos, int key)
+static void set_next_pos(t_vars *vars, t_vector *nx_pos, \
+    t_vector *ck_pos, int key)
 {
     if (key == W)
         return (nx_pos->x = vars->posv.x + STEP * vars->dirv.x, \
@@ -58,7 +59,8 @@ static void set_next_pos(t_vars *vars, t_vector *nx_pos, t_vector *ck_pos, int k
             ck_pos->y = vars->posv.y + STEP * CK_STEP * vars->dirv.x, (void)0);
 }
 
-static int move_step(t_vars *vars, t_vector *next_pos, t_vector *check_pos, int key)
+static int move_step(t_vars *vars, t_vector *next_pos, \
+    t_vector *check_pos, int key)
 {
     set_next_pos(vars, next_pos, check_pos, key);
     if (!box_collision(vars, check_pos))

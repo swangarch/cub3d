@@ -39,9 +39,9 @@ int	parse_map(t_game *game, char *path_map)
 		return (ft_lstclear(&map_buffer, free), 1);
 	ft_lstclear(&map_buffer, free);
 	fd = 0;
-	while (game->tex_path[fd] && fd < 6)
+	while (game->tex_path[fd] && fd < 8)
 		++fd;
-	if (fd != 6)
+	if (fd != 8)
 		return (1);
 	return (0);
 }
@@ -54,28 +54,9 @@ int	set_map_check(t_game *game, t_list *map_buffer)
 		return (1);
 	if (set_map_full(game, &map, map_buffer))
 		return (ft_putstr_fd("Malloc failed!", 2), 1);
-	// game->index = (int **)malloc((game->map_row + 2) * sizeof(int *));
-	// if (!game->index)
-	// {
-	// 	ft_putstr_fd("Malloc failed!", 2);
-	// 	return (free_char_array(map), 1);
-	// }
-	// i = 0;
-	// while (i < game->map_row + 2)
-	// {
-	// 	game->index[i] = (int *)malloc((game->map_col + 1) * sizeof(int));
-	// 	//check and free
-	// 	j = 0;
-	// 	while (j < game->map_col + 1)
-	// 	{
-	// 		game->index[i][j] = 0;
-	// 		++j;
-	// 	}
-	// 	++i;
-	// }
 	if (check_inclosed_wall(map, 0, 0, game))
 		return (free_char_array(map), 1);
-	check_access_eat(map, (int)game->eat_y, (int)game->eat_x, game);
+	check_access_eat(map, (int)game->player_y, (int)game->player_x, game);
 	if (game->eat_access != 1)
 		return (free_char_array(map), 1);
 	if (check_space_inside(map))
@@ -305,8 +286,6 @@ int	check_line_element(char *line, const char *set)
 			return (1);
 		++i;
 	}
-	// if (line[i] != '\n')
-	// 	return (1);
 	if (line[i] == '\n' && line[i + 1])
 		return (1);
 	if (line[i] == '\n' && line[i - 1] == ' ')
@@ -366,6 +345,7 @@ int	parse_color(t_game *game, int type, char *line)
 		game->color_c = (c[0] << 16) | (c[1] << 8) | c[2];
 	else if (type == T_FLOOR)
 		game->color_f = (c[0] << 16) | (c[1] << 8) | c[2];
+	free_char_array(part_color);
 	return (1);
 }
 

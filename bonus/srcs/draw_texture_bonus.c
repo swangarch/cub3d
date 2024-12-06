@@ -15,14 +15,13 @@
 int get_texcolor(void *tex, t_vector *pos, int color)
 {
     void *tex_ptr;
-    int bits_per_pixel;
-    int size_line;
+    int bits_pr_pix;
+    int sz_ln;
     int endian;
     int pixel_index;
-    
-    tex_ptr = mlx_get_data_addr(tex, &bits_per_pixel, &size_line, &endian);
-    pixel_index =  round(pos->y) * size_line + round(pos->x) * bits_per_pixel / 8;
-    if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * size_line) // 防止越界
+    tex_ptr = mlx_get_data_addr(tex, &bits_pr_pix, &sz_ln, &endian);
+    pixel_index =  floor(pos->y) * sz_ln + floor(pos->x) * bits_pr_pix / 8;
+    if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * sz_ln) // 防止越界
     {
         color = *(int *)(tex_ptr + pixel_index); // 写入颜色
         return (color);
@@ -46,34 +45,31 @@ void *get_texture(t_vars *vars, int i)
     return(texture);
 }
 
-static void render_texture_pixel(t_vars *vars, int *pos_screen, int pixel_color, int i)
+static void render_tex_pix(t_vars *vars, int *p_screen, int color, int i)
 {
     int x;
     int y;
     
-    if (get_t(pixel_color) >= 1)
+    if (get_t(color) >= 1)
         return ;
-    x = pos_screen[0];
-    y = pos_screen[1];
+    x = p_screen[0];
+    y = p_screen[1];
     if (vars->key_state[P])
     {
         if (vars->ray_color[i] % 2)
-            pixel_color = put_vertical_shadow(pixel_color);
+            color = put_vertical_shadow(color);
     }
     if (vars->key_state[O])
-        pixel_color = fade_color(pixel_color, vars->ray_dist[i]);
-    put_pixel_to_buf(vars, x, y, pixel_color);
+        color = fade_color(color, vars->ray_dist[i]);
+    put_pixel_to_buf(vars, x, y, color);
 }
 
-void draw_texture(t_vars *vars)
+void draw_texture(t_vars *vars, int i, int j)
 {
-    int i;
-    int j;
     t_vector postex;
     double wall_height;
     int pos_screen[2];
     
-    i = -1;
     while (++i < (int)SAMPLE)
     {
         wall_height = DISPLAY_H / vars->ray_dist[i] * HEIGHT_RATIO;
@@ -88,7 +84,8 @@ void draw_texture(t_vars *vars)
             if (pos_screen[1] > DISPLAY_H)
                 break;
             postex.y = j / wall_height * TEXTURE_SIZE;
-            render_texture_pixel(vars, pos_screen, get_texcolor(get_texture(vars, i), &postex, -1), i);
+            render_tex_pix(vars, pos_screen, get_texcolor(get_texture(vars, i), \
+                &postex, -1), i);
             j++;
         }
     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

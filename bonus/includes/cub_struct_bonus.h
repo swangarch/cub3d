@@ -8,7 +8,7 @@ typedef struct s_game
 {
 	int			color_f;
 	int			color_c;
-    int         dir_player;//+++++++++++++++++++
+    int         dir_player;
 	int			map_col;
 	int			map_row;
 	int			num_player;
@@ -28,6 +28,19 @@ typedef struct s_vector
     double         x;
     double         y;
 }	t_vector;
+
+typedef struct s_drawl{
+    int x0;
+    int y0;
+    int x1;
+    int y1;
+    int dx;
+    int dy;
+    int sx;
+    int sy;
+    int err;
+    int e2;
+} t_drawl;
 
 typedef struct s_vars
 {
@@ -68,7 +81,7 @@ typedef struct s_vars
 	void		*win;
     char		**map;
     t_vector    pos_obj;
-    char        *buf_img;
+    void        *buf_img;
     void        *buf_img_ptr;
     int         bits_per_pixel;
     int         size_line;
@@ -87,6 +100,8 @@ typedef struct s_vars
     void        *tex_f;
 
     void        *tex_object;
+    void        *tex_object_1;
+    void        *tex_object_2;
 
 	t_game		*game;
 }	t_vars;

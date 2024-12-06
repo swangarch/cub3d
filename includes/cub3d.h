@@ -45,7 +45,7 @@ void	print_map_list(t_list *map_buffer);
 /*INIT*/
 void init_vars(t_vars *vars, t_game *game);
 int load_texture(t_vars *vars, void **img, char *path);
-int load_all_texture(t_vars *vars);
+void load_all_texture(t_vars *vars);
 
 /*MATH*/
 double to_radians(double angle);
@@ -93,7 +93,7 @@ int    update_frame(t_vars *vars);
 int get_texcolor(void *tex, t_vector *pos, int color);
 
 /*TEXTURE*/
-void draw_texture(t_vars *vars);
+void draw_texture(t_vars *vars, int i, int j);
 void draw_obj(t_vars *vars, int i, int j);
 
 /*COLOR*/
@@ -129,5 +129,6 @@ void draw_map(t_vars *vars, double x, double y);
 void render_floor_sky(t_vars *vars);
 
 void	destroy_vars(t_vars *vars);
+void	finish_error(t_vars *vars, char *str);
 
 #endif

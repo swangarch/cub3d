@@ -14,7 +14,7 @@ MLX_LIB		=	$(MLX_DIR)libmlx.a
 
 # Compiler and CFlags
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror -g
 INCLUDES	=	-Iincludes -I/usr/include -Imlx -I./libft
 INCLUDES_B	=	-Ibonus/includes -I/usr/include -Imlx -I./libft
 FLAGS		=	-Lmlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
