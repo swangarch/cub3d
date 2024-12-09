@@ -1,0 +1,26 @@
+NO textures/brick/brick_1.xpm
+SO textures/brick/brick_2.xpm
+WE textures/brick/brick_3.xpm
+EA textures/brick/brick_4.xpm
+SO1 textures/brick/brick_2.xpm
+WE1 textures/brick/brick_3.xpm
+OB textures/brick/lamp1.xpm
+OBP textures/brick/lamp2.xpm
+FP textures/brick/brickfloor.xpm
+CP textures/sky/sky.xpm
+
+F 150,150,150
+C 199,207,225
+111111111111111
+111111000111111
+111110000011111
+1111000N0001111
+111000000000111
+110000000000011
+100001111100001
+110000111000011
+111000010000111
+1111000C0001111
+111110000011111
+111111000111111
+111111111111111

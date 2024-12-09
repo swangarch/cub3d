@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_free.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/06 15:23:30 by yfan              #+#    #+#             */
+/*   Updated: 2024/12/06 15:23:49 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 void	map_error(char *str)
@@ -59,5 +71,5 @@ void	finish_error(t_vars *vars, char *str)
 {
 	ft_putstr_fd(str, STDERR_FILENO);
 	destroy_vars(vars);
-    exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE);
 }

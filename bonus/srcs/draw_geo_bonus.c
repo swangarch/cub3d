@@ -10,127 +10,103 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-static int get_unit(int num1, int num2)
+static int	get_unit(int num1, int num2)
 {
-    if (num1 < num2)
-        return (1);
-    else
-        return (-1);
+	if (num1 < num2)
+		return (1);
+	else
+		return (-1);
 }
 
-static void init_drawline(t_drawl *dl, t_vector *v0, t_vector *v1)
+static void	init_drawline(t_drawl *dl, t_vector *v0, t_vector *v1)
 {
-    dl->x0 = v0->x;
-    dl->y0 = v0->y;
-    dl->x1 = v1->x;
-    dl->y1 = v1->y;
-    dl->dx = ft_abs(dl->x1 - dl->x0);
-    dl->dy = ft_abs(dl->y1 - dl->y0);
-    dl->sx = get_unit(dl->x0, dl->x1); // x方向的步进
-    dl->sy = get_unit(dl->y0, dl->y1); // y方向的步进
-    dl->err = dl->dx - dl->dy;           // 初始误差
+	dl->x0 = v0->x;
+	dl->y0 = v0->y;
+	dl->x1 = v1->x;
+	dl->y1 = v1->y;
+	dl->dx = ft_abs(dl->x1 - dl->x0);
+	dl->dy = ft_abs(dl->y1 - dl->y0);
+	dl->sx = get_unit(dl->x0, dl->x1);
+	dl->sy = get_unit(dl->y0, dl->y1);
+	dl->err = dl->dx - dl->dy;
 }
 
-void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
+void	draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
 {
-    t_drawl dl;
-    init_drawline(&dl, v0, v1);
+	t_drawl	dl;
 
-    while (1) 
-    {
-        if (dl.x0 >= 0 && dl.x0 < SCREEN_WIDTH && dl.y0 >= 0 && \
-            dl.y0 < SCREEN_HEIGHT)
-            put_pixel_to_buf(vars, dl.x0, dl.y0, color);
-        else
-            break;
-        if (dl.x0 == dl.x1 && dl.y0 == dl.y1)
-            break; // 到达终点
-        dl.e2 = 2 * dl.err; // 误差两倍，用于判断步进方向
-        if (dl.e2 > -dl.dy) {
-            dl.err -= dl.dy; // 减去y的增量
-            dl.x0 += dl.sx;  // x向前一步
-        }
-        if (dl.e2 < dl.dx) {
-            dl.err += dl.dx; // 增加x的增量
-            dl.y0 += dl.sy;  // y向前一步
-        }
-    }
+	init_drawline(&dl, v0, v1);
+	while (1)
+	{
+		if (dl.x0 >= 0 && dl.x0 < SCREEN_WIDTH && dl.y0 >= 0 && \
+			dl.y0 < SCREEN_HEIGHT)
+			put_pixel_to_buf(vars, dl.x0, dl.y0, color);
+		else
+			break ;
+		if (dl.x0 == dl.x1 && dl.y0 == dl.y1)
+			break ;
+		dl.e2 = 2 * dl.err;
+		if (dl.e2 > -dl.dy)
+		{
+			dl.err -= dl.dy;
+			dl.x0 += dl.sx;
+		}
+		if (dl.e2 < dl.dx)
+		{
+			dl.err += dl.dx;
+			dl.y0 += dl.sy;
+		}
+	}
 }
 
-void draw_box(t_vars *vars, t_vector *pos, double size, int color)
+void	draw_box(t_vars *vars, t_vector *pos, double size, int color)
 {
-    t_vector NW;
-    t_vector NE;
-    t_vector SW;
-    t_vector SE;
-    int i;
+	t_vector	nw;
+	t_vector	ne;
+	t_vector	sw;
+	t_vector	se;
+	int			i;
 
-    NW.x = pos->x - size / 2;
-    NW.y = pos->y - size / 2;
-    NE.x = pos->x + size / 2;
-    NE.y = pos->y - size / 2;
-    SW.x = pos->x - size / 2;
-    SW.y = pos->y + size / 2;
-    SE.x = pos->x + size / 2;
-    SE.y = pos->y + size / 2;
-    i = 0;
-    while (++i < size)
-    {
-        draw_line(vars, &NW, &NE, color);
-        NW.y++;
-        NE.y++;
-    }
-    draw_line(vars, &NW, &NE, color);
-    draw_line(vars, &NE, &SE, color);
-    draw_line(vars, &SE, &SW, color);
-    draw_line(vars, &SW, &NW, color);
+	nw.x = pos->x - size / 2;
+	nw.y = pos->y - size / 2;
+	ne.x = pos->x + size / 2;
+	ne.y = pos->y - size / 2;
+	sw.x = pos->x - size / 2;
+	sw.y = pos->y + size / 2;
+	se.x = pos->x + size / 2;
+	se.y = pos->y + size / 2;
+	i = 0;
+	while (++i < size)
+	{
+		draw_line(vars, &nw, &ne, color);
+		nw.y++;
+		ne.y++;
+	}
+	draw_line(vars, &nw, &ne, color);
+	draw_line(vars, &ne, &se, color);
+	draw_line(vars, &se, &sw, color);
+	draw_line(vars, &sw, &nw, color);
 }
 
-void draw_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
+void	draw_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
 {
-    t_vector NW;
-    t_vector NE;
-    t_vector SW;
-    t_vector SE;
+	t_vector	nw;
+	t_vector	ne;
+	t_vector	sw;
+	t_vector	se;
 
-    NW.x = pt1->x;
-    NW.y = pt1->y;
-    NE.x = pt2->x;
-    NE.y = pt1->y;
-    SW.x = pt1->x;
-    SW.y = pt2->y;
-    SE.x = pt2->x;
-    SE.y = pt2->y;
-    draw_line(vars, &NW, &NE, color);
-    draw_line(vars, &NE, &SE, color);
-    draw_line(vars, &SE, &SW, color);
-    draw_line(vars, &SW, &NW, color);
-}
-
-void fill_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
-{
-    t_vector NW;
-    t_vector NE;
-    t_vector SW;
-    t_vector SE;
-    int i;
-
-    NW.x = pt1->x;
-    NW.y = pt1->y;
-    NE.x = pt2->x;
-    NE.y = pt1->y;
-    SW.x = pt1->x;
-    SW.y = pt2->y;
-    SE.x = pt2->x;
-    SE.y = pt2->y;
-    i = 0;
-    while (i < pt2->y - pt1->y)
-    {
-        draw_line(vars, &NW, &NE, color);
-        NW.y++;
-        NE.y++;
-        i++;
-    }
+	nw.x = pt1->x;
+	nw.y = pt1->y;
+	ne.x = pt2->x;
+	ne.y = pt1->y;
+	sw.x = pt1->x;
+	sw.y = pt2->y;
+	se.x = pt2->x;
+	se.y = pt2->y;
+	draw_line(vars, &nw, &ne, color);
+	draw_line(vars, &ne, &se, color);
+	draw_line(vars, &se, &sw, color);
+	draw_line(vars, &sw, &nw, color);
 }

@@ -14,7 +14,7 @@ MLX_LIB		=	$(MLX_DIR)libmlx.a
 
 # Compiler and CFlags
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror -g
+CFLAGS		=	-Wall -Wextra -Werror
 INCLUDES	=	-Iincludes -I/usr/include -Imlx -I./libft
 INCLUDES_B	=	-Ibonus/includes -I/usr/include -Imlx -I./libft
 FLAGS		=	-Lmlx_linux -lmlx -L/usr/lib/X11 -lXext -lX11 -lm
@@ -24,6 +24,9 @@ RM			=	rm -f
 SRCS		=	$(SRC_DIR)cub3d.c \
 				$(SRC_DIR)error_free.c \
 				$(SRC_DIR)parse.c \
+				$(SRC_DIR)parse_check.c \
+				$(SRC_DIR)parse_color.c \
+				$(SRC_DIR)parse_set_map.c \
 				$(SRC_DIR)init_setup.c \
 				$(SRC_DIR)utils.c \
 				$(SRC_DIR)ft_math.c \
@@ -38,11 +41,15 @@ SRCS		=	$(SRC_DIR)cub3d.c \
 				$(SRC_DIR)draw_texture.c \
 				$(SRC_DIR)special_effect.c \
 				$(SRC_DIR)draw_floor_sky.c \
-				$(SRC_DIR)move.c
+				$(SRC_DIR)move.c \
+				$(SRC_DIR)wall_distance.c
 
 SRCS_B		=	$(SRC_DIR_B)cub3d_bonus.c \
 				$(SRC_DIR_B)error_free_bonus.c \
 				$(SRC_DIR_B)parse_bonus.c \
+				$(SRC_DIR_B)parse_check_bonus.c \
+				$(SRC_DIR_B)parse_color_bonus.c \
+				$(SRC_DIR_B)parse_set_map_bonus.c \
 				$(SRC_DIR_B)init_setup_bonus.c \
 				$(SRC_DIR_B)utils_bonus.c \
 				$(SRC_DIR_B)ft_math_bonus.c \
@@ -51,6 +58,7 @@ SRCS_B		=	$(SRC_DIR_B)cub3d_bonus.c \
 				$(SRC_DIR_B)game_control_bonus.c \
 				$(SRC_DIR_B)render_game_bonus.c \
 				$(SRC_DIR_B)wall_check_bonus.c \
+				$(SRC_DIR_B)wall_distance_bonus.c \
 				$(SRC_DIR_B)color_bonus.c \
 				$(SRC_DIR_B)util_bonus.c \
 				$(SRC_DIR_B)init_bonus.c \
@@ -60,7 +68,8 @@ SRCS_B		=	$(SRC_DIR_B)cub3d_bonus.c \
 				$(SRC_DIR_B)special_effect_bonus.c \
 				$(SRC_DIR_B)sprite_animation_bonus.c \
 				$(SRC_DIR_B)draw_map_bonus.c \
-				$(SRC_DIR_B)draw_floor_sky_bonus.c \
+				$(SRC_DIR_B)draw_floor_bonus.c \
+				$(SRC_DIR_B)draw_sky_bonus.c \
 				$(SRC_DIR_B)move_bonus.c
 
 OBJS		=	$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))

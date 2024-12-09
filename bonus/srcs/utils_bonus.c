@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/06 19:01:01 by yfan              #+#    #+#             */
+/*   Updated: 2024/12/06 19:01:03 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d_bonus.h"
 
 int	len_char_array(char **str)
@@ -54,5 +66,5 @@ void	finish_error(t_vars *vars, char *str)
 {
 	ft_putstr_fd(str, STDERR_FILENO);
 	destroy_vars(vars);
-    exit(EXIT_FAILURE);
+	exit(EXIT_FAILURE);
 }

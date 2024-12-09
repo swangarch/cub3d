@@ -10,36 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-int double_eql(double a, double b)
+int	double_eql(double a, double b)
 {
-    if (ft_abs(b - a) < MIN_ERR)
-        return (1);
-    return (0);
+	if (ft_abs(b - a) < MIN_ERR)
+		return (1);
+	return (0);
 }
 
-double ft_abs(double num)
+double	ft_abs(double num)
 {
-    if (num >= 0)
-        return (num);
-    else
-        return (-num);
+	if (num >= 0)
+		return (num);
+	else
+		return (-num);
 }
 
-double to_radians(double angle)
+double	to_radians(double angle)
 {
-    double radians;
-    radians = angle * (M_PI / 180.0);
-    return (radians);
+	double	radians;
+
+	radians = angle * (M_PI / 180.0);
+	return (radians);
 }
 
-double vector_magnitude(t_vector *v)
+double	vector_magnitude(t_vector *v)
 {
-    return (sqrt(v->x * v->x + v->y * v->y)); 
+	return (sqrt(v->x * v->x + v->y * v->y));
 }
 
-double dot_product(t_vector *v1, t_vector *v2)
+double	dot_product(t_vector *v1, t_vector *v2)
 {
-    return (v1->x * v2->x + v1->y * v2->y);
+	return (v1->x * v2->x + v1->y * v2->y);
 }

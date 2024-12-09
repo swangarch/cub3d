@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_free_bonus.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/06 18:10:51 by yfan              #+#    #+#             */
+/*   Updated: 2024/12/06 18:10:53 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d_bonus.h"
 
 void	map_error(char *str)
@@ -23,15 +35,7 @@ void	free_char_array(char **array)
 	free(array);
 }
 
-static void	destroy_all_image_two(t_vars *vars)
-{
-	if (vars->tex_object_1)
-		mlx_destroy_image(vars->mlx, vars->tex_object_1);
-	if (vars->tex_object_2)
-		mlx_destroy_image(vars->mlx, vars->tex_object_2);
-}
-
-static void	destroy_all_image_one(t_vars *vars)
+static void	destroy_all_image(t_vars *vars)
 {
 	if (vars->buf_img)
 		mlx_destroy_image(vars->mlx, vars->buf_img);
@@ -39,10 +43,6 @@ static void	destroy_all_image_one(t_vars *vars)
 		mlx_destroy_image(vars->mlx, vars->tex_e);
 	if (vars->tex_n)
 		mlx_destroy_image(vars->mlx, vars->tex_n);
-	// if (vars->tex_s)
-	// 	mlx_destroy_image(vars->mlx, vars->tex_s);
-	// if (vars->tex_w)
-	// 	mlx_destroy_image(vars->mlx, vars->tex_w);
 	if (vars->tex_w_1)
 		mlx_destroy_image(vars->mlx, vars->tex_w_1);
 	if (vars->tex_w_2)
@@ -55,8 +55,10 @@ static void	destroy_all_image_one(t_vars *vars)
 		mlx_destroy_image(vars->mlx, vars->tex_c);
 	if (vars->tex_f)
 		mlx_destroy_image(vars->mlx, vars->tex_f);
-	// if (vars->tex_object)
-	// 	mlx_destroy_image(vars->mlx, vars->tex_object);
+	if (vars->tex_object_1)
+		mlx_destroy_image(vars->mlx, vars->tex_object_1);
+	if (vars->tex_object_2)
+		mlx_destroy_image(vars->mlx, vars->tex_object_2);
 }
 
 void	destroy_vars(t_vars *vars)
@@ -67,8 +69,7 @@ void	destroy_vars(t_vars *vars)
 	free_char_array(vars->game->map);
 	while (i < LEN_TEX)
 		free(vars->game->tex_path[i++]);
-	destroy_all_image_one(vars);
-	destroy_all_image_two(vars);
+	destroy_all_image(vars);
 	if (vars->win)
 		mlx_destroy_window(vars->mlx, vars->win);
 	if (vars->mlx)

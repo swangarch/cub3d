@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub_define.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/06 16:13:09 by yfan              #+#    #+#             */
+/*   Updated: 2024/12/06 16:13:11 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB_DEFINE_H
 # define CUB_DEFINE_H
 
@@ -21,34 +33,24 @@
 # define T_CEILING 5
 # define T_MAP 6
 
-/*********************************************************/
-
 # define FPS 48
 
-/*SCREEN*/
-// # define SCREEN_HEIGHT 360
-// # define SCREEN_WIDTH 640
-
-# define SCREEN_HEIGHT 720
-# define SCREEN_WIDTH 1280
+# define SCREEN_HEIGHT 450
+# define SCREEN_WIDTH 800
 
 # define MAP_SIZE 8.0
 # define SHADSIZ 0.25
 
-/*SAMPLE PARAM*/
 # define SCALE 1
 # define SCALE_SCREEN 150.0
 # define STEP 0.05
 # define CK_STEP 3.0
 # define STEP_ANGLE 1
 # define STEP_ANGLE_MOUSE 0.007
-// # define STEP_HEIGHT_RATIO 0.05
-# define SAMPLE 1280
-//# define SAMPLE 4
+# define SAMPLE SCREEN_WIDTH
 # define FOV 60.0
 # define GRID_SIZE 1
 # define HEIGHT_RATIO 1.5
-//# define HEIGHT_RATIO 0.68
 
 # define MAX_VIEW_DISTANCE 500.0
 # define MIN_WALL_DISTANCE 0.1
@@ -74,17 +76,11 @@
 # define LEFT_INT 128
 # define RIGHT 65363
 # define RIGHT_INT 129
-// # define UP 65362
-// // # define UP_INT 130
-// # define DOWN 65364
-// # define DOWN_INT 131
 # define M 109
 # define E 101
 # define F 102
 # define O 111
 # define P 112
-// # define MINUS 45         // -
-// # define PLUS 43          // +
 # define NUM_9 57
 # define NUM_0 48
 
@@ -103,17 +99,14 @@
 
 /*DOUBLE ERROR*/
 # define MIN_ERR 0.000000000001
-// # define MIN_ERR 0.0000000000000000000001
 # define MIN_ERR2 0.0
-
-#define S_SIZE 50
-#define VERY_LARGE_VALUE 1e30
+# define S_SIZE 50
+# define VERY_LARGE_VALUE 1e30
 
 /*RENDER ON THE SCREEN*/
 # define POSITION_X 0
 # define DISPLAY_W SCREEN_WIDTH
 # define DISPLAY_H SCREEN_HEIGHT
-//# define POSITION_Y 384
 
 /*TIME INTERVAL CONTROL*/
 # define TIME_ITVAL_MOUSE 10000
