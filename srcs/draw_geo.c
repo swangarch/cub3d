@@ -10,124 +10,103 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-void put_pixel_to_buf(t_vars *vars, int x, int y, int color)
+static int	get_unit(int num1, int num2)
 {
-    int pixel_index;
-
-    if (!(x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT))
-        return ;
-
-    pixel_index = y * vars->size_line + x * vars->bits_per_pixel / 8;
-    if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * vars->size_line) // 防止越界
-    {
-        *(int *)(vars->buf_img_ptr + pixel_index) = color; // 写入颜色
-    }
+	if (num1 < num2)
+		return (1);
+	else
+		return (-1);
 }
 
-void draw_ground(t_vars *vars, int color)
+static void	init_drawline(t_drawl *dl, t_vector *v0, t_vector *v1)
 {
-    int i;
-    int j;
-
-    i = 0;
-    while (i < SCREEN_WIDTH)
-    {
-        j = 0;
-        while (j < SCREEN_HEIGHT)
-        {   
-            if (j >= SCREEN_HEIGHT / 2)
-                put_pixel_to_buf(vars, i, j, color);
-            j++;
-        }
-        i++;
-    }
+	dl->x0 = v0->x;
+	dl->y0 = v0->y;
+	dl->x1 = v1->x;
+	dl->y1 = v1->y;
+	dl->dx = ft_abs(dl->x1 - dl->x0);
+	dl->dy = ft_abs(dl->y1 - dl->y0);
+	dl->sx = get_unit(dl->x0, dl->x1);
+	dl->sy = get_unit(dl->y0, dl->y1);
+	dl->err = dl->dx - dl->dy;
 }
 
-void draw_sky(t_vars *vars, int color)
+void	draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
 {
-    int i;
-    int j;
+	t_drawl	dl;
 
-    i = 0;
-    while (i < SCREEN_WIDTH)
-    {
-        j = 0;
-        while (j < SCREEN_HEIGHT)
-        {
-            if (j < SCREEN_HEIGHT / 2)
-                put_pixel_to_buf(vars, i, j, color);
-            j++;
-        }
-        i++;
-    }
+	init_drawline(&dl, v0, v1);
+	while (1)
+	{
+		if (dl.x0 >= 0 && dl.x0 < SCREEN_WIDTH \
+			&& dl.y0 >= 0 && dl.y0 < SCREEN_HEIGHT)
+			put_pixel_to_buf(vars, dl.x0, dl.y0, color);
+		else
+			break ;
+		if (dl.x0 == dl.x1 && dl.y0 == dl.y1)
+			break ;
+		dl.e2 = 2 * dl.err;
+		if (dl.e2 > -dl.dy)
+		{
+			dl.err -= dl.dy;
+			dl.x0 += dl.sx;
+		}
+		if (dl.e2 < dl.dx)
+		{
+			dl.err += dl.dx;
+			dl.y0 += dl.sy;
+		}
+	}
 }
 
-void clear_image_buf(t_vars *vars) // fill with all black pixel
+void	draw_box(t_vars *vars, t_vector *pos, double size, int color)
 {
-    int total_pixels = SCREEN_WIDTH * SCREEN_HEIGHT;
-    int *buffer = (int *)vars->buf_img_ptr;
+	t_vector	nw;
+	t_vector	ne;
+	t_vector	sw;
+	t_vector	se;
+	int			i;
 
-    int i = 0;
-    while (i < total_pixels)
-    {
-        buffer[i] = 0x000000; // 设置为黑色
-        i++;
-    }
+	nw.x = pos->x - size / 2;
+	nw.y = pos->y - size / 2;
+	ne.x = pos->x + size / 2;
+	ne.y = pos->y - size / 2;
+	sw.x = pos->x - size / 2;
+	sw.y = pos->y + size / 2;
+	se.x = pos->x + size / 2;
+	se.y = pos->y + size / 2;
+	i = 0;
+	while (++i < size)
+	{
+		draw_line(vars, &nw, &ne, color);
+		nw.y++;
+		ne.y++;
+	}
+	draw_line(vars, &nw, &ne, color);
+	draw_line(vars, &ne, &se, color);
+	draw_line(vars, &se, &sw, color);
+	draw_line(vars, &sw, &nw, color);
 }
 
-void draw_line(t_vars *vars, t_vector *v0, t_vector *v1, int color)
+void	draw_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
 {
-    int x0 = v0->x;
-    int y0 = v0->y;
-    int x1 = v1->x;
-    int y1 = v1->y;
-    int dx = ft_abs(x1 - x0);
-    int dy = ft_abs(y1 - y0);
-    int sx = (x0 < x1) ? 1 : -1; // x方向的步进
-    int sy = (y0 < y1) ? 1 : -1; // y方向的步进
-    int err = dx - dy;           // 初始误差
+	t_vector	nw;
+	t_vector	ne;
+	t_vector	sw;
+	t_vector	se;
 
-    while (1) 
-    {
-        if (x0 >= 0 && x0 < SCREEN_WIDTH && y0 >= 0 && y0 < SCREEN_HEIGHT)
-            put_pixel_to_buf(vars, x0, y0, color);
-        else
-            break;
-        // mlx_pixel_put((vars)->mlx, (vars)->win, x0, y0, color); // 绘制当前点
-        if (x0 == x1 && y0 == y1) {
-            break; // 到达终点
-        }
-        int e2 = 2 * err; // 误差两倍，用于判断步进方向
-        if (e2 > -dy) {
-            err -= dy; // 减去y的增量
-            x0 += sx;  // x向前一步
-        }
-        if (e2 < dx) {
-            err += dx; // 增加x的增量
-            y0 += sy;  // y向前一步
-        }
-    }
-}
-
-void draw_box(t_vars *vars, double x, double y, double size)
-{
-    t_vector NW;
-    t_vector NE;
-    t_vector SW;
-    t_vector SE;
-
-    NW.x = x - size / 2;
-    NW.y = y - size / 2;
-    NE.x = x + size / 2;
-    NE.y = y - size / 2;
-    SW.x = x - size / 2;
-    SW.y = y + size / 2;
-    SE.x = x + size / 2;
-    SE.y = y + size / 2;
-    draw_line(vars, &NW, &NE, YELLOW);
-    draw_line(vars, &NE, &SE, GREEN);
-    draw_line(vars, &SE, &SW, MAGENTA);
-    draw_line(vars, &SW, &NW, CYAN);
+	nw.x = pt1->x;
+	nw.y = pt1->y;
+	ne.x = pt2->x;
+	ne.y = pt1->y;
+	sw.x = pt1->x;
+	sw.y = pt2->y;
+	se.x = pt2->x;
+	se.y = pt2->y;
+	draw_line(vars, &nw, &ne, color);
+	draw_line(vars, &ne, &se, color);
+	draw_line(vars, &se, &sw, color);
+	draw_line(vars, &sw, &nw, color);
 }

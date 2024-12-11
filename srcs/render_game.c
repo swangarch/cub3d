@@ -10,115 +10,96 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-void draw_colored_wall_line(t_vars *vars, int i)
+void	put_pixel_to_buf(t_vars *vars, int x, int y, int color)
 {
-    int color_final = WHITE;
-    double distance = vars->ray_dist[i];
-    if (distance == 0)
-        distance = 0.001;
-    double wall_height = DISPLAY_H / distance;
-    double wall_height_top = (vars->height_ratio) * wall_height;
-    double wall_height_bottom = (1.0 - vars->height_ratio) * wall_height;
+	int	pixel_index;
 
-    if (vars->ray_color[i] == WEST)
-        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, 0);
-    else if (vars->ray_color[i] == EAST)
-        color_final = create_trgb(255, 0, (int)((vars->ray_poswall[i]) * 255), 0);
-    else if (vars->ray_color[i] == NORTH)
-        color_final = create_trgb(255, 0, 0, (int)((vars->ray_poswall[i]) * 255));
-    else if (vars->ray_color[i] == SOUTH)
-        color_final = create_trgb(255, (int)((vars->ray_poswall[i]) * 255), 0, (int)((vars->ray_poswall[i]) * 255));
-
-    t_vector    base_pt;
-    t_vector    top_pt;
-    t_vector    bottom_pt;
-
-    base_pt.x = POSITION_X + i * (DISPLAY_W / SAMPLE);
-    base_pt.y = POSITION_Y;
-    top_pt.x = base_pt.x;
-    top_pt.y = POSITION_Y + wall_height_top;
-    bottom_pt.x = base_pt.x;
-    bottom_pt.y = POSITION_Y - wall_height_bottom;
-
-    draw_line(vars, &base_pt, &top_pt, color_final);
-    draw_line(vars, &base_pt, &bottom_pt, color_final);
+	if (!(x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT))
+		return ;
+	pixel_index = y * vars->size_line + x * vars->bits_per_pixel / 8;
+	if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * vars->size_line)
+	{
+		*(int *)(vars->buf_img_ptr + pixel_index) = color;
+	}
 }
 
-void draw_visibility(t_vars *vars)
+void	clear_image_buf(t_vars *vars)
 {
-    t_vector *ray;
-    ray = vars->ray;
+	int	total_pixels;
+	int	*buffer;
+	int	i;
 
-    double sample_angle = FOV / SAMPLE;
-    double sample_radians = to_radians(sample_angle);
-    double radians = to_radians(-FOV / 2.0); // 从视野左侧开始的角度
-    int i = 0;
-
-    t_vector startpt_scaled;
-    t_vector endpt_added;
-    t_vector endpt_scaled;
-
-    while (i < (int)SAMPLE + 1)///////////////////////////////
-    {
-        rotate_vector(&ray[i], &(vars->dirv), radians);
-        vars->ray_dist[i] = wall_distance(vars, &ray[i], i);
-        normalize_vector(&ray[i], vars->ray_dist[i]);
-        
-        cpy_scale_vector(&startpt_scaled, &(vars->posv), BOX_SIZE);
-        add_vector(&endpt_added, &(vars->posv), &ray[i]);
-        cpy_scale_vector(&endpt_scaled, &endpt_added, BOX_SIZE);
-
-        draw_line(vars, &startpt_scaled, &endpt_scaled, WHITE);
-        vars->ray_dist[i] = vars->ray_dist[i] * cos(to_radians(i * sample_angle - FOV / 2.0));
-        radians += sample_radians;
-        i++;
-    }
+	buffer = (int *)vars->buf_img_ptr;
+	total_pixels = SCREEN_WIDTH * SCREEN_HEIGHT;
+	i = 0;
+	while (i < total_pixels)
+	{
+		buffer[i] = 0x000000;
+		i++;
+	}
 }
 
-void    draw_colored_wall(t_vars *vars)
+void	cal_render(t_vars *vars)
 {
-    int i;
+	t_vector	camera;
+	t_vector	sample_vector;
+	t_vector	start_vector;
+	double		radians;
+	int			i;
 
-    i = 0;
-    while (i < (int)SAMPLE + 1)
-    {
-        draw_colored_wall_line(vars, i);
-        i++;
-    }
+	rotate_vector(&camera, &(vars->dirv), to_radians(90));
+	normalize_vector(&camera, tan(to_radians(FOV / 2)));
+	cpy_scale_vector(&sample_vector, &camera, 2.0 / SAMPLE);
+	cpy_scale_vector(&start_vector, &sample_vector, -SAMPLE / 2.0);
+	i = -1;
+	while (++i < (int)SAMPLE)
+	{
+		add_vector(&vars->ray[i], &vars->dirv, &start_vector);
+		radians = atan(vector_magnitude(&start_vector) / \
+			vector_magnitude(&vars->dirv));
+		vars->ray_dist[i] = wall_distance(vars, &vars->ray[i], i);
+		normalize_vector(&vars->ray[i], vars->ray_dist[i]);
+		vars->ray_dist[i] = vars->ray_dist[i] * cos(radians);
+		add_vector(&start_vector, &start_vector, &sample_vector);
+	}
 }
 
-void draw_map(t_vars *vars, double x, double y, double size)
+void	render_frame(t_vars *vars)
 {
-    int i;
-    int j;
-
-    i = 0;
-    j = 0;
-    while (vars->map[j])
-    {
-        i = 0;
-        while (vars->map[j][i])
-        {
-            if (vars->map[j][i] == '1')
-                draw_box(vars, x + i * size, y + j * size, size);
-            i++;
-        }
-        j++;
-    }
-    draw_visibility(vars);
+	mlx_clear_window(vars->mlx, vars->win);
+	clear_image_buf(vars);
+	move_character(vars);
+	cal_render(vars);
+	draw_ground(vars, vars->game->color_f);
+	draw_sky(vars, vars->game->color_c);
+	draw_texture(vars, -1, 0);
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
 }
 
-void    render_game(t_vars *vars)
+int	update_frame(t_vars *vars)
 {
-    mlx_clear_window(vars->mlx, vars->win);
-    clear_image_buf(vars);
-    draw_sky(vars, vars->game->color_c);
-    draw_ground(vars, vars->game->color_f);
-    draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
-    //draw_colored_wall(vars);
-    draw_texture(vars);
-    draw_map(vars, BOX_SIZE / 2, BOX_SIZE / 2, BOX_SIZE);
-    mlx_put_image_to_window(vars->mlx, vars->win, vars->buf_img, 0, 0);
+	time_t	now_time;
+	time_t	time_passed;
+	int		fps;
+
+	now_time = get_current_time();
+	if (vars->last_frame_t == 0)
+	{
+		vars->last_frame_t = now_time;
+		render_frame(vars);
+		return (0);
+	}
+	time_passed = now_time - vars->last_frame_t;
+	if (time_passed < 1000000 / FPS)
+		return (0);
+	render_frame(vars);
+	if (vars->key_state[F])
+	{
+		fps = 1000000.0 / time_passed;
+		ft_printf("FPS: %d\n", fps);
+	}
+	vars->last_frame_t = now_time;
+	return (1);
 }

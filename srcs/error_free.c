@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_free.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yfan <yfan@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/06 15:23:30 by yfan              #+#    #+#             */
+/*   Updated: 2024/12/06 15:23:49 by yfan             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 void	map_error(char *str)
@@ -21,4 +33,43 @@ void	free_char_array(char **array)
 		i++;
 	}
 	free(array);
+}
+
+static void	destroy_all_image(t_vars *vars)
+{
+	if (vars->buf_img)
+		mlx_destroy_image(vars->mlx, vars->buf_img);
+	if (vars->tex_e)
+		mlx_destroy_image(vars->mlx, vars->tex_e);
+	if (vars->tex_n)
+		mlx_destroy_image(vars->mlx, vars->tex_n);
+	if (vars->tex_s)
+		mlx_destroy_image(vars->mlx, vars->tex_s);
+	if (vars->tex_w)
+		mlx_destroy_image(vars->mlx, vars->tex_w);
+}
+
+void	destroy_vars(t_vars *vars)
+{
+	int	i;
+
+	i = 0;
+	free_char_array(vars->game->map);
+	while (i < LEN_TEX)
+		free(vars->game->tex_path[i++]);
+	destroy_all_image(vars);
+	if (vars->win)
+		mlx_destroy_window(vars->mlx, vars->win);
+	if (vars->mlx)
+	{
+		mlx_destroy_display(vars->mlx);
+		free(vars->mlx);
+	}
+}
+
+void	finish_error(t_vars *vars, char *str)
+{
+	ft_putstr_fd(str, STDERR_FILENO);
+	destroy_vars(vars);
+	exit(EXIT_FAILURE);
 }

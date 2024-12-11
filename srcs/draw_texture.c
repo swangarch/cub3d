@@ -10,82 +10,84 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-int closest_int(double num)
+int	get_texcolor(void *tex, t_vector *pos, int color)
 {
-    if (num - (int)num >= 0.5)
-        return((int)ceil(num));
-    else
-        return ((int)floor(num));
+	void	*tex_ptr;
+	int		bits_pr_pix;
+	int		sz_ln;
+	int		endian;
+	int		pixel_index;
+
+	tex_ptr = mlx_get_data_addr(tex, &bits_pr_pix, &sz_ln, &endian);
+	pixel_index = floor(pos->y) * sz_ln + floor(pos->x) * bits_pr_pix / 8;
+	if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * sz_ln)
+	{
+		color = *(int *)(tex_ptr + pixel_index);
+		return (color);
+	}
+	return (-1);
 }
 
-int get_texture_pixel_color(void *tex, t_vector *pos)
+void	*get_texture(t_vars *vars, int i)
 {
-    void *tex_ptr;
-    int bits_per_pixel;
-    int size_line;
-    int endian;
-    int pixel_index;
-    int color;
-    int x;
-    int y;
+	void	*texture;
 
-    x = closest_int(pos->x);
-    y = closest_int(pos->y);
-    tex_ptr = mlx_get_data_addr(tex, &bits_per_pixel, &size_line, &endian);
-    pixel_index =  y * size_line + x * bits_per_pixel / 8;
-    if (pixel_index >= 0 && pixel_index < SCREEN_HEIGHT * size_line) // 防止越界
-    {
-        color = *(int *)(tex_ptr + pixel_index); // 写入颜色
-        return (color);
-    }
-    return (-1);
+	texture = NULL;
+	if (vars->ray_color[i] == EAST)
+		texture = vars->tex_e;
+	else if (vars->ray_color[i] == WEST)
+		texture = vars->tex_w;
+	else if (vars->ray_color[i] == NORTH)
+		texture = vars->tex_n;
+	else if (vars->ray_color[i] == SOUTH)
+		texture = vars->tex_s;
+	return (texture);
 }
 
-
-void draw_texture(t_vars *vars)
+static void	render_tex_pix(t_vars *vars, int *p_screen, int color, int i)
 {
-    int i;
-    int j;
-    t_vector pos_on_texture;
-    double distance;
-    double wall_height;
-    int x;
-    int y;
-    void *texture;
-    
-    i = 0;
-    while (i < (int)SAMPLE + 1)
-    {
-        distance = vars->ray_dist[i];
-        if (distance == 0)
-            distance = 0.001;
-        wall_height = DISPLAY_H / distance;
-        
-        pos_on_texture.x = vars->ray_poswall[i] * TEXTURE_SIZE;
+	int	x;
+	int	y;
 
-        x = POSITION_X + i * (DISPLAY_W / SAMPLE);
-        j = 0;
-        if (vars->ray_color[i] == EAST)
-            texture = vars->tex_e;
-        else if (vars->ray_color[i] == WEST)
-            texture = vars->tex_w;
-        else if (vars->ray_color[i] == NORTH)
-            texture = vars->tex_n;  
-        else if (vars->ray_color[i] == SOUTH)
-            texture = vars->tex_s;      
-        while (j < (int)(wall_height))
-        {
-            y = POSITION_Y - wall_height / 2 + j;
-            pos_on_texture.y = j / wall_height * TEXTURE_SIZE;
-            put_pixel_to_buf(vars, x, y, get_texture_pixel_color(texture, &pos_on_texture));
-            j++;
-        }
-        i++;
-    }
-    // if (!vars->tex_s)
-    //     return (ft_putstr_fd("Error: texture doesn't exist\n", 2), (void)0);
-    // mlx_put_image_to_window(vars->mlx, vars->win, vars->tex_s, 500, 500);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+	if (get_t(color) >= 1)
+		return ;
+	x = p_screen[0];
+	y = p_screen[1];
+	if (vars->key_state[P])
+	{
+		if (vars->ray_color[i] % 2)
+			color = put_vertical_shadow(color);
+	}
+	if (vars->key_state[O])
+		color = fade_color(color, vars->ray_dist[i]);
+	put_pixel_to_buf(vars, x, y, color);
+}
+
+void	draw_texture(t_vars *vars, int i, int j)
+{
+	t_vector	postex;
+	double		wall_height;
+	int			pos_screen[2];
+
+	while (++i < (int)SAMPLE)
+	{
+		wall_height = DISPLAY_H / vars->ray_dist[i] * HEIGHT_RATIO;
+		postex.x = vars->ray_poswall[i] * TEXTURE_SIZE;
+		pos_screen[0] = POSITION_X + i * (DISPLAY_W / SAMPLE);
+		j = 0;
+		if (DISPLAY_H / 2.0 - wall_height / 2 + j < 0)
+			j = wall_height / 2 - DISPLAY_H / 2.0;
+		while (j < (int)(wall_height))
+		{
+			pos_screen[1] = DISPLAY_H / 2.0 - wall_height / 2 + j;
+			if (pos_screen[1] > DISPLAY_H)
+				break ;
+			postex.y = j / wall_height * TEXTURE_SIZE;
+			render_tex_pix(vars, pos_screen, \
+				get_texcolor(get_texture(vars, i), &postex, -1), i);
+			j++;
+		}
+	}
 }

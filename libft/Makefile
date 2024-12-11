@@ -38,14 +38,14 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(SRCS)
-	$(CC) $(CFLAGS) -c $(SRCS)
-	ar rcs $(NAME) $(OBJS)
+	@$(CC) $(CFLAGS) -c $(SRCS)
+	@ar rcs $(NAME) $(OBJS)
 
 clean:
-	rm -f $(OBJS)
+	@rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re:	fclean all
 

@@ -10,50 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-int double_eql(double a, double b)
+int	double_eql(double a, double b)
 {
-    if (ft_abs(b - a) < MIN_ERR)
-        return (1);
-    return (0);
+	if (ft_abs(b - a) < MIN_ERR)
+		return (1);
+	return (0);
 }
 
-double ft_abs(double num)
+double	ft_abs(double num)
 {
-    if (num >= 0)
-        return (num);
-    else
-        return (-num);
+	if (num >= 0)
+		return (num);
+	else
+		return (-num);
 }
 
-double to_radians(double angle)
+double	to_radians(double angle)
 {
-    double radians;
-    radians = angle * (M_PI / 180.0);
-    return (radians);
+	double	radians;
+
+	radians = angle * (M_PI / 180.0);
+	return (radians);
 }
 
-double len_2pt(t_vector *v1, t_vector *v2)
+double	vector_magnitude(t_vector *v)
 {
-    double  sqr;
-    double x1;
-    double y1;
-    double x2;
-    double y2;
-
-    x1 = v1->x;
-    y1 = v1->y;
-    x2 = v2->x;
-    y2 = v2->y;
-
-    sqr = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-    return (sqr);
+	return (sqrt(v->x * v->x + v->y * v->y));
 }
 
-double vector_magnitude(t_vector *v)
+double	dot_product(t_vector *v1, t_vector *v2)
 {
-    return (sqrt(v->x * v->x + v->y * v->y)); 
+	return (v1->x * v2->x + v1->y * v2->y);
 }
-
-

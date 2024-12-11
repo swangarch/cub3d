@@ -10,143 +10,65 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/cub3d.h"
+#include "../includes/cub3d.h"
 
-int box_collision(t_vars *vars, double x, double y)
+int	cross_press(t_vars *vars)
 {
-    (void)vars;
-    (void)x;
-    (void)y;
-    return (0);
-    // int i;
-    // int j;
-
-    // i = 0;
-    // j = 0;
-    // while (i < 9)
-    // {
-    //     j = 0;
-    //     while (j < 9)
-    //     {
-    //         if (vars->map[i][j] == '1')
-    //         {
-    //             if (x <= (double)i + GRID_SIZE / 2.0 && x >= (double)i - GRID_SIZE / 2.0 && y <= (double)j + GRID_SIZE / 2.0 && y >= (double)j - GRID_SIZE / 2.0)
-    //                 return (1);
-    //         }
-    //         j++;
-    //     }
-    //     i++;
-    // }
-    // return (0);
+	destroy_vars(vars);
+	exit(0);
 }
 
-int	move_character(int keycode, t_vars *vars)
-{
-    double radians;
-    double dirx;
-    double diry;
-
-    dirx = vars->dirv.x;
-    diry = vars->dirv.y;
-
-    radians = to_radians(STEP_ANGLE);
-	if (keycode == A) //move left
-	{
-        vars->posv.x = vars->posv.x + STEP * diry;
-        vars->posv.y = vars->posv.y - STEP * dirx;
-		return (1);
-	}
-	else if (keycode == D) //move right
-	{
-        vars->posv.x = vars->posv.x - STEP * diry;
-        vars->posv.y = vars->posv.y + STEP * dirx;
-		return (1);
-	}
-	else if (keycode == W) //move forward
-	{
-        vars->posv.x = vars->posv.x - STEP * dirx;
-        vars->posv.y = vars->posv.y - STEP * diry;
-		return (1);
-	}
-	else if (keycode == S) //move back
-	{
-        vars->posv.x = vars->posv.x + STEP * dirx;
-        vars->posv.y = vars->posv.y + STEP * diry;
-		return (1);
-	}
-    else if (keycode == LEFT) //move top
-	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
-		return (1);
-	}
-    else if (keycode == RIGHT) //
-	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), radians);
-		return (1);
-	}
-    else if (keycode == UP) //move top
-	{
-        if (vars->height_ratio + STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio + STEP_HEIGHT_RATIO < 1.0)
-            vars->height_ratio += STEP_HEIGHT_RATIO;
-		return (1);
-	}
-    else if (keycode == DOWN) //move top
-	{
-        if (vars->height_ratio - STEP_HEIGHT_RATIO > 0.0 && vars->height_ratio - STEP_HEIGHT_RATIO < 1.0)
-            vars->height_ratio -= STEP_HEIGHT_RATIO;
-		return (1);
-	}
-	return (0);
-}
-
-int	key_control(int keycode, t_vars *vars)
+int	key_press(int keycode, t_vars *vars)
 {
 	if (keycode == 65307)
 	{
-		//destroy_vars(vars);
+		destroy_vars(vars);
 		exit(0);
 	}
-	move_character(keycode, vars);
-    render_game(vars);
+	if (keycode == M && vars->key_state[M] == PRESSED)
+		return (vars->key_state[M] = 0, 1);
+	if (keycode == O && vars->key_state[O] == PRESSED)
+		return (vars->key_state[O] = 0, 1);
+	if (keycode == P && vars->key_state[P] == PRESSED)
+		return (vars->key_state[P] = 0, 1);
+	if (keycode < 128)
+		vars->key_state[keycode] = PRESSED;
+	else if (keycode == LEFT)
+	{
+		vars->key_state[LEFT_INT] = PRESSED;
+	}
+	else if (keycode == RIGHT)
+	{
+		vars->key_state[RIGHT_INT] = PRESSED;
+	}
 	return (0);
 }
 
-int mouse_move(int x, int y, t_vars *vars)
+int	key_release(int keycode, t_vars *vars)
 {
-    double radians;
-    int     dx;
-    time_t now_time;
-    (void)y;
-
-    now_time = get_current_time();
-    if (vars->last_mouse_move_t == 0)
-    {
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    }
-    if (now_time - vars->last_mouse_move_t < TIME_ITVAL_MOUSE)
-    {
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    } 
-    if (vars->last_mouse_pos.x == -1)
-    {
-        vars->last_mouse_pos.x = x;
-        vars->last_mouse_move_t = now_time;
-        return (0);
-    }
-    dx = x - vars->last_mouse_pos.x;
-    vars->last_mouse_pos.x = x;
-    radians = to_radians(STEP_ANGLE_MOUSE);
-    if (dx < 0)
+	if (keycode == M || keycode == P || keycode == O)
+		return (1);
+	if (keycode < 128)
+		vars->key_state[keycode] = RELEASED;
+	else if (keycode == LEFT)
 	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), -radians);
+		vars->key_state[LEFT_INT] = RELEASED;
 	}
-    else if (dx > 0)
+	else if (keycode == RIGHT)
 	{
-        rotate_vector(&(vars->dirv), &(vars->dirv), radians);
-    }
-    render_game(vars);
-    vars->last_mouse_move_t = now_time;
-    return (0);
+		vars->key_state[RIGHT_INT] = RELEASED;
+	}
+	return (0);
+}
+
+void	rotate_when_mouse_move(t_vars *vars)
+{
+	double	radians;
+
+	radians = to_radians(STEP_ANGLE_MOUSE);
+	if (vars->mouse_move_dir != 0)
+	{
+		rotate_vector(&(vars->dirv), &(vars->dirv),
+			-radians * vars->mouse_move_dir);
+	}
 }
