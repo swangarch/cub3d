@@ -54,18 +54,12 @@ void	fill_rec(t_vars *vars, t_vector *pt1, t_vector *pt2, int color)
 {
 	t_vector	nw;
 	t_vector	ne;
-	t_vector	sw;
-	t_vector	se;
 	int			i;
 
 	nw.x = pt1->x;
 	nw.y = pt1->y;
 	ne.x = pt2->x;
 	ne.y = pt1->y;
-	sw.x = pt1->x;
-	sw.y = pt2->y;
-	se.x = pt2->x;
-	se.y = pt2->y;
 	i = 0;
 	while (i < pt2->y - pt1->y)
 	{
