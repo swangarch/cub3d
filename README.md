@@ -56,13 +56,13 @@ Modular C code structure and memory management
 # Build Instructions
 bash
 
-# Compile
+## Compile
 make        # for mandatory part
 make bonus  # for bonus features
 
-# Run
+## Run
 ./cub3D maps/your_map.cub
-# Map Format
+## Map Format
 A .cub map file includes:
 
 Texture paths for walls
@@ -71,7 +71,7 @@ Floor and ceiling colors/textures
 
 2D map (with 1 for walls, 0 for empty space, N/E/S/W for player start)
 
-Example:
+## Example:
 
 NO ./textures/wall_north.xpm
 
@@ -93,13 +93,20 @@ C 225,30,0
 
 # Controls
 
-Key	Action
+## Key	Action
+
 W/A/S/D	Move forward/left/back/right
+
 ←/→	Rotate view left/right
+
 M	Toggle mini-map
+
 +/-	Zoom mini-map
+
 Esc	Exit game
+
 Mouse	Look around (if enabled)
+
 9 0 shadow
 
 # Notes
